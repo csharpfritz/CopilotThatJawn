@@ -1,0 +1,250 @@
+@page "/tips/{slug}"
+@using Microsoft.AspNetCore.Http.Extensions
+@model Web.Pages.Tips.DetailsModel
+@{
+    ViewData["Title"] = Model.ViewModel.Tip.Title;
+}
+
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-page="/Tips/Index">Tips</a></li>
+            @if (!string.IsNullOrEmpty(Model.ViewModel.Tip.Category))
+            {
+                <li class="breadcrumb-item">
+                    <a asp-page="/Tips/Category" asp-route-category="@Model.ViewModel.Tip.Category">@Model.ViewModel.Tip.Category</a>
+                </li>
+            }
+            <li class="breadcrumb-item active" aria-current="page">@Model.ViewModel.Tip.Title</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <article class="tip-detail">
+                <!-- Header -->
+                <header class="mb-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary fs-6">@Model.ViewModel.Tip.Category</span>
+                        <div class="text-end text-muted small">
+                            <div><i class="bi bi-clock"></i> @Model.ViewModel.Tip.ReadingTimeMinutes min read</div>
+                            <div><i class="bi bi-calendar"></i> @Model.ViewModel.Tip.PublishedDate.ToString("MMMM dd, yyyy")</div>
+                        </div>
+                    </div>
+                    
+                    <h1 class="display-5 fw-bold mb-3">@Model.ViewModel.Tip.Title</h1>
+                    
+                    @if (!string.IsNullOrEmpty(Model.ViewModel.Tip.Description))
+                    {
+                        <p class="lead text-muted mb-4">@Model.ViewModel.Tip.Description</p>
+                    }
+
+                    <!-- Author and Metadata -->
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <span>By <strong>@Model.ViewModel.Tip.Author</strong></span>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.ViewModel.Tip.Difficulty))
+                        {
+                            <span class="badge @(Model.ViewModel.Tip.Difficulty switch 
+                            {
+                                "Beginner" => "bg-success",
+                                "Intermediate" => "bg-warning text-dark",
+                                "Advanced" => "bg-danger",
+                                _ => "bg-secondary"
+                            }) fs-6">@Model.ViewModel.Tip.Difficulty Level</span>
+                        }
+
+                        <!-- Tags -->
+                        @if (Model.ViewModel.Tip.Tags.Any())
+                        {
+                            <div class="d-flex flex-wrap gap-1">
+                                @foreach (var tag in Model.ViewModel.Tip.Tags)
+                                {
+                                    <a asp-page="/Tips/Tag" asp-route-tag="@tag" 
+                                       class="badge bg-light text-dark text-decoration-none">#@tag</a>
+                                }
+                            </div>
+                        }
+                    </div>
+                </header>
+
+                <!-- Content -->
+                <div class="tip-content">
+                    @Html.Raw(Model.ViewModel.Tip.Content)
+                </div>
+
+                <!-- Social Sharing -->
+                <div class="mt-5 pt-4 border-top">
+                    <h6 class="mb-3">Share this tip:</h6>
+                    <div class="d-flex gap-2">
+                        <a href="https://twitter.com/intent/tweet?text=@Uri.EscapeDataString(Model.ViewModel.Tip.Title)&url=@Uri.EscapeDataString(Request.GetDisplayUrl())" 
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=@Uri.EscapeDataString(Request.GetDisplayUrl())" 
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-linkedin"></i> LinkedIn
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="copyToClipboard()">
+                            <i class="bi bi-link"></i> Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-6">
+                            @if (Model.ViewModel.PreviousTip != null)
+                            {
+                                <a asp-page="/Tips/Details" asp-route-slug="@Model.ViewModel.PreviousTip.UrlSlug" 
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Previous
+                                </a>
+                            }
+                        </div>
+                        <div class="col-6 text-end">
+                            @if (Model.ViewModel.NextTip != null)
+                            {
+                                <a asp-page="/Tips/Details" asp-route-slug="@Model.ViewModel.NextTip.UrlSlug" 
+                                   class="btn btn-outline-secondary">
+                                    Next <i class="bi bi-arrow-right"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 2rem;">
+                <!-- Related Tips -->
+                @if (Model.ViewModel.RelatedTips.Any())
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-lightbulb"></i> Related Tips
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            @foreach (var relatedTip in Model.ViewModel.RelatedTips)
+                            {
+                                <div class="p-3 border-bottom">
+                                    <h6 class="mb-2">
+                                        <a asp-page="/Tips/Details" asp-route-slug="@relatedTip.UrlSlug" 
+                                           class="text-decoration-none">@relatedTip.Title</a>
+                                    </h6>
+                                    <p class="text-muted small mb-2">@relatedTip.Description</p>
+                                    <div class="d-flex justify-content-between align-items-center small text-muted">
+                                        <span class="badge bg-light text-dark">@relatedTip.Category</span>
+                                        <span>@relatedTip.ReadingTimeMinutes min</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Back to Tips -->
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Explore More Tips</h6>
+                        <p class="card-text small text-muted">Discover more AI productivity tips and tricks</p>
+                        <a asp-page="/Tips/Index" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Back to All Tips
+                        </a>
+                        
+                        @if (!string.IsNullOrEmpty(Model.ViewModel.Tip.Category))
+                        {
+                            <a asp-page="/Tips/Category" asp-route-category="@Model.ViewModel.Tip.Category" 
+                               class="btn btn-outline-primary btn-sm mt-2 d-block">
+                                More from @Model.ViewModel.Tip.Category
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tip-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.tip-content h1, .tip-content h2, .tip-content h3, 
+.tip-content h4, .tip-content h5, .tip-content h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.tip-content p {
+    margin-bottom: 1.5rem;
+}
+
+.tip-content code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+}
+
+.tip-content pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+.tip-content blockquote {
+    border-left: 4px solid #0d6efd;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+}
+
+.tip-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin: 1rem 0;
+}
+
+@@media (max-width: 991.98px) {
+    .sticky-top {
+        position: static !important;
+    }
+}
+</style>
+
+<script>
+function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        // Show success message
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-success');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+        }, 2000);
+    });
+}
+</script>

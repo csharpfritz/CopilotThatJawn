@@ -1,0 +1,112 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* Enhanced code block styling */
+pre[class*="language-"] {
+    position: relative;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 1.5rem 0;
+    overflow: auto;
+}
+
+pre[class*="language-"]:before {
+    content: attr(data-language);
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Copy button styling */
+pre[class*="language-"] .copy-button {
+    position: absolute;
+    top: 8px;
+    right: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ccc;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+pre[class*="language-"]:hover .copy-button {
+    opacity: 1;
+}
+
+pre[class*="language-"] .copy-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Inline code styling */
+:not(pre) > code[class*="language-"] {
+    background: #f8f9fa;
+    color: #e83e8c;
+    border: 1px solid #e9ecef;
+    font-size: 0.875em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+}
+
+/* Tips content styling */
+.tip-content {
+    line-height: 1.6;
+}
+
+.tip-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.tip-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #34495e;
+}
+
+.tip-content ul {
+    margin-bottom: 1.5rem;
+}
+
+.tip-content li {
+    margin-bottom: 0.5rem;
+}

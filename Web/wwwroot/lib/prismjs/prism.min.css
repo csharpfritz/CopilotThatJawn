@@ -1,0 +1,128 @@
+/* PrismJS 1.29.0 - Core CSS for syntax highlighting */
+code[class*="language-"], pre[class*="language-"] {
+    color: #ccc;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+    background: #2d3748;
+    border-radius: 0.375rem;
+}
+
+:not(pre) > code[class*="language-"], pre[class*="language-"] {
+    background: #2d3748;
+}
+
+:not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+}
+
+/* Token colors for dark theme */
+.token.comment, .token.prolog, .token.doctype, .token.cdata {
+    color: #999;
+}
+
+.token.punctuation {
+    color: #ccc;
+}
+
+.token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol, .token.deleted {
+    color: #f56565;
+}
+
+.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted {
+    color: #68d391;
+}
+
+.token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string {
+    color: #9f7aea;
+}
+
+.token.atrule, .token.attr-value, .token.keyword {
+    color: #4299e1;
+}
+
+.token.function, .token.class-name {
+    color: #f6e05e;
+}
+
+.token.regex, .token.important, .token.variable {
+    color: #ed8936;
+}
+
+.token.important, .token.bold {
+    font-weight: bold;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+/* Language-specific styles */
+.language-csharp .token.keyword {
+    color: #569cd6;
+}
+
+.language-csharp .token.class-name {
+    color: #4ec9b0;
+}
+
+.language-csharp .token.string {
+    color: #ce9178;
+}
+
+.language-javascript .token.keyword {
+    color: #c586c0;
+}
+
+.language-javascript .token.function {
+    color: #dcdcaa;
+}
+
+.language-powershell .token.keyword {
+    color: #569cd6;
+}
+
+.language-powershell .token.string {
+    color: #ce9178;
+}
+
+.language-json .token.property {
+    color: #9cdcfe;
+}
+
+.language-json .token.string {
+    color: #ce9178;
+}
+
+.language-yaml .token.key {
+    color: #9cdcfe;
+}
+
+.language-yaml .token.string {
+    color: #ce9178;
+}
