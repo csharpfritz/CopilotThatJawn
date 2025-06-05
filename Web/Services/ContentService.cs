@@ -20,9 +20,24 @@ public class ContentService : IContentService
     private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);    public ContentService(ILogger<ContentService> logger, IWebHostEnvironment environment)
     {
         _logger = logger;
-        _environment = environment;        // Configure Markdig with extensions for syntax highlighting
+        _environment = environment;        // Configure Markdig without syntax highlighting (using Prism.js client-side instead)
         _markdownPipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
+            .UseAutoLinks()
+            .UseEmphasisExtras()
+            .UseDefinitionLists()
+            .UseFooters()
+            .UseFootnotes()
+            .UseCitations()
+            .UseGridTables()
+            .UsePipeTables()
+            .UseListExtras()
+            .UseMathematics()
+            .UseMediaLinks()
+            .UseTaskLists()
+            .UseAutoIdentifiers()
+            .UseAbbreviations()
+            .UseCustomContainers()
+            .UseFigures()
             .UseEmojiAndSmiley()
             .UseGenericAttributes() // Enables CSS class attributes on code blocks
             .Build();
@@ -221,10 +236,10 @@ public class ContentService : IContentService
         var markdownContent = frontmatterMatch.Groups[2].Value;
 
         try
-        {
-            // Parse YAML frontmatter
+        {            // Parse YAML frontmatter
             var metadata = _yamlDeserializer.Deserialize<Dictionary<string, object>>(yamlContent);
-              // Convert markdown to HTML with syntax highlighting support
+            
+            // Convert markdown to HTML with syntax highlighting support
             var htmlContent = Markdown.ToHtml(markdownContent, _markdownPipeline);
             
             // Post-process to ensure proper CSS classes for syntax highlighting
@@ -328,15 +343,15 @@ public class ContentService : IContentService
             score += 2;
 
         return score;
-    }
-    
-    private string PostProcessCodeBlocks(string htmlContent)
+    }    private string PostProcessCodeBlocks(string htmlContent)
     {
         // Ensure proper CSS classes for Prism.js syntax highlighting
         // Handle fenced code blocks with language specification
-        var pattern = @"<pre><code class=""language-(\w+)"">";
-        var replacement = @"<pre class=""language-$1""><code class=""language-$1"">";
-        htmlContent = Regex.Replace(htmlContent, pattern, replacement);
+        
+        // Pattern 1: <pre><code class="language-xxx"> -> <pre class="language-xxx"><code class="language-xxx">
+        var pattern1 = @"<pre><code class=""language-(\w+)"">";
+        var replacement1 = @"<pre class=""language-$1""><code class=""language-$1"">";
+        htmlContent = Regex.Replace(htmlContent, pattern1, replacement1);
         
         return htmlContent;
     }

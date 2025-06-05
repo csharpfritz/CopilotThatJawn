@@ -34,25 +34,37 @@ body {
 pre[class*="language-"] {
     position: relative;
     margin: 1.5rem 0;
-    border-radius: 0.375rem;
+    border-radius: 0.5rem;
     background: #f8f9fa !important;
     border: 1px solid #e9ecef;
     overflow-x: auto;
-    padding: 1rem !important;
+    padding: 1.25rem !important;
+    /* Removed box-shadow to eliminate drop shadow effect */
+    /* Smooth scrolling for long code lines */
+    scroll-behavior: smooth;
 }
 
+/* Import modern code fonts */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
+
 pre[class*="language-"] code {
-    font-family: 'Courier New', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    /* Primary font: Bold Fira Code with fallbacks */
+    font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, 'Liberation Mono', 'Menlo', Monaco, 'Courier New', monospace;
     font-size: 0.875rem;
-    line-height: 1.5;
+    font-weight: 600; /* Bold weight for better readability */
+    line-height: 1.6;
+    letter-spacing: 0.025em;
     white-space: pre;
     word-spacing: normal;
     word-break: normal;
     word-wrap: normal;
     tab-size: 4;
     hyphens: none;
-    background: transparent !important;
+    background: rgba(173, 216, 230, 0.1) !important; /* Light blue background */
     color: #212529 !important;
+    font-feature-settings: "liga" 1, "calt" 1; /* Enable ligatures for supported fonts */
 }
 
 /* Override Prism.js token colors for light background */
@@ -160,11 +172,14 @@ pre[class*="language-"] code {
 
 /* Ensure proper spacing for inline code */
 :not(pre) > code {
-    background: #f8f9fa;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, Monaco, 'Courier New', monospace;
+    background: rgba(173, 216, 230, 0.15); /* Light blue background for inline code */
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-size: 0.875em;
-    color: #e83e8c;
+    font-weight: 600; /* Bold weight */
+    color: #0d47a1; /* Darker blue text for better contrast */
+    letter-spacing: 0.025em;
 }
 
 /* Tips content styling */
@@ -215,9 +230,9 @@ pre[class*="language-"] code {
     .copy-button:hover {
         background: #2c5aa0;
     }
-    
-    pre[class*="language-"] code {
+      pre[class*="language-"] code {
         color: #f7fafc !important;
+        background: rgba(100, 149, 237, 0.1) !important; /* Light blue background for dark theme */
     }
     
     /* Dark theme token colors */
@@ -274,12 +289,40 @@ pre[class*="language-"] code {
     .token.important,
     .token.variable {
         color: #fbb6ce !important;
+    }      :not(pre) > code {
+        font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, Monaco, 'Courier New', monospace;
+        background: rgba(100, 149, 237, 0.2); /* Light blue background for dark theme */
+        color: #87ceeb; /* Light blue text for dark theme */
+        font-weight: 600;
+        letter-spacing: 0.025em;
     }
-    
-    :not(pre) > code {
-        background: #2d3748;
-        color: #f7fafc;
-    }
+}
+
+/* Font variant classes for easy switching */
+.code-font-jetbrains pre[class*="language-"] code,
+.code-font-jetbrains :not(pre) > code {
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Courier New', monospace !important;
+}
+
+.code-font-fira pre[class*="language-"] code,
+.code-font-fira :not(pre) > code {
+    font-family: 'Fira Code', Consolas, Monaco, 'Courier New', monospace !important;
+    font-weight: 600 !important; /* Bold weight for Fira Code */
+}
+
+.code-font-source pre[class*="language-"] code,
+.code-font-source :not(pre) > code {
+    font-family: 'Source Code Pro', Consolas, Monaco, 'Courier New', monospace !important;
+}
+
+.code-font-cascadia pre[class*="language-"] code,
+.code-font-cascadia :not(pre) > code {
+    font-family: 'Cascadia Code', Consolas, Monaco, 'Courier New', monospace !important;
+}
+
+.code-font-sf pre[class*="language-"] code,
+.code-font-sf :not(pre) > code {
+    font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace !important;
 }
 
 /* Responsive adjustments for code blocks */
@@ -298,4 +341,28 @@ pre[class*="language-"] code {
     pre[class*="language-"] {
         padding: 0.75rem !important;
     }
+}
+
+/* Add subtle hover effect */
+pre[class*="language-"]:hover {
+    border-color: #d0d7de;
+}
+
+/* Improve selection styling */
+pre[class*="language-"] code::selection,
+pre[class*="language-"] ::selection {
+    background: rgba(13, 110, 253, 0.2);
+}
+
+/* Line number styling (if using a plugin) */
+.line-numbers .line-numbers-rows {
+    border-right: 1px solid #e9ecef;
+    padding-right: 0.75rem;
+    margin-right: 0.75rem;
+}
+
+/* Better focus outline for accessibility */
+pre[class*="language-"]:focus-within {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
 }
