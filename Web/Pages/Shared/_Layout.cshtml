@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Web</title>
     <script type="importmap"></script>    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- PrismJS CSS from CDN for better language support -->
+    <!-- Bootstrap Icons for theme toggle -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <!-- PrismJS CSS from CDN - using standard theme with custom overrides -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <!-- Custom site CSS with proper theme and code highlighting overrides -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
 </head>
@@ -18,16 +21,22 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">                    <ul class="navbar-nav flex-grow-1">
+                </button>                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">                    
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Tips/Index">Tips</a>
+                            <a class="nav-link" asp-area="" asp-page="/Index">Home</a>
+                        </li>                        
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Tips/Index">Tips</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                    </ul>
+                    
+                    <!-- Theme toggle will be injected here by JavaScript -->
+                    <ul class="navbar-nav ms-auto" id="navbarTools">
+                        <li class="nav-item" id="themeToggleContainer"></li>
                     </ul>
                 </div>
             </div>
@@ -50,9 +59,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/code-fonts.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
+      <script>
+        // Fix for code highlighting in dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure dark mode code blocks don't have text-shadow and proper styling
+            function updateCodeBlocksStyling() {
+                const isDarkTheme = document.documentElement.getAttribute('data-theme-resolved') === 'dark';
+                const codeBlocks = document.querySelectorAll('pre[class*="language-"], code[class*="language-"]');
+                const tokens = document.querySelectorAll('.token');
+                
+                // Set text-shadow and ensure proper contrast
+                codeBlocks.forEach(block => {
+                    if (isDarkTheme) {
+                        block.style.textShadow = 'none';
+                        block.style.color = '#f7fafc';
+                    } else {
+                        block.style.textShadow = '';
+                        block.style.color = '';  // Reset to CSS default
+                    }
+                });
+                
+                // Handle tokens in auto theme mode
+                if (document.documentElement.getAttribute('data-theme') === 'auto') {
+                    if (isDarkTheme) {
+                        document.documentElement.classList.add('auto-dark-theme');
+                    } else {
+                        document.documentElement.classList.remove('auto-dark-theme');
+                    }
+                }
+                
+                // Re-highlight to ensure proper styling
+                if (window.Prism) {
+                    Prism.highlightAll();
+                }
+            }
+            
+            // Call initially and when theme changes
+            updateCodeBlocksStyling();
+            
+            // Listen for theme change events
+            document.addEventListener('theme-changed', updateCodeBlocksStyling);
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

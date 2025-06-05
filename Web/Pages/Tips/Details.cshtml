@@ -121,11 +121,9 @@
                     </div>
                 </div>
             </article>
-        </div>
-
-        <!-- Sidebar -->
+        </div>        <!-- Sidebar -->
         <div class="col-lg-4">
-            <div class="sticky-top" style="top: 2rem;">
+            <div class="sticky-top" style="top: 2rem; z-index: var(--z-index-sticky);">
                 <!-- Related Tips -->
                 @if (Model.ViewModel.RelatedTips.Any())
                 {
@@ -278,5 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Prism.highlightAll();
         }
     }, 100);
+    
+    // Note: Copy-to-clipboard functionality is handled by code-clipboard.js
 });
 </script>
