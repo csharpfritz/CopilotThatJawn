@@ -1,0 +1,25 @@
+# robots.txt for Copilot That Jawn website
+User-agent: *
+Allow: /
+Disallow: /Error
+Disallow: /api/
+Disallow: /debug-content.html
+Disallow: /debug-processed.html
+
+# Allow specific crawlers with better support
+User-agent: Googlebot
+Allow: /
+Disallow: /Error
+Disallow: /api/
+Disallow: /debug-content.html
+Disallow: /debug-processed.html
+
+User-agent: Bingbot
+Allow: /
+Disallow: /Error
+Disallow: /api/
+Disallow: /debug-content.html
+Disallow: /debug-processed.html
+
+# Add sitemap reference
+Sitemap: https://copilotthatjawn.com/sitemap.xml

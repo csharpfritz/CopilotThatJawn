@@ -80,16 +80,27 @@
                 </div>
 
                 <!-- Social Sharing -->
-                <div class="mt-5 pt-4 border-top">
-                    <h6 class="mb-3">Share this tip:</h6>
-                    <div class="d-flex gap-2">
-                        <a href="https://twitter.com/intent/tweet?text=@Uri.EscapeDataString(Model.ViewModel.Tip.Title)&url=@Uri.EscapeDataString(Request.GetDisplayUrl())" 
-                           target="_blank" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-twitter"></i> Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=@Uri.EscapeDataString(Request.GetDisplayUrl())" 
-                           target="_blank" class="btn btn-outline-primary btn-sm">
+                <div class="mt-5 pt-4 border-top">                    
+									<h6 class="mb-3">Share this tip:</h6>
+									@{
+										var shareUrl = Request.GetDisplayUrl();
+										var shareText = Uri.EscapeDataString(Model.ViewModel.Tip.Title);
+									}
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="https://x.com/intent/tweet?text=@shareText&url=@shareUrl" 
+                           target="_blank" class="btn btn-outline-x btn-sm">
+                            <i class="bi bi-twitter-x"></i> X
+                        </a>                        <a href="javascript:shareLinkedIn()" 
+                           class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://bsky.app/intent/compose?text=@shareText @shareUrl" 
+                           target="_blank" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-cloud"></i> Bluesky
+                        </a>
+                        <a href="javascript:shareMastodon()" 
+                           class="btn btn-outline-purple btn-sm mastodon-share">
+                            <i class="bi bi-mastodon"></i> Mastodon
                         </a>
                         <button class="btn btn-outline-secondary btn-sm" onclick="copyToClipboard()">
                             <i class="bi bi-link"></i> Copy Link
@@ -171,11 +182,33 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>    </div>
 </div>
 
 <style>
+.btn-outline-x {
+    color: #1DA1F2;
+    border-color: #1DA1F2;
+    font-weight: bold;
+}
+
+.btn-outline-x:hover {
+    color: #fff;
+    background-color: #1DA1F2;
+    border-color: #1DA1F2;
+}
+
+.btn-outline-purple {
+    color: #563ACC;
+    border-color: #563ACC;
+}
+
+.btn-outline-purple:hover {
+    color: #fff;
+    background-color: #563ACC;
+    border-color: #563ACC;
+}
+
 .tip-content {
     line-height: 1.8;
     font-size: 1.1rem;
@@ -244,6 +277,33 @@
 </style>
 
 <script>
+function shareLinkedIn() {
+    const url = window.location.href;
+    const title = "@Model.ViewModel.Tip.Title";
+ 
+    // Use LinkedIn's post creation with pre-populated content
+    // This method ensures both title and URL are included in the post
+    let linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+
+    
+    // Add source
+    linkedinUrl += `&source=CopilotThatJawn`;
+    
+    window.open(linkedinUrl, '_blank', 'width=550,height=400');
+}
+
+function shareMastodon() {
+    // Prompt for Mastodon instance
+    const instance = prompt("Enter your Mastodon instance URL (e.g., mastodon.social):", "mastodon.social");
+    if (instance) {
+        // Construct share URL
+        const text = "@Model.ViewModel.Tip.Title";
+        const url = window.location.href;
+        const shareUrl = `https://${instance}/share?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        window.open(shareUrl, '_blank');
+    }
+}
+
 function copyToClipboard() {
     navigator.clipboard.writeText(window.location.href).then(function() {
         // Show success message
