@@ -5,12 +5,11 @@
 }
 
 <!-- Hero Section -->
-<div class="hero-section bg-primary bg-gradient text-white py-5 mb-5">
+<div class="hero-section bg-primary bg-gradient text-white py-4 mb-4">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-7 col-md-8">
-                <h1 class="display-3 fw-bold mb-3">Copilot That Jawn</h1>
-                <p class="lead fs-4 mb-4">Your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools. Discover tips, tricks, and resources to supercharge your workflow.</p>
+            <div class="col-lg-7 col-md-8">                <h1 class="display-3 fw-bold mb-3">Copilot That Jawn</h1>
+                <p class="lead fs-4 mb-4">Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips.</p>
                 <div class="d-flex flex-wrap gap-2">
                     <a asp-page="/Tips/Index" class="btn btn-light btn-lg">Browse All Tips</a>
                     <a asp-page="/Tips/Category" asp-route-category="github-copilot" class="btn btn-outline-light btn-lg">GitHub Copilot</a>
@@ -24,61 +23,14 @@
     </div>
 </div>
 
-<!-- Quick Links Section -->
-<div class="container mb-5">
-    <div class="row g-4">
-        <div class="col-lg-3 col-md-6">
-            <div class="card text-bg-success h-100 border-0 shadow-sm hover-card">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-github display-5 mb-3"></i>
-                    <h4 class="card-title">GitHub Copilot</h4>
-                    <p class="card-text mb-4">AI pair programming with GitHub Copilot.</p>
-                    <a href="#" class="btn btn-outline-light stretched-link">Explore</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card text-bg-primary h-100 border-0 shadow-sm hover-card">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-microsoft display-5 mb-3"></i>
-                    <h4 class="card-title">Microsoft 365</h4>
-                    <p class="card-text mb-4">Productivity with Microsoft 365 Copilot.</p>
-                    <a href="#" class="btn btn-outline-light stretched-link">Explore</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card text-bg-info h-100 border-0 shadow-sm hover-card">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-cloud display-5 mb-3"></i>
-                    <h4 class="card-title">Azure AI</h4>
-                    <p class="card-text mb-4">Azure AI services and integration guides.</p>
-                    <a href="#" class="btn btn-outline-light stretched-link">Explore</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card text-bg-warning h-100 border-0 shadow-sm hover-card">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-tools display-5 mb-3"></i>
-                    <h4 class="card-title">AI Tools</h4>
-                    <p class="card-text mb-4">Complementary AI tools and resources.</p>
-                    <a href="#" class="btn btn-outline-light stretched-link">Explore</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Recent Tips Section -->
 <div class="container mb-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold"><i class="bi bi-lightning-charge"></i> Recent Tips</h2>
         <a asp-page="/Tips/Index" class="btn btn-outline-primary">View All Tips</a>
     </div>
-    
-    <div class="row g-4">
-        @foreach (var tip in Model.RecentTips)
+      <div class="row g-4">
+        @foreach (var tip in Model.RecentTips.Take(3))
         {
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 shadow-sm hover-card">
@@ -88,11 +40,10 @@
                             <small class="text-muted">@tip.PublishedDate.ToString("MMM dd, yyyy")</small>
                         </div>
                         <h5 class="card-title">@tip.Title</h5>
-                        <p class="card-text text-truncate-3">@tip.Description</p>
-                        <div class="d-flex gap-1 mb-2">
+                        <p class="card-text text-truncate-3">@tip.Description</p>                        <div class="d-flex flex-wrap gap-1 mb-2" style="max-width: 100%; overflow: hidden;">
                             @foreach (var tag in tip.Tags.Take(3))
                             {
-                                <span class="badge bg-light text-dark">#@tag</span>
+                                <span class="badge bg-light text-dark text-truncate" style="max-width: 150px;">#@tag</span>
                             }
                             @if (tip.Tags.Count > 3)
                             {
@@ -133,38 +84,6 @@
     </div>
 </div>
 
-<!-- Stats Counter Section -->
-<div class="container-fluid bg-light py-5 mb-5">
-    <div class="container">
-        <div class="row g-4 text-center">
-            <div class="col-lg-3 col-md-6">
-                <div class="stats-counter mb-3">
-                    <div class="display-3 fw-bold text-primary counter" data-target="@Model.TotalTipsCount">0</div>
-                </div>
-                <h5>AI Tips & Tricks</h5>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="stats-counter mb-3">
-                    <div class="display-3 fw-bold philly-eagles-green counter" data-target="@Model.Categories.Count">0</div>
-                </div>
-                <h5>Categories</h5>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="stats-counter mb-3">
-                    <div class="display-3 fw-bold philly-phillies-red counter" data-target="@Model.PopularTags.Count">0</div>
-                </div>
-                <h5>Topics</h5>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="stats-counter mb-3">
-                    <div class="display-3 fw-bold text-info counter" data-target="5000">0</div>
-                </div>
-                <h5>Monthly Visitors</h5>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Popular Tags Section -->
 <div class="container mb-5">
     <h2 class="fw-bold mb-4"><i class="bi bi-tags"></i> Popular Tags</h2>
@@ -175,101 +94,57 @@
                class="btn btn-outline-secondary btn-lg mb-2">
                 #@tag
             </a>
-        }
+        }    </div>
+</div>
+
+<!-- Stats Counter Section -->
+<div class="container py-5">    <div class="row g-4 text-center">
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-counter mb-3">
+                <div class="display-3 fw-bold text-primary counter" data-target="@Model.TotalTipsCount">0</div>
+            </div>
+            <h5>Tips & Tricks</h5>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-counter mb-3">
+                <div class="display-3 fw-bold philly-eagles-green counter" data-target="@Model.Categories.Count">0</div>
+            </div>
+            <h5>Categories</h5>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-counter mb-3">
+                <div class="display-3 fw-bold philly-phillies-red counter" data-target="@Model.PopularTags.Count">0</div>
+            </div>
+            <h5>Topics</h5>
+        </div>
     </div>
 </div>
 
 <!-- Add JavaScript for the counter animation -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
+<script>    document.addEventListener("DOMContentLoaded", function() {
         const counters = document.querySelectorAll('.counter');
-        const speed = 200;
+        const duration = 2000; // 2 seconds animation
+        const steps = 50; // number of steps to reach target
         
         counters.forEach(counter => {
-            const updateCount = () => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
-                
-                const increment = target / speed;
-                
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + increment);
-                    setTimeout(updateCount, 1);
-                } else {
-                    counter.innerText = target;
-                }
-            };
+            const target = parseInt(counter.getAttribute('data-target'));
+            let current = 0;
+            const increment = target / steps;
+            const interval = duration / steps;
             
-            updateCount();
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.floor(current);
+                }
+            }, interval);
+            
+            counter.textContent = '0';
         });
     });
 </script>
-
-<!-- Featured Tutorial Section -->
-<div class="container mb-5">
-    <div class="row">
-        <div class="col-lg-8 mb-4 mb-lg-0">
-            <div class="card shadow border-0 overflow-hidden">
-                <div class="card-header bg-dark text-white">
-                    <h3 class="mb-0"><i class="bi bi-mortarboard"></i> Featured Tutorial</h3>
-                </div>
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        <div class="col-md-5">
-                            <div class="bg-light h-100 d-flex align-items-center justify-content-center p-4">
-                                @if (Model.FeaturedTip != null && Model.FeaturedTip.Category.Contains("GitHub"))
-                                {
-                                    <i class="bi bi-github philly-eagles-green" style="font-size: 6rem;"></i>
-                                }
-                                else if (Model.FeaturedTip != null && Model.FeaturedTip.Category.Contains("Microsoft 365"))
-                                {
-                                    <i class="bi bi-microsoft philly-phillies-red" style="font-size: 6rem;"></i>
-                                }
-                                else if (Model.FeaturedTip != null && Model.FeaturedTip.Category.Contains("Azure"))
-                                {
-                                    <i class="bi bi-cloud text-info" style="font-size: 6rem;"></i>
-                                }
-                                else
-                                {
-                                    <i class="bi bi-robot text-primary" style="font-size: 6rem;"></i>
-                                }
-                            </div>
-                        </div>
-                        <div class="col-md-7 p-4">
-                            @if (Model.FeaturedTip != null)
-                            {
-                                <h4>@Model.FeaturedTip.Title</h4>
-                                <p class="text-muted mb-3">@Model.FeaturedTip.Description</p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-clock me-2"></i>
-                                    <span>@Model.FeaturedTip.ReadingTimeMinutes min read</span>
-                                    <span class="mx-2">•</span>
-                                    <i class="bi bi-calendar me-2"></i>
-                                    <span>@Model.FeaturedTip.PublishedDate.ToString("MMM dd, yyyy")</span>
-                                </div>
-                                <a asp-page="/Tips/Details" asp-route-slug="@Model.FeaturedTip.UrlSlug" class="btn btn-primary">Read Tutorial</a>
-                            }
-                            else
-                            {
-                                <h4>Getting Started with GitHub Copilot</h4>
-                                <p class="text-muted mb-3">Learn how to set up and use GitHub Copilot effectively in your development workflow.</p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-clock me-2"></i>
-                                    <span>15 min read</span>
-                                </div>
-                                <a href="#" class="btn btn-primary">Read Tutorial</a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>        <div class="col-lg-4">
-            <div class="mt-4">
-                <h4 class="mb-3"><i class="bi bi-lightning"></i> Random Tip</h4>
-                @await Component.InvokeAsync("RandomTip")
-            </div>
-        </div>
-    </div>
-</div>
 
 

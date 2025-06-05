@@ -1,5 +1,13 @@
 /* CSS Custom Properties for Theme Management */
-:root {
+:root {    /* Purple primary color scheme */
+    --primary-color: #6200EE;
+    --primary-hover: #5600E8;
+    --primary-light: #7F39FB;
+    --primary-dark: #5000C9;
+    
+    /* Override Bootstrap primary */    --bs-primary: var(--primary-color);
+    --bs-primary-rgb: 98, 0, 238;
+    
     /* Light theme colors (default) */
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
@@ -223,14 +231,50 @@ main {
 
 /* Footer theming */
 .footer {
-    background-color: var(--footer-bg);
+    background-color: var(--bg-secondary);
     color: var(--footer-text);
-    border-top-color: var(--border-color);
+    border-top: 1px solid var(--border-color);
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     flex-shrink: 0;
     padding: 2rem 0;
     margin-top: 2rem;
     width: 100%;
+}
+
+/* Footer link hover effect */
+.hover-primary {
+    transition: color 0.2s ease-in-out;
+}
+
+.hover-primary:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Footer headings */
+.footer h6 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Footer links spacing and alignment */
+.footer ul li {
+    margin-bottom: 0.75rem;
+}
+
+.footer ul li:last-child {
+    margin-bottom: 0;
+}
+
+/* Footer brand section */
+.footer .bi-robot {
+    font-size: 1.5rem;
+}
+
+/* Footer divider */
+.footer hr {
+    opacity: 0.1;
+    margin: 2rem 0;
 }
 
 /* Theme toggle button styling */
@@ -294,12 +338,12 @@ main {
 
 .footer {
     flex-shrink: 0;
+    width: 100%;
     background-color: var(--footer-bg);
     color: var(--footer-text);
     border-top: 1px solid var(--border-color);
     padding: 2rem 0;
-    margin-top: 2rem;
-    width: 100%;
+    margin-top: auto; /* Push footer to bottom */
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -642,14 +686,6 @@ pre[class*="language-"]:focus-within {
     position: relative;
 }
 
-.stats-counter::after {
-    content: "+";
-    font-size: 2rem;
-    position: absolute;
-    top: 0;
-    margin-left: 5px;
-}
-
 .stretched-link::after {
     position: absolute;
     top: 0;
@@ -751,4 +787,37 @@ main {
 .footer {
     position: static;
     line-height: 1.5;
+}
+
+/* Apply theme colors to elements */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.badge.bg-primary {
+    background-color: var(--primary-color) !important;
 }

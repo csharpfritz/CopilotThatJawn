@@ -23,28 +23,14 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">                    
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index">Home</a>
-                        </li>                        
-                        <li class="nav-item">
+                    <ul class="navbar-nav">                     
+                        @* <li class="nav-item">
                             <a class="nav-link" asp-page="/Tips/Index">Tips</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Tools
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">GitHub Copilot</a></li>
-                                <li><a class="dropdown-item" href="#">Microsoft 365 Copilot</a></li>
-                                <li><a class="dropdown-item" href="#">Azure AI</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">All AI Tools</a></li>
-                            </ul>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
+                        </li> *@
                     </ul>
                     
                     <!-- Theme toggle will be injected here by JavaScript -->
@@ -58,69 +44,42 @@
         <main role="main">
             @RenderBody()
         </main>
-    </div>
-    <footer class="footer">
+    </div>    <footer class="footer py-4">
         <div class="container">
-            <div class="row gy-4">
-                <div class="col-lg-4">
-                    <div class="d-flex align-items-center mb-3">
+            <div class="row g-4 align-items-start justify-content-between">
+                <div class="col-lg-5">                    <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-robot me-2 fs-4 text-primary"></i>
                         <h5 class="mb-0">Copilot That Jawn</h5>
                     </div>
-                    <p class="text-muted">Your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools.</p>
-                    <div class="d-flex gap-3 mb-3">
-                        <a href="#" class="text-primary fs-5" title="Twitter"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="text-primary fs-5" title="GitHub"><i class="bi bi-github"></i></a>
-                        <a href="#" class="text-primary fs-5" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="text-primary fs-5" title="YouTube"><i class="bi bi-youtube"></i></a>
-                    </div>
+                    <p class="text-muted mb-0 pe-lg-4">Expert tips and tricks for Microsoft Copilot, GitHub Copilot, and related AI tools. Level up your workflow with our curated collection of productivity hacks.</p>
                 </div>
-                <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="mb-3 fw-bold">AI Tools</h6>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="mb-3 text-primary">AI Tools</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">GitHub Copilot</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Microsoft 365 Copilot</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Azure AI</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Copilot Studio</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">GitHub Copilot</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Microsoft 365 Copilot</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Azure AI</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Copilot Studio</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="mb-3 fw-bold">Content</h6>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="mb-3 text-primary">Quick Links</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Tips & Tricks</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Tutorials</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Guides</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">News</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="mb-3 fw-bold">Site</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">About</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Contact</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Terms</a></li>
-                        <li class="mb-2"><a asp-page="/Privacy" class="text-decoration-none text-muted">Privacy</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="mb-3 fw-bold">Resources</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Newsletter</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Community</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Contribute</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">About</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Contact</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Terms</a></li>
+                        <li class="mb-2"><a asp-page="/Privacy" class="text-decoration-none text-muted hover-primary">Privacy</a></li>
                     </ul>
                 </div>
             </div>
-            <hr class="mt-4 mb-3">
-            <div class="d-flex flex-wrap justify-content-between">
-                <p class="text-muted mb-0">&copy; 2025 Copilot That Jawn - All Rights Reserved</p>
-                <div>
-                    <a href="#" class="text-decoration-none text-muted me-3">Terms of Service</a>
-                    <a asp-page="/Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-12 text-center">
+                    <p class="text-muted mb-0">&copy; 2025 Copilot That Jawn. All rights reserved.</p>
                 </div>
             </div>
         </div>
-    </footer>    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    </footer><script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- PrismJS from CDN with comprehensive language support -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
