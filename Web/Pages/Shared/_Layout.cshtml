@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Web</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    <title>@ViewData["Title"] - Copilot That Jawn</title>
+    <meta name="description" content="@(ViewData["Description"] ?? "Your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools.")" />
     <script type="importmap"></script>    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons for theme toggle -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />    <!-- PrismJS CSS from CDN - will load theme based on user preference -->
@@ -15,8 +15,10 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Web</a>
+            <div class="container">                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-page="/Index">
+                    <i class="bi bi-robot me-2 text-primary"></i>
+                    <span>Copilot That Jawn</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -27,6 +29,18 @@
                         </li>                        
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/Tips/Index">Tips</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Tools
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">GitHub Copilot</a></li>
+                                <li><a class="dropdown-item" href="#">Microsoft 365 Copilot</a></li>
+                                <li><a class="dropdown-item" href="#">Azure AI</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">All AI Tools</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Privacy">Privacy</a>
@@ -45,9 +59,66 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>    <footer class="border-top footer text-muted">
+    </div>    <footer class="border-top footer py-4">
         <div class="container">
-            &copy; 2025 - Web - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-robot me-2 fs-4 text-primary"></i>
+                        <h5 class="mb-0">Copilot That Jawn</h5>
+                    </div>
+                    <p class="text-muted">Your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools.</p>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="#" class="text-primary fs-5" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-primary fs-5" title="GitHub"><i class="bi bi-github"></i></a>
+                        <a href="#" class="text-primary fs-5" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-primary fs-5" title="YouTube"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h6 class="mb-3 fw-bold">AI Tools</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">GitHub Copilot</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Microsoft 365 Copilot</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Azure AI</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Copilot Studio</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h6 class="mb-3 fw-bold">Content</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Tips & Tricks</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Tutorials</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Guides</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">News</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h6 class="mb-3 fw-bold">Site</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">About</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Contact</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Terms</a></li>
+                        <li class="mb-2"><a asp-page="/Privacy" class="text-decoration-none text-muted">Privacy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h6 class="mb-3 fw-bold">Resources</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Newsletter</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Community</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Contribute</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <div class="d-flex flex-wrap justify-content-between">
+                <p class="text-muted mb-0">&copy; 2025 Copilot That Jawn - All Rights Reserved</p>
+                <div>
+                    <a href="#" class="text-decoration-none text-muted me-3">Terms of Service</a>
+                    <a asp-page="/Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
+                </div>
+            </div>
         </div>
     </footer>    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

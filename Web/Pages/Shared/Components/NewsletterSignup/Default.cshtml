@@ -1,0 +1,44 @@
+@{
+    var placeholderText = "Enter your email";
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-envelope-paper text-primary fs-2 me-3"></i>
+            <h3 class="mb-0">Stay in the Loop</h3>
+        </div>
+        <p class="mb-4">Subscribe to our newsletter to get the latest AI tips, tricks, and tool updates delivered straight to your inbox.</p>
+        
+        <form id="newsletter-form" class="mb-2">
+            <div class="input-group mb-3">
+                <input type="email" class="form-control" placeholder="@placeholderText" aria-label="@placeholderText" required>
+                <button class="btn btn-primary" type="submit" id="newsletter-button">Subscribe</button>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="privacy-check" required>
+                <label class="form-check-label small" for="privacy-check">
+                    I agree to the <a href="/privacy" class="text-decoration-none">privacy policy</a> and consent to receiving emails.
+                </label>
+            </div>
+        </form>
+        <div id="newsletter-success" class="alert alert-success d-none">
+            Thanks for subscribing! Check your email to confirm your subscription.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('newsletter-form');
+        const success = document.getElementById('newsletter-success');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real application, we would send this to a backend API
+            // For now, just show the success message
+            form.classList.add('d-none');
+            success.classList.remove('d-none');
+        });
+    });
+</script>

@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers(); // Add controller support for API endpoints
+builder.Services.AddMvc().AddViewComponentsAsServices(); // Register view components
 
 // Register content service
 builder.Services.AddScoped<IContentService, ContentService>();

@@ -443,3 +443,94 @@ pre[class*="language-"]:focus-within {
 .sticky-top {
     z-index: var(--z-index-sticky) !important;
 }
+
+/* Homepage Styles */
+.hero-section {
+    border-radius: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hover-card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Text truncation for card descriptions */
+.text-truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 4.5rem;
+}
+
+/* Add Philly color scheme accents */
+.philly-eagles-green {
+    color: #004C54;
+}
+
+.philly-phillies-red {
+    color: #E81828;
+}
+
+/* Card styles */
+.card {
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.card-footer {
+    background-color: transparent;
+}
+
+/* Category and tag styles */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* Homepage Component Styles */
+.tool-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-counter {
+    position: relative;
+}
+
+.stats-counter::after {
+    content: "+";
+    font-size: 2rem;
+    position: absolute;
+    top: 0;
+    margin-left: 5px;
+}
+
+.stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
+}
+
+/* Add Philly theme colors to background utilities */
+.bg-eagles-green {
+    background-color: #004C54 !important;
+}
+
+.bg-phillies-red {
+    background-color: #E81828 !important;
+}
