@@ -11,12 +11,19 @@ function initializeCopyButtons() {
         if (block.querySelector('.copy-button')) {
             return;
         }
-        
-        // Extract language from class name
+          // Extract language from class name
         const languageClass = Array.from(block.classList).find(cls => cls.startsWith('language-'));
         if (languageClass) {
             const language = languageClass.replace('language-', '');
+            
+            // Set data-language attribute for CSS styling
             block.setAttribute('data-language', language);
+            
+            // Ensure the language class is on both pre and code elements
+            const codeElement = block.querySelector('code');
+            if (codeElement && !codeElement.classList.contains(languageClass)) {
+                codeElement.classList.add(languageClass);
+            }
             
             // Add copy button
             const copyButton = document.createElement('button');
@@ -54,9 +61,10 @@ function initializeCopyButtons() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize copy buttons for code blocks
     initializeCopyButtons();
     
-    // Re-highlight if Prism is available
+    // Initialize syntax highlighting
     if (window.Prism) {
         Prism.highlightAll();
     }
@@ -68,3 +76,6 @@ window.addEventListener('load', function() {
         Prism.highlightAll();
     }
 });
+
+// Re-export for manual testing if needed
+window.initializeCopyButtons = initializeCopyButtons;

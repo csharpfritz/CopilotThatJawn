@@ -20,9 +20,7 @@ public class ContentService : IContentService
     private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);    public ContentService(ILogger<ContentService> logger, IWebHostEnvironment environment)
     {
         _logger = logger;
-        _environment = environment;
-        
-        // Configure Markdig with extensions for syntax highlighting
+        _environment = environment;        // Configure Markdig with extensions for syntax highlighting
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
             .UseEmojiAndSmiley()
@@ -226,13 +224,12 @@ public class ContentService : IContentService
         {
             // Parse YAML frontmatter
             var metadata = _yamlDeserializer.Deserialize<Dictionary<string, object>>(yamlContent);
-            
-            // Convert markdown to HTML with syntax highlighting support
+              // Convert markdown to HTML with syntax highlighting support
             var htmlContent = Markdown.ToHtml(markdownContent, _markdownPipeline);
             
             // Post-process to ensure proper CSS classes for syntax highlighting
             htmlContent = PostProcessCodeBlocks(htmlContent);
-
+            
             // Create tip model
             var tip = new TipModel
             {
@@ -331,18 +328,15 @@ public class ContentService : IContentService
             score += 2;
 
         return score;
-    }    private string PostProcessCodeBlocks(string htmlContent)
+    }
+    
+    private string PostProcessCodeBlocks(string htmlContent)
     {
-        // Ensure code blocks have proper language classes for Prism.js
-        // Pattern to match code blocks: <pre><code class="language-xxx">
-        var codeBlockPattern = @"<pre><code class=""language-(\w+)"">";
+        // Ensure proper CSS classes for Prism.js syntax highlighting
+        // Handle fenced code blocks with language specification
+        var pattern = @"<pre><code class=""language-(\w+)"">";
         var replacement = @"<pre class=""language-$1""><code class=""language-$1"">";
-        
-        htmlContent = Regex.Replace(htmlContent, codeBlockPattern, replacement);
-        
-        // Also handle cases where pre tag doesn't have the language class
-        htmlContent = Regex.Replace(htmlContent, @"<pre(?!\s+class)><code class=""language-(\w+)""", 
-            @"<pre class=""language-$1""><code class=""language-$1""");
+        htmlContent = Regex.Replace(htmlContent, pattern, replacement);
         
         return htmlContent;
     }
