@@ -91,8 +91,7 @@ class ThemeSwitcher {
         this.saveTheme(theme);
         this.updateToggleUI();
     }
-    
-    applyTheme(theme) {
+      applyTheme(theme) {
         const body = document.body;
         const html = document.documentElement;
         
@@ -111,13 +110,20 @@ class ThemeSwitcher {
         html.setAttribute('data-theme', theme);
         
         // Handle auto theme
+        let resolvedTheme;
         if (theme === 'auto') {
             const prefersDark = this.mediaQuery.matches;
-            html.setAttribute('data-theme-resolved', prefersDark ? 'dark' : 'light');
+            resolvedTheme = prefersDark ? 'dark' : 'light';
+            html.setAttribute('data-theme-resolved', resolvedTheme);
         } else {
+            resolvedTheme = theme;
             html.setAttribute('data-theme-resolved', theme);
         }
-          // Update navbar styling based on theme
+        
+        // Update Prism.js theme based on the resolved theme
+        this.updatePrismTheme(resolvedTheme);
+          
+        // Update navbar styling based on theme
         this.updateNavbarStyling();
         
         // Dispatch custom event for other components to react to theme changes
@@ -127,6 +133,24 @@ class ThemeSwitcher {
                 resolvedTheme: html.getAttribute('data-theme-resolved')
             }
         }));
+    }    // Load the appropriate Prism theme based on current theme
+    updatePrismTheme(resolvedTheme) {
+        const prismThemeLink = document.getElementById('prism-theme');
+        if (prismThemeLink) {
+            const themeUrl = resolvedTheme === 'dark' 
+                ? 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'
+                : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
+            
+            // Update theme URL and trigger rehighlight
+            prismThemeLink.href = themeUrl;
+            
+            // Re-highlight code if Prism is available
+            if (window.Prism) {
+                setTimeout(() => {
+                    Prism.highlightAll();
+                }, 100); // Small delay to ensure theme is loaded
+            }
+        }
     }
       updateNavbarStyling() {
         const navbar = document.querySelector('.navbar');

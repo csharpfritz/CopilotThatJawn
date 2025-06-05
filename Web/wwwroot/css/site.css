@@ -185,402 +185,45 @@ body {
     text-align: start;
 }
 
-/* Enhanced syntax highlighting styles with theme support */
+/* Import modern code fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+
+/* Basic code block styling with theme support */
 pre[class*="language-"] {
     position: relative;
     margin: 1.5rem 0;
     border-radius: 0.5rem;
-    background: var(--code-bg) !important;
     border: 1px solid var(--border-color);
     overflow-x: auto;
     padding: 1.25rem !important;
     scroll-behavior: smooth;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: border-color 0.3s ease;
 }
 
-/* Import modern code fonts */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap');
-
-pre[class*="language-"] code {
-    /* Primary font: Bold Fira Code with fallbacks */
+/* Custom font for code blocks */
+pre[class*="language-"] code,
+code[class*="language-"] {
     font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, 'Liberation Mono', 'Menlo', Monaco, 'Courier New', monospace;
     font-size: 0.875rem;
-    font-weight: 500; /* Medium weight for better readability */
+    font-weight: 500;
     line-height: 1.6;
     letter-spacing: 0.025em;
     white-space: pre;
-    word-spacing: normal;
-    word-break: normal;
-    word-wrap: normal;
-    tab-size: 4;
-    hyphens: none;
-    background-color: transparent !important; /* Transparent background */
-    color: var(--text-primary) !important; /* Use theme text color */
     font-feature-settings: "liga" 1, "calt" 1; /* Enable ligatures for supported fonts */
-    transition: color 0.3s ease;
 }
 
-/* Ensure all child elements inherit the theme color */
-pre[class*="language-"] code * {
-    color: inherit;
+/* Theme-specific adjustments - minimal overrides */
+html[data-theme="dark"] pre[class*="language-"],
+html[data-theme-resolved="dark"] pre[class*="language-"] {
+    background-color: transparent !important; /* Let Prism handle background */
 }
 
-/* Override Prism.js token colors for light background - ensuring no white text */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-    color: #6a737d !important;
-}
-
-.token.punctuation {
-    color: #393a34 !important;
-}
-
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted {
-    color: #d73a49 !important;
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-    color: #032f62 !important;
-}
-
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string {
-    color: #d73a49 !important;
-}
-
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-    color: #d73a49 !important;
-}
-
-.token.function,
-.token.class-name {
-    color: #6f42c1 !important;
-}
-
-.token.regex,
-.token.important,
-.token.variable {
-    color: #e36209 !important;
-}
-
-/* Additional tokens that might have white/light colors by default */
-.token.namespace {
-    color: #6f42c1 !important;
-}
-
-html[data-theme="light"] .token.bold,
-html[data-theme-resolved="light"] .token.bold {
-    color: #212529 !important;
-    font-weight: bold;
-}
-
-html[data-theme="dark"] .token.bold,
-html[data-theme-resolved="dark"] .token.bold {
-    color: #f7fafc !important;
-    font-weight: bold;
-}
-
-html[data-theme="light"] .token.italic,
-html[data-theme-resolved="light"] .token.italic {
-    color: #212529 !important;
-    font-style: italic;
-}
-
-html[data-theme="dark"] .token.italic,
-html[data-theme-resolved="dark"] .token.italic {
-    color: #f7fafc !important;
-    font-style: italic;
-}
-
-/* Comprehensive override for any remaining tokens */
-html[data-theme="light"] .token.annotation,
-html[data-theme-resolved="light"] .token.annotation,
-html[data-theme="light"] .token.assignment,
-html[data-theme-resolved="light"] .token.assignment,
-html[data-theme="light"] .token.assign-left,
-html[data-theme-resolved="light"] .token.assign-left,
-html[data-theme="light"] .token.boolean,
-html[data-theme-resolved="light"] .token.boolean,
-html[data-theme="light"] .token.builtin,
-html[data-theme-resolved="light"] .token.builtin,
-html[data-theme="light"] .token.changed,
-html[data-theme-resolved="light"] .token.changed,
-html[data-theme="light"] .token.deleted,
-html[data-theme-resolved="light"] .token.deleted,
-html[data-theme="light"] .token.entity,
-html[data-theme-resolved="light"] .token.entity,
-html[data-theme="light"] .token.function,
-html[data-theme-resolved="light"] .token.function,
-html[data-theme="light"] .token.generic,
-html[data-theme-resolved="light"] .token.generic,
-html[data-theme="light"] .token.heading,
-html[data-theme-resolved="light"] .token.heading,
-html[data-theme="light"] .token.important,
-html[data-theme-resolved="light"] .token.important,
-html[data-theme="light"] .token.inserted,
-html[data-theme-resolved="light"] .token.inserted,
-html[data-theme="light"] .token.keyword,
-html[data-theme-resolved="light"] .token.keyword,
-html[data-theme="light"] .token.number,
-html[data-theme-resolved="light"] .token.number,
-html[data-theme="light"] .token.prolog,
-html[data-theme-resolved="light"] .token.prolog,
-html[data-theme="light"] .token.property,
-html[data-theme-resolved="light"] .token.property,
-html[data-theme="light"] .token.regex,
-html[data-theme-resolved="light"] .token.regex,
-html[data-theme="light"] .token.selector,
-html[data-theme-resolved="light"] .token.selector,
-html[data-theme="light"] .token.string,
-html[data-theme-resolved="light"] .token.string,
-html[data-theme="light"] .token.tag,
-html[data-theme-resolved="light"] .token.tag,
-html[data-theme="light"] .token.url,
-html[data-theme-resolved="light"] .token.url,
-html[data-theme="light"] .token.variable,
-html[data-theme-resolved="light"] .token.variable {
-    color: #212529 !important;
-}
-
-html[data-theme="dark"] .token.annotation,
-html[data-theme-resolved="dark"] .token.annotation,
-html[data-theme="dark"] .token.assignment,
-html[data-theme-resolved="dark"] .token.assignment,
-html[data-theme="dark"] .token.assign-left,
-html[data-theme-resolved="dark"] .token.assign-left,
-html[data-theme="dark"] .token.boolean,
-html[data-theme-resolved="dark"] .token.boolean,
-html[data-theme="dark"] .token.builtin,
-html[data-theme-resolved="dark"] .token.builtin,
-html[data-theme="dark"] .token.changed,
-html[data-theme-resolved="dark"] .token.changed,
-html[data-theme="dark"] .token.deleted,
-html[data-theme-resolved="dark"] .token.deleted,
-html[data-theme="dark"] .token.entity,
-html[data-theme-resolved="dark"] .token.entity,
-html[data-theme="dark"] .token.function,
-html[data-theme-resolved="dark"] .token.function,
-html[data-theme="dark"] .token.generic,
-html[data-theme-resolved="dark"] .token.generic,
-html[data-theme="dark"] .token.heading,
-html[data-theme-resolved="dark"] .token.heading,
-html[data-theme="dark"] .token.important,
-html[data-theme-resolved="dark"] .token.important,
-html[data-theme="dark"] .token.inserted,
-html[data-theme-resolved="dark"] .token.inserted,
-html[data-theme="dark"] .token.keyword,
-html[data-theme-resolved="dark"] .token.keyword,
-html[data-theme="dark"] .token.number,
-html[data-theme-resolved="dark"] .token.number,
-html[data-theme="dark"] .token.prolog,
-html[data-theme-resolved="dark"] .token.prolog,
-html[data-theme="dark"] .token.property,
-html[data-theme-resolved="dark"] .token.property,
-html[data-theme="dark"] .token.regex,
-html[data-theme-resolved="dark"] .token.regex,
-html[data-theme="dark"] .token.selector,
-html[data-theme-resolved="dark"] .token.selector,
-html[data-theme="dark"] .token.string,
-html[data-theme-resolved="dark"] .token.string,
-html[data-theme="dark"] .token.tag,
-html[data-theme-resolved="dark"] .token.tag,
-html[data-theme="dark"] .token.url,
-html[data-theme-resolved="dark"] .token.url,
-html[data-theme="dark"] .token.variable,
-html[data-theme-resolved="dark"] .token.variable {
-    color: #f7fafc !important;
-}
-
-/* Fallback: Ensure any token without specific styling gets appropriate text color based on theme */
-html[data-theme="light"] .token:not(.comment):not(.prolog):not(.doctype):not(.cdata),
-html[data-theme-resolved="light"] .token:not(.comment):not(.prolog):not(.doctype):not(.cdata) {
-    color: #212529 !important;
-}
-
-html[data-theme="dark"] .token:not(.comment):not(.prolog):not(.doctype):not(.cdata),
-html[data-theme-resolved="dark"] .token:not(.comment):not(.prolog):not(.doctype):not(.cdata),
-html[data-theme="auto"][data-theme-resolved="dark"] .token:not(.comment):not(.prolog):not(.doctype):not(.cdata) {
-    color: #f7fafc !important;
-}
-
-/* Force override based on theme */
-html[data-theme="light"] pre[class*="language-"] .token,
-html[data-theme-resolved="light"] pre[class*="language-"] .token {
-    color: #212529 !important;
-}
-
+/* Remove text shadow in dark mode for better readability */
+html[data-theme="dark"] pre[class*="language-"] code,
+html[data-theme-resolved="dark"] pre[class*="language-"] code,
 html[data-theme="dark"] pre[class*="language-"] .token,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token,
-html[data-theme="auto"][data-theme-resolved="dark"] pre[class*="language-"] .token {
-    color: #f7fafc !important;
-}
-
-/* Light theme syntax colors */
-html[data-theme="light"] pre[class*="language-"] .token.comment,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.comment,
-html[data-theme="light"] pre[class*="language-"] .token.prolog,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.prolog,
-html[data-theme="light"] pre[class*="language-"] .token.doctype,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.doctype,
-html[data-theme="light"] pre[class*="language-"] .token.cdata,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.cdata {
-    color: #6a737d !important;
-}
-
-html[data-theme="light"] pre[class*="language-"] .token.property,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.property,
-html[data-theme="light"] pre[class*="language-"] .token.tag,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.tag,
-html[data-theme="light"] pre[class*="language-"] .token.boolean,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.boolean,
-html[data-theme="light"] pre[class*="language-"] .token.number,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.number,
-html[data-theme="light"] pre[class*="language-"] .token.constant,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.constant,
-html[data-theme="light"] pre[class*="language-"] .token.symbol,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.symbol,
-html[data-theme="light"] pre[class*="language-"] .token.deleted,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.deleted,
-html[data-theme="light"] pre[class*="language-"] .token.operator,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.operator,
-html[data-theme="light"] pre[class*="language-"] .token.entity,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.entity,
-html[data-theme="light"] pre[class*="language-"] .token.url,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.url,
-html[data-theme="light"] pre[class*="language-"] .token.atrule,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.atrule,
-html[data-theme="light"] pre[class*="language-"] .token.attr-value,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.attr-value,
-html[data-theme="light"] pre[class*="language-"] .token.keyword,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.keyword {
-    color: #d73a49 !important;
-}
-
-html[data-theme="light"] pre[class*="language-"] .token.selector,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.selector,
-html[data-theme="light"] pre[class*="language-"] .token.attr-name,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.attr-name,
-html[data-theme="light"] pre[class*="language-"] .token.string,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.string,
-html[data-theme="light"] pre[class*="language-"] .token.char,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.char,
-html[data-theme="light"] pre[class*="language-"] .token.builtin,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.builtin,
-html[data-theme="light"] pre[class*="language-"] .token.inserted,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.inserted {
-    color: #032f62 !important;
-}
-
-html[data-theme="light"] pre[class*="language-"] .token.function,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.function,
-html[data-theme="light"] pre[class*="language-"] .token.class-name,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.class-name,
-html[data-theme="light"] pre[class*="language-"] .token.namespace,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.namespace {
-    color: #6f42c1 !important;
-}
-
-html[data-theme="light"] pre[class*="language-"] .token.regex,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.regex,
-html[data-theme="light"] pre[class*="language-"] .token.important,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.important,
-html[data-theme="light"] pre[class*="language-"] .token.variable,
-html[data-theme-resolved="light"] pre[class*="language-"] .token.variable {
-    color: #e36209 !important;
-}
-
-/* Dark theme syntax colors */
-html[data-theme="dark"] pre[class*="language-"] .token.comment,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.comment,
-html[data-theme="dark"] pre[class*="language-"] .token.prolog,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.prolog,
-html[data-theme="dark"] pre[class*="language-"] .token.doctype,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.doctype,
-html[data-theme="dark"] pre[class*="language-"] .token.cdata,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.cdata {
-    color: #a0aec0 !important;
-}
-
-html[data-theme="dark"] pre[class*="language-"] .token.property,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.property,
-html[data-theme="dark"] pre[class*="language-"] .token.tag,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.tag,
-html[data-theme="dark"] pre[class*="language-"] .token.boolean,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.boolean,
-html[data-theme="dark"] pre[class*="language-"] .token.number,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.number,
-html[data-theme="dark"] pre[class*="language-"] .token.constant,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.constant,
-html[data-theme="dark"] pre[class*="language-"] .token.symbol,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.symbol,
-html[data-theme="dark"] pre[class*="language-"] .token.deleted,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.deleted,
-html[data-theme="dark"] pre[class*="language-"] .token.operator,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.operator,
-html[data-theme="dark"] pre[class*="language-"] .token.entity,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.entity,
-html[data-theme="dark"] pre[class*="language-"] .token.url,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.url,
-html[data-theme="dark"] pre[class*="language-"] .token.atrule,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.atrule,
-html[data-theme="dark"] pre[class*="language-"] .token.attr-value,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.attr-value,
-html[data-theme="dark"] pre[class*="language-"] .token.keyword,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.keyword {
-    color: #f56565 !important;
-}
-
-html[data-theme="dark"] pre[class*="language-"] .token.selector,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.selector,
-html[data-theme="dark"] pre[class*="language-"] .token.attr-name,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.attr-name,
-html[data-theme="dark"] pre[class*="language-"] .token.string,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.string,
-html[data-theme="dark"] pre[class*="language-"] .token.char,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.char,
-html[data-theme="dark"] pre[class*="language-"] .token.builtin,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.builtin,
-html[data-theme="dark"] pre[class*="language-"] .token.inserted,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.inserted {
-    color: #68d391 !important;
-}
-
-html[data-theme="dark"] pre[class*="language-"] .token.function,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.function,
-html[data-theme="dark"] pre[class*="language-"] .token.class-name,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.class-name,
-html[data-theme="dark"] pre[class*="language-"] .token.namespace,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.namespace {
-    color: #90cdf4 !important;
-}
-
-html[data-theme="dark"] pre[class*="language-"] .token.regex,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.regex,
-html[data-theme="dark"] pre[class*="language-"] .token.important,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.important,
-html[data-theme="dark"] pre[class*="language-"] .token.variable,
-html[data-theme-resolved="dark"] pre[class*="language-"] .token.variable {
-    color: #fbb6ce !important;
+html[data-theme-resolved="dark"] pre[class*="language-"] .token {
+    text-shadow: none !important;
 }
 
 /* Code header container with theme support */
@@ -724,29 +367,6 @@ code[class*="language-"] {
     background: transparent !important;
 }
 
-/* Light theme token colors (default) */
-:root,
-html[data-theme="light"],
-html[data-theme-resolved="light"] {
-    --token-comment: #6a737d;
-    --token-punctuation: #393a34;
-    --token-property: #d73a49;
-    --token-string: #032f62;
-    --token-function: #6f42c1;
-    --token-variable: #e36209;
-}
-
-/* Dark theme token colors */
-html[data-theme="dark"],
-html[data-theme-resolved="dark"] {
-    --token-comment: #a0aec0;
-    --token-punctuation: #cbd5e0;
-    --token-property: #f56565;
-    --token-string: #68d391;
-    --token-function: #90cdf4;
-    --token-variable: #fbb6ce;
-}
-
 /* Remove text shadow in dark mode to prevent double rendering */
 html[data-theme="dark"] pre[class*="language-"],
 html[data-theme-resolved="dark"] pre[class*="language-"],
@@ -757,77 +377,12 @@ html[data-theme-resolved="dark"] pre[class*="language-"] .token {
     text-shadow: none !important;
 }
 
-/* Auto theme - dark preference */
-@media (prefers-color-scheme: dark) {
-    html[data-theme="auto"] {
-        --token-comment: #a0aec0;
-        --token-punctuation: #cbd5e0;
-        --token-property: #f56565;
-        --token-string: #68d391;
-        --token-function: #90cdf4;
-        --token-variable: #fbb6ce;
-    }
-}
-
-/* Support for auto theme mode */
-html.auto-dark-theme pre[class*="language-"] .token,
-html[data-theme="auto"][data-theme-resolved="dark"] pre[class*="language-"] .token {
-    color: #f7fafc !important;
-}
-
+/* Support for auto theme mode - minimal overrides */
+html[data-theme="auto"][data-theme-resolved="dark"] pre[class*="language-"],
+html[data-theme="auto"][data-theme-resolved="dark"] code[class*="language-"],
 html.auto-dark-theme pre[class*="language-"],
-html.auto-dark-theme code[class*="language-"],
-html.auto-dark-theme pre[class*="language-"] .token {
+html.auto-dark-theme code[class*="language-"] {
     text-shadow: none !important;
-}
-
-/* Apply token colors using CSS custom properties */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-    color: var(--token-comment) !important;
-}
-
-.token.punctuation {
-    color: var(--token-punctuation) !important;
-}
-
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted,
-.token.operator,
-.token.entity,
-.token.url,
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-    color: var(--token-property) !important;
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-    color: var(--token-string) !important;
-}
-
-.token.function,
-.token.class-name,
-.token.namespace {
-    color: var(--token-function) !important;
-}
-
-.token.regex,
-.token.important,
-.token.variable {
-    color: var(--token-variable) !important;
 }
 
 /* Font variant classes for easy switching */

@@ -6,9 +6,8 @@
     <title>@ViewData["Title"] - Web</title>
     <script type="importmap"></script>    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons for theme toggle -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <!-- PrismJS CSS from CDN - using standard theme with custom overrides -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />    <!-- PrismJS CSS from CDN - will load theme based on user preference -->
+    <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
     <!-- Custom site CSS with proper theme and code highlighting overrides -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
@@ -59,49 +58,42 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
-      <script>
-        // Fix for code highlighting in dark mode
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <script src="~/js/site.js" asp-append-version="true"></script>    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
+    <script>
+        // Fix for code highlighting in theme changes
         document.addEventListener('DOMContentLoaded', function() {
-            // Ensure dark mode code blocks don't have text-shadow and proper styling
-            function updateCodeBlocksStyling() {
-                const isDarkTheme = document.documentElement.getAttribute('data-theme-resolved') === 'dark';
-                const codeBlocks = document.querySelectorAll('pre[class*="language-"], code[class*="language-"]');
-                const tokens = document.querySelectorAll('.token');
-                
-                // Set text-shadow and ensure proper contrast
-                codeBlocks.forEach(block => {
-                    if (isDarkTheme) {
-                        block.style.textShadow = 'none';
-                        block.style.color = '#f7fafc';
-                    } else {
-                        block.style.textShadow = '';
-                        block.style.color = '';  // Reset to CSS default
-                    }
-                });
-                
-                // Handle tokens in auto theme mode
-                if (document.documentElement.getAttribute('data-theme') === 'auto') {
-                    if (isDarkTheme) {
-                        document.documentElement.classList.add('auto-dark-theme');
-                    } else {
-                        document.documentElement.classList.remove('auto-dark-theme');
-                    }
-                }
-                
-                // Re-highlight to ensure proper styling
-                if (window.Prism) {
-                    Prism.highlightAll();
-                }
+            // Initial theme setup based on current setting
+            const resolvedTheme = document.documentElement.getAttribute('data-theme-resolved');
+            const prismThemeLink = document.getElementById('prism-theme');
+            
+            if (prismThemeLink && resolvedTheme) {
+                const themeUrl = resolvedTheme === 'dark' 
+                    ? 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'
+                    : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
+                prismThemeLink.href = themeUrl;
             }
             
-            // Call initially and when theme changes
-            updateCodeBlocksStyling();
+            // Initial highlight
+            if (window.Prism) {
+                setTimeout(() => Prism.highlightAll(), 100);
+            }
             
-            // Listen for theme change events
-            document.addEventListener('theme-changed', updateCodeBlocksStyling);
+            // Auto mode special case - ensure system preference changes are handled
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (document.documentElement.getAttribute('data-theme') === 'auto') {
+                    // Update Prism theme on system preference change
+                    const isDark = e.matches;
+                    if (prismThemeLink) {
+                        prismThemeLink.href = isDark 
+                            ? 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'
+                            : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
+                        
+                        if (window.Prism) {
+                            setTimeout(() => Prism.highlightAll(), 100);
+                        }
+                    }
+                }
+            });
         });
     </script>
 
