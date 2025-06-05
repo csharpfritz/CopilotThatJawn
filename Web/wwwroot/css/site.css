@@ -111,26 +111,37 @@ pre[class*="language-"] code {
     color: #e36209 !important;
 }
 
+/* Code header container */
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
 /* Language label */
-pre[class*="language-"]:before {
-    content: attr(data-language);
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+.language-label {
     background: #6c757d;
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
     text-transform: uppercase;
-    z-index: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    /* Debug styling to identify any issues */
+    border: 1px solid transparent;
+    position: relative;
+    display: inline-block;
+    /* Ensure no text shadows or effects */
+    text-shadow: none;
+    filter: none;
 }
 
 /* Copy button styling */
 .copy-button {
-    position: absolute;
-    top: 0.5rem;
-    right: 4rem;
     background: #007bff;
     color: white;
     border: none;
@@ -138,8 +149,9 @@ pre[class*="language-"]:before {
     border-radius: 0.25rem;
     font-size: 0.75rem;
     cursor: pointer;
-    z-index: 2;
     transition: background-color 0.2s;
+    white-space: nowrap;
+    margin-left: 0.5rem;
 }
 
 .copy-button:hover {
@@ -185,6 +197,23 @@ pre[class*="language-"]:before {
     pre[class*="language-"] {
         background: #2d3748 !important;
         border-color: #4a5568;
+    }
+    
+    .code-header {
+        border-bottom-color: #4a5568;
+    }
+    
+    .language-label {
+        background: #4a5568;
+        color: #f7fafc;
+    }
+    
+    .copy-button {
+        background: #3182ce;
+    }
+    
+    .copy-button:hover {
+        background: #2c5aa0;
     }
     
     pre[class*="language-"] code {
@@ -250,5 +279,23 @@ pre[class*="language-"]:before {
     :not(pre) > code {
         background: #2d3748;
         color: #f7fafc;
+    }
+}
+
+/* Responsive adjustments for code blocks */
+@media (max-width: 576px) {
+    .code-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .copy-button {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+    
+    pre[class*="language-"] {
+        padding: 0.75rem !important;
     }
 }

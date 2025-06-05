@@ -7,11 +7,12 @@ function initializeCopyButtons() {
     const codeBlocks = document.querySelectorAll('pre[class*="language-"]');
     
     codeBlocks.forEach(function(block) {
-        // Skip if copy button already exists
-        if (block.querySelector('.copy-button')) {
+        // Skip if header already exists (prevents duplicates)
+        if (block.querySelector('.code-header')) {
             return;
         }
-          // Extract language from class name
+        
+        // Extract language from class name
         const languageClass = Array.from(block.classList).find(cls => cls.startsWith('language-'));
         if (languageClass) {
             const language = languageClass.replace('language-', '');
@@ -25,7 +26,16 @@ function initializeCopyButtons() {
                 codeElement.classList.add(languageClass);
             }
             
-            // Add copy button
+            // Create a header container for language label and copy button
+            const headerContainer = document.createElement('div');
+            headerContainer.className = 'code-header';
+            
+            // Create language label
+            const languageLabel = document.createElement('span');
+            languageLabel.className = 'language-label';
+            languageLabel.textContent = language.toUpperCase();
+            
+            // Create copy button
             const copyButton = document.createElement('button');
             copyButton.className = 'copy-button';
             copyButton.textContent = 'Copy';
@@ -54,20 +64,27 @@ function initializeCopyButtons() {
                 }
             });
             
-            block.appendChild(copyButton);
+            // Add elements to header container
+            headerContainer.appendChild(languageLabel);
+            headerContainer.appendChild(copyButton);
+            
+            // Insert header at the beginning of the code block
+            block.insertBefore(headerContainer, block.firstChild);
         }
     });
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize copy buttons for code blocks
-    initializeCopyButtons();
-    
-    // Initialize syntax highlighting
+    // Initialize syntax highlighting first
     if (window.Prism) {
         Prism.highlightAll();
     }
+    
+    // Then initialize copy buttons for code blocks
+    setTimeout(() => {
+        initializeCopyButtons();
+    }, 100); // Small delay to ensure Prism is done
 });
 
 // Also initialize when the page is fully loaded (for async content)
@@ -75,6 +92,11 @@ window.addEventListener('load', function() {
     if (window.Prism) {
         Prism.highlightAll();
     }
+    
+    // Re-initialize copy buttons in case new content was loaded
+    setTimeout(() => {
+        initializeCopyButtons();
+    }, 100);
 });
 
 // Re-export for manual testing if needed
