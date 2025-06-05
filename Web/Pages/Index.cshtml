@@ -264,9 +264,6 @@
                 </div>
             </div>
         </div>        <div class="col-lg-4">
-            <div>
-                @await Component.InvokeAsync("NewsletterSignup")
-            </div>
             <div class="mt-4">
                 <h4 class="mb-3"><i class="bi bi-lightning"></i> Random Tip</h4>
                 @await Component.InvokeAsync("RandomTip")
@@ -275,73 +272,4 @@
     </div>
 </div>
 
-<!-- Popular AI Tools Section -->
-@await Component.InvokeAsync("PopularTools")
 
-<!-- Site Sections -->
-<div class="container mb-5">
-    <h2 class="fw-bold mb-4"><i class="bi bi-grid-3x3-gap"></i> Discover More</h2>
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm overflow-hidden h-100">
-                <div class="row g-0 h-100">
-                    <div class="col-md-5 bg-primary d-flex align-items-center justify-content-center text-white">
-                        <div class="p-4 text-center">
-                            <i class="bi bi-journals display-1 mb-3"></i>
-                            <h3>Tutorials</h3>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-body h-100 d-flex flex-column">
-                            <h4 class="card-title">Step-by-Step Guides</h4>
-                            <p class="card-text">Comprehensive tutorials that take you through every step of using AI tools to solve real problems.</p>
-                            <ul class="list-unstyled mt-auto">
-                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Detailed setup instructions</li>
-                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Practical examples</li>
-                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Beginner to expert content</li>
-                            </ul>
-                            <div class="mt-auto">
-                                <a href="#" class="btn btn-primary">Browse Tutorials</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm overflow-hidden h-100">
-                <div class="row g-0 h-100">
-                    <div class="col-md-5 bg-success d-flex align-items-center justify-content-center text-white">
-                        <div class="p-4 text-center">
-                            <i class="bi bi-tools display-1 mb-3"></i>
-                            <h3>Tools</h3>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-body h-100 d-flex flex-column">
-                            <h4 class="card-title">AI Tool Reviews</h4>
-                            <p class="card-text">Detailed reviews and comparisons of the latest AI tools to help you find the right ones for your workflow.</p>
-                            <ul class="list-unstyled mt-auto">
-                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Honest evaluations</li>
-                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Feature comparisons</li>
-                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Pricing breakdowns</li>
-                            </ul>
-                            <div class="mt-auto">
-                                <a href="#" class="btn btn-success">Compare Tools</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Call to Action Section -->
-<div class="container-fluid bg-primary bg-gradient text-white py-5 mb-5">
-    <div class="container text-center">
-        <h2 class="display-5 fw-bold mb-3">Level Up Your AI Skills</h2>
-        <p class="lead fs-4 mb-4">Explore our comprehensive collection of tips, tutorials, and resources to master AI-powered productivity tools.</p>
-        <a asp-page="/Tips/Index" class="btn btn-light btn-lg px-4 py-2">Start Learning</a>
-    </div>
-</div>
