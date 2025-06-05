@@ -167,6 +167,26 @@ Content/
 - End-to-end tests for critical user workflows
 - Performance testing for content-heavy pages
 
+### Development Workflow Best Practices
+
+#### Running and Testing the Application
+- **Prefer `dotnet watch`**: Always use `dotnet watch run` for development instead of manually building, running, stopping, and restarting the application
+- **Hot Reload Benefits**: `dotnet watch` provides automatic rebuilding and browser refresh when files change, significantly improving development efficiency
+- **Recommended Commands**:
+  - `dotnet watch run` - Start the application with hot reload
+  - `dotnet watch test` - Run tests with automatic re-execution on file changes
+  - `dotnet watch build` - Build with automatic rebuilding on changes
+
+#### File Monitoring
+- `dotnet watch` automatically monitors C# files, Razor pages, CSS, JavaScript, and other static assets
+- Changes trigger automatic compilation and browser refresh
+- Reduces context switching and speeds up the development cycle
+
+#### Development Environment Setup
+- Ensure the development environment is configured for optimal `dotnet watch` performance
+- Use the `--verbose` flag for debugging watch issues: `dotnet watch run --verbose`
+- Configure file exclusions in `.csproj` if needed to avoid unnecessary rebuilds
+
 ## Content Strategy
 
 ### Content Types
