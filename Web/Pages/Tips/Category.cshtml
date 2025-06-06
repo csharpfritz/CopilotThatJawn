@@ -204,6 +204,25 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Track category view
+        Analytics.trackCategoryView('@Model.Category');
+
+        // Track difficulty filter usage
+        document.getElementById('difficulty').addEventListener('change', function() {
+            Analytics.trackDifficultyFilter(this.value);
+        });
+
+        // Track tag filter usage
+        document.getElementById('tag').addEventListener('change', function() {
+            if (this.value) {
+                Analytics.trackTagClick(this.value);
+            }
+        });
+    });
+</script>
+
 <style>
 .tip-card {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;

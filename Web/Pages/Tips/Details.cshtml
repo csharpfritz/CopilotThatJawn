@@ -339,4 +339,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Note: Copy-to-clipboard functionality is handled by code-clipboard.js
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+        // Track tip view
+        Analytics.trackTipView('@Model.ViewModel.Tip.Title', '@Model.ViewModel.Tip.Category');
+
+        // Track tag clicks
+        document.querySelectorAll('a[asp-page="/Tips/Tag"]').forEach(function(tag) {
+            tag.addEventListener('click', function() {
+                Analytics.trackTagClick(this.getAttribute('asp-route-tag'));
+            });
+        });
+
+        // Track social shares
+        document.querySelectorAll('.btn[href^="https://x.com"], .btn[href^="https://bsky.app"]').forEach(function(shareBtn) {
+            shareBtn.addEventListener('click', function() {
+                gtag('event', 'share', {
+                    method: this.textContent.trim(),
+                    content_type: 'tip',
+                    item_id: '@Model.ViewModel.Tip.UrlSlug'
+                });
+            });
+        });
+    });
 </script>

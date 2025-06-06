@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IConfiguration Configuration
+<!DOCTYPE html>
 <html lang="en">
 <head>    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,6 +20,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=@Configuration["GoogleAnalytics:MeasurementId"]"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '@Configuration["GoogleAnalytics:MeasurementId"]');
+    </script>
 </head>
 <body>
     <header>
@@ -70,9 +80,8 @@
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="mb-3 text-primary fw-bold border-bottom border-2 border-primary pb-2 d-inline-block">Quick Links</h6><ul class="list-unstyled">
-                        <li class="mb-2"><a asp-page="/About" class="text-decoration-none text-muted hover-primary">About</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Contact</a></li>                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Terms</a></li>
+                    <h6 class="mb-3 text-primary fw-bold border-bottom border-2 border-primary pb-2 d-inline-block">Quick Links</h6><ul class="list-unstyled">                        <li class="mb-2"><a asp-page="/About" class="text-decoration-none text-muted hover-primary">About</a></li>
+                        <li class="mb-2"><a href="mailto:info@copilotthatjawn.com" class="text-decoration-none text-muted hover-primary">Contact</a></li>                        <li class="mb-2"><a asp-page="/Terms" class="text-decoration-none text-muted hover-primary">Terms</a></li>
                         <li class="mb-2"><a asp-page="/Privacy" class="text-decoration-none text-muted hover-primary">Privacy</a></li>
                         <li class="mb-2"><a href="/feed.rss" class="text-decoration-none text-muted hover-primary">RSS Feed</a></li>
                     </ul>
@@ -94,7 +103,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <script src="~/js/site.js" asp-append-version="true"></script>    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
+    <script src="~/js/analytics.js" asp-append-version="true"></script>
     <script>
         // Fix for code highlighting in theme changes
         document.addEventListener('DOMContentLoaded', function() {
