@@ -29,8 +29,9 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseStaticFiles();
-app.MapRazorPages();
+app.MapStaticAssets();
+app.MapRazorPages()
+   .WithStaticAssets();
 app.MapControllers(); // Map controller routes for API endpoints
 
 // Map sitemap and RSS feed endpoints

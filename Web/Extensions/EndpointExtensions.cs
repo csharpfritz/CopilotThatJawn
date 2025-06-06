@@ -36,7 +36,7 @@ public static class EndpointExtensions
             );
             
             // Add URLs for static pages
-            var staticPages = new[] { "/Privacy" };
+            var staticPages = new[] { "/Privacy", "/Contribute" };
             foreach (var page in staticPages)
             {
                 sitemap.Root.Add(
