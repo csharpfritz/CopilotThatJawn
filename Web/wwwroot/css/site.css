@@ -83,6 +83,15 @@ html[data-theme-resolved="dark"] .text-muted {
     color: #cbd5e0 !important;
 }
 
+/* Dark theme text-primary enhancement */
+html[data-theme="dark"] .text-primary,
+html[data-theme-resolved="dark"] .text-primary {
+    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.7),
+                 1px -1px 0 rgba(255, 255, 255, 0.7),
+                -1px 1px 0 rgba(255, 255, 255, 0.7),
+                 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
 html[data-theme="dark"] .card,
 html[data-theme-resolved="dark"] .card {
     background-color: #242424;
@@ -239,6 +248,14 @@ main {
     padding: 2rem 0;
     margin-top: 2rem;
     width: 100%;
+}
+
+/* Footer title styling for dark mode */
+html[data-theme="dark"] .footer h6.text-primary,
+html[data-theme-resolved="dark"] .footer h6.text-primary {
+    color: var(--text-primary) !important;
+    text-shadow: none !important;
+    border-bottom-color: #fff !important;
 }
 
 /* Footer link hover effect */
@@ -653,8 +670,26 @@ pre[class*="language-"]:focus-within {
     color: #004C54;
 }
 
+/* Dark theme override for eagles green text */
+html[data-theme="dark"] .philly-eagles-green,
+html[data-theme-resolved="dark"] .philly-eagles-green {
+    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.7),
+                 1px -1px 0 rgba(255, 255, 255, 0.7),
+                -1px 1px 0 rgba(255, 255, 255, 0.7),
+                 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
 .philly-phillies-red {
     color: #E81828;
+}
+
+/* Dark theme override for phillies red text */
+html[data-theme="dark"] .philly-phillies-red,
+html[data-theme-resolved="dark"] .philly-phillies-red {
+    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.7),
+                 1px -1px 0 rgba(255, 255, 255, 0.7),
+                -1px 1px 0 rgba(255, 255, 255, 0.7),
+                 1px 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 /* Card styles */
@@ -820,4 +855,43 @@ main {
 
 .badge.bg-primary {
     background-color: var(--primary-color) !important;
+}
+
+.header-icon {
+    width: 156px;
+    height: 156px;
+    padding: 1.25rem;
+    background-color: #6f42c1;
+    border-radius: 1.25rem;
+}
+
+/* Brand font styling */
+.brand-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+}
+
+/* Brand title variations */
+.navbar-brand .brand-title {
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+.display-3.brand-title {
+    letter-spacing: -0.02em;
+}
+
+.display-4.brand-title {
+    letter-spacing: -0.02em;
+}
+
+h5.brand-title {
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+/* Ensure brand title color inherits properly in dark mode */
+html[data-theme="dark"] .brand-title,
+html[data-theme-resolved="dark"] .brand-title {
+    color: inherit;
 }

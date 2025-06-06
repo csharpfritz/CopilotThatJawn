@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Test - Copilot That Jawn</title>
+    <!-- Import fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@900&family=Syne:wght@800&family=Source+Code+Pro:wght@900&display=swap" rel="stylesheet">
+    <!-- For Clash Display, we'll use a CDN -->
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6200EE;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8f9fa;
+        }        .font-preview {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .font-preview h2 {
+            color: #666;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .font-display {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .font-details {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        /* Font-specific styles */
+        .space-grotesk {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        .clash-display {
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 700;
+        }
+
+        .dm-sans {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 900;
+        }
+
+        .syne {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+        }
+
+        .source-code-pro {
+            font-family: 'Source Code Pro', monospace;
+            font-weight: 900;
+        }
+
+        /* Header styling */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Font Preview for Copilot That Jawn</h1>
+        <p>Testing different font options with our primary purple (#6200EE)</p>
+    </div>
+
+    <div class="font-preview">
+        <h2>1. Space Grotesk Bold</h2>
+        <p class="font-display space-grotesk">Copilot That Jawn</p>
+        <p class="font-details">Modern, geometric sans-serif with a tech feel. Clean and professional.</p>
+    </div>
+
+    <div class="font-preview">
+        <h2>2. Clash Display Bold</h2>
+        <p class="font-display clash-display">Copilot That Jawn</p>
+        <p class="font-details">Contemporary and bold with distinctive character. Sharp angles for tech appeal.</p>
+    </div>
+
+    <div class="font-preview">
+        <h2>3. DM Sans Black</h2>
+        <p class="font-display dm-sans">Copilot That Jawn</p>
+        <p class="font-details">Modern humanist sans-serif. Great readability with personality.</p>
+    </div>
+
+    <div class="font-preview">
+        <h2>4. Syne Extra Bold</h2>
+        <p class="font-display syne">Copilot That Jawn</p>
+        <p class="font-details">Unique personality with retro-tech vibes. Strong presence.</p>
+    </div>
+
+    <div class="font-preview">
+        <h2>5. Source Code Pro Black</h2>
+        <p class="font-display source-code-pro">Copilot That Jawn</p>
+        <p class="font-details">Tech-focused monospace with personality. Perfect blend of code and character.</p>
+    </div>
+</body>
+</html>

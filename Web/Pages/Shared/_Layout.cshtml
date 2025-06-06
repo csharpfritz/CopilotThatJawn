@@ -1,23 +1,26 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
+<head>    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />    <title>@ViewData["Title"] - Copilot That Jawn</title>
     <meta name="description" content="@(ViewData["Description"] ?? "Your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools.")" />
-    <script type="importmap"></script>    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script type="importmap"></script>
+    <!-- Import Outfit font for brand -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons for theme toggle -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />    <!-- PrismJS CSS from CDN - will load theme based on user preference -->
     <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
     <!-- Custom site CSS with proper theme and code highlighting overrides -->    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-page="/Index">
-                    <i class="bi bi-robot me-2 text-primary"></i>
-                    <span>Copilot That Jawn</span>
+                    <img src="~/img/icon-100.webp" alt="Copilot That Jawn" class="me-2" style="height: 24px; width: auto;">
+                    <span class="brand-title">Copilot That Jawn</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -48,13 +51,12 @@
         <div class="container">
             <div class="row g-4 align-items-start justify-content-between">
                 <div class="col-lg-5">                    <div class="d-flex align-items-center mb-3">
-                        <i class="bi bi-robot me-2 fs-4 text-primary"></i>
-                        <h5 class="mb-0">Copilot That Jawn</h5>
+                        <img src="~/img/icon-100.webp" alt="Copilot That Jawn" class="me-2" style="height: 24px; width: auto;">
+                        <h5 class="mb-0 brand-title">Copilot That Jawn</h5>
                     </div>
                     <p class="text-muted mb-0 pe-lg-4">Expert tips and tricks for Microsoft Copilot, GitHub Copilot, and related AI tools. Level up your workflow with our curated collection of productivity hacks.</p>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="mb-3 text-primary">AI Tools</h6>
+                </div>                <div class="col-lg-3 col-md-6">
+                    <h6 class="mb-3 text-primary fw-bold border-bottom border-2 border-primary pb-2 d-inline-block">AI Tools</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">GitHub Copilot</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Microsoft 365 Copilot</a></li>
@@ -63,7 +65,7 @@
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="mb-3 text-primary">Quick Links</h6>                    <ul class="list-unstyled">
+                    <h6 class="mb-3 text-primary fw-bold border-bottom border-2 border-primary pb-2 d-inline-block">Quick Links</h6><ul class="list-unstyled">
                         <li class="mb-2"><a asp-page="/About" class="text-decoration-none text-muted hover-primary">About</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Contact</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-muted hover-primary">Terms</a></li>
