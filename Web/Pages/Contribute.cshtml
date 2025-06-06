@@ -1,0 +1,193 @@
+@page
+@model ContributeModel
+@{
+    ViewData["Title"] = "Contribute - Copilot That Jawn";
+    ViewData["Description"] = "Learn how to contribute tips, tricks, and insights to Copilot That Jawn by submitting pull requests to our GitHub repository.";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <img src="~/img/icon.webp" alt="Copilot That Jawn Logo" class="header-icon mb-4" />
+                <h1 class="display-4 fw-bold mb-4 brand-title">Contribute to Copilot That Jawn</h1>
+                <p class="lead text-muted">Help the copilot community level up their AI game!</p>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">How to Contribute</h2>
+                    <p>We believe the best insights come from the community. If you've got a killer tip, trick, or insight about AI development tools, we want to hear from you! Contributing to Copilot That Jawn is straightforward - just submit a pull request with your content.</p>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="h5 mb-3"><i class="bi bi-file-earmark-text text-primary me-2"></i>What We're Looking For</h3>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>GitHub Copilot tips and tricks</li>
+                                <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Microsoft 365 Copilot insights</li>
+                                <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Azure AI Services best practices</li>
+                                <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Copilot Studio tutorials</li>
+                                <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>AI productivity workflows</li>
+                                <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Real-world case studies</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="h5 mb-3"><i class="bi bi-gear text-primary me-2"></i>Content Guidelines</h3>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-arrow-right text-primary me-2"></i>Clear, actionable advice</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-primary me-2"></i>Include code examples</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-primary me-2"></i>Beginner to advanced levels</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-primary me-2"></i>Test your examples</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-primary me-2"></i>Proper attribution</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-primary me-2"></i>Philly flavor welcome!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-primary mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h5 mb-0"><i class="bi bi-code-square me-2"></i>Step-by-Step Contribution Process</h3>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-3">
+                            <strong>Fork the Repository</strong><br>
+                            Head over to <a href="https://github.com/csharpfritz/CopilotThatJawn" target="_blank" class="text-primary">github.com/csharpfritz/CopilotThatJawn</a> and fork the repo to your account.
+                        </li>
+                        <li class="mb-3">
+                            <strong>Clone Your Fork</strong><br>
+                            <code class="text-muted">git clone https://github.com/[your-username]/CopilotThatJawn.git</code>
+                        </li>
+                        <li class="mb-3">
+                            <strong>Create a New Branch</strong><br>
+                            <code class="text-muted">git checkout -b add-[your-tip-name]</code>
+                        </li>
+                        <li class="mb-3">
+                            <strong>Add Your Content</strong><br>
+                            Create a new markdown file in the <code>Content/Tips/</code> directory following our format (see below).
+                        </li>
+                        <li class="mb-3">
+                            <strong>Test Locally</strong><br>
+                            Run <code class="text-muted">dotnet watch run --project Web</code> to see how your content looks.
+                        </li>
+                        <li class="mb-3">
+                            <strong>Commit Your Changes</strong><br>
+                            <code class="text-muted">git add . && git commit -m "Add tip: [brief description]"</code>
+                        </li>
+                        <li class="mb-0">
+                            <strong>Submit a Pull Request</strong><br>
+                            Push to your fork and create a pull request with a clear description of your contribution.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="h5 mb-0"><i class="bi bi-file-text me-2"></i>Markdown Format Template</h3>
+                </div>
+                <div class="card-body">
+                    <p>Each tip should be a markdown file with YAML frontmatter. Here's the template to follow:</p>
+                    <pre><code class="language-markdown">---
+title: "Your Tip Title Here"
+slug: "url-friendly-slug"
+category: "GitHub Copilot"  # or "Microsoft 365 Copilot", "Azure AI", etc.
+tags: ["relevant", "tags", "here"]
+difficulty: "Beginner"      # Beginner, Intermediate, or Advanced
+author: "Your Name"
+publishedDate: "2025-01-15"
+lastModified: "2025-01-15"
+description: "Brief description that appears in previews and search results."
+---
+
+# Your Tip Title Here
+
+Brief introduction explaining what this tip covers and why it's useful.
+
+## Main Content
+
+Use clear headings, code examples, and explanations. For example:
+
+```csharp
+// Example code with comments
+public void ExampleMethod()
+{
+    // Your code here
+}
+```
+
+## Pro Tips
+
+- Use bullet points for quick takeaways
+- Include real-world examples
+- Add Philly references if relevant!
+
+Remember to test your examples and make sure they work!</code></pre>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <div class="card h-100 border-success">
+                        <div class="card-body">
+                            <h3 class="h5 text-success mb-3"><i class="bi bi-check-circle me-2"></i>Good Examples</h3>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">✅ "GitHub Copilot Chat: Debugging Like a Pro"</li>
+                                <li class="mb-2">✅ "5 Copilot Shortcuts Every Developer Should Know"</li>
+                                <li class="mb-2">✅ "Building Azure Functions with AI Assistance"</li>
+                                <li class="mb-2">✅ "Prompt Engineering for Better Code Generation"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-warning">
+                        <div class="card-body">
+                            <h3 class="h5 text-warning mb-3"><i class="bi bi-exclamation-triangle me-2"></i>Things to Avoid</h3>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">❌ Overly promotional content</li>
+                                <li class="mb-2">❌ Outdated or untested examples</li>
+                                <li class="mb-2">❌ Copy-paste from documentation</li>
+                                <li class="mb-2">❌ Missing code examples</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mb-5">
+                <h2 class="h4 mb-4">Ready to Contribute?</h2>
+                <p class="mb-4">Join our community of contributors and help make AI development more accessible for everyone!</p>
+                <a href="https://github.com/csharpfritz/CopilotThatJawn" class="btn btn-primary btn-lg me-3" target="_blank">
+                    <i class="bi bi-github me-2"></i>Visit GitHub Repo
+                </a>
+                <a href="https://github.com/csharpfritz/CopilotThatJawn/issues" class="btn btn-outline-primary btn-lg" target="_blank">
+                    <i class="bi bi-chat-dots me-2"></i>Suggest Ideas
+                </a>
+            </div>
+
+            <div class="card border-info">
+                <div class="card-body">
+                    <h3 class="h5 mb-3"><i class="bi bi-question-circle text-info me-2"></i>Questions or Need Help?</h3>
+                    <p class="mb-3">Contributing for the first time? No worries! We're here to help:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-arrow-right text-info me-2"></i>Check out our existing tips for inspiration</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right text-info me-2"></i>Open an issue on GitHub to discuss your idea first</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right text-info me-2"></i>Join the conversation in pull request discussions</li>
+                        <li class="mb-0"><i class="bi bi-arrow-right text-info me-2"></i>Don't be afraid to ask questions - we're all learning!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

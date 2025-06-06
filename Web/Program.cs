@@ -29,8 +29,9 @@ builder.Services.AddRazorPages()
     .AddRazorPagesOptions(options =>
     {
         options.RootDirectory = "/Pages";
-    });
-    
+    })
+    .WithStaticAssets();
+
 builder.Services.AddControllers(); // Add controller support for API endpoints
 builder.Services.AddMvc().AddViewComponentsAsServices(); // Register view components
 
