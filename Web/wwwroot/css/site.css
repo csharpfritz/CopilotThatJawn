@@ -1,14 +1,16 @@
-/* CSS Custom Properties for Theme Management */
-:root {    /* Purple primary color scheme */
+/* Theme Management */
+:root {
+    /* Primary color scheme */
     --primary-color: #6200EE;
     --primary-hover: #5600E8;
     --primary-light: #7F39FB;
     --primary-dark: #5000C9;
     
-    /* Override Bootstrap primary */    --bs-primary: var(--primary-color);
+    /* Bootstrap overrides */
+    --bs-primary: var(--primary-color);
     --bs-primary-rgb: 98, 0, 238;
     
-    /* Light theme colors (default) */
+    /* Light theme colors */
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
     --bg-tertiary: #e9ecef;
@@ -402,16 +404,18 @@ pre[class*="language-"] {
     transition: border-color 0.3s ease;
 }
 
-/* Custom font for code blocks */
+/* Code styling with modern fonts */
 pre[class*="language-"] code,
-code[class*="language-"] {
-    font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, 'Liberation Mono', 'Menlo', Monaco, 'Courier New', monospace;
+code[class*="language-"],
+:not(pre) > code {
+    font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, monospace;
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.6;
     letter-spacing: 0.025em;
-    white-space: pre;
-    font-feature-settings: "liga" 1, "calt" 1; /* Enable ligatures for supported fonts */
+    font-feature-settings: "liga" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Theme-specific adjustments - minimal overrides */

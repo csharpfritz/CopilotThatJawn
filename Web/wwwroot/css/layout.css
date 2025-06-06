@@ -1,13 +1,31 @@
 /* Layout and Footer Styles */
-html, body {
+:root {
+    /* Z-index hierarchy */
+    --z-index-dropdown: 1050;
+    --z-index-sticky: 1020;
+    --z-index-code-copy: 10;
+}
+
+html {
     height: 100%;
-    margin: 0;
+    font-size: 14px;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    margin: 0;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -22,7 +40,7 @@ body {
 main {
     flex: 1 0 auto;
     width: 100%;
-    min-height: calc(100vh - 300px); /* Account for header and footer */
+    padding-bottom: 4rem;
 }
 
 .footer {
@@ -33,4 +51,6 @@ main {
     border-top: 1px solid var(--border-color);
     padding: 2rem 0;
     margin-top: auto;
+    position: static;
+    line-height: 1.5;
 }

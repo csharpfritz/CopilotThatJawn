@@ -1,17 +1,18 @@
 ﻿@inject IConfiguration Configuration
 <!DOCTYPE html>
 <html lang="en">
-<head>    <meta charset="utf-8" />
+<head>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Copilot That Jawn</title>
     <meta name="description" content="@(ViewData["Description"] ?? "Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips.")" />
+    <title>@ViewData["Title"] - Copilot That Jawn</title>
     
-    <!-- XML Feeds -->
+    <!-- Feeds and Sitemap -->
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-    <link rel="alternate" type="application/rss+xml" title="Copilot That Jawn - Latest Tips" href="/feed.rss" />
-    <script type="importmap"></script>
-    <!-- Import Outfit font for brand -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <link rel="alternate" type="application/rss+xml" title="Latest Tips" href="/feed.rss" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons for theme toggle -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />    <!-- PrismJS CSS from CDN - will load theme based on user preference -->
@@ -36,22 +37,21 @@
             <div class="container">                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-page="/Index">
                     <img src="~/img/icon-100.webp" alt="Copilot That Jawn" class="me-2" style="height: 24px; width: auto;">
                     <span class="brand-title">Copilot That Jawn</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                </a>                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                </button>                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">                    
-                    <ul class="navbar-nav">                     
-                        @* <li class="nav-item">
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
                             <a class="nav-link" asp-page="/Tips/Index">Tips</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li> *@
+                            <a class="nav-link" asp-page="/About">About</a>
+                        </li>
                     </ul>
                     
-                    <!-- Theme toggle will be injected here by JavaScript -->
                     <ul class="navbar-nav ms-auto" id="navbarTools">
                         <li class="nav-item" id="themeToggleContainer"></li>
                     </ul>
@@ -94,16 +94,22 @@
                 </div>
             </div>
         </div>
-    </footer><script src="~/lib/jquery/dist/jquery.min.js"></script>
+    </footer>    <!-- Core libraries -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- PrismJS from CDN with comprehensive language support -->
+    
+    <!-- Syntax highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    
+    <!-- Site scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
     <script src="~/js/analytics.js" asp-append-version="true"></script>
     <script>
