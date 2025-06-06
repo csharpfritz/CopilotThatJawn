@@ -43,12 +43,16 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
-
+            type=sha      
+            
       - name: Build and push container
         run: |
-          # Convert comma-separated tags to semicolon-separated for .NET SDK
-          TAGS=$(echo "${{ steps.meta.outputs.tags }}" | tr ',' ';')
+          # Create tag arguments for Docker
+          TAGS=""
+          while IFS= read -r tag; do
+            TAGS="$TAGS -t $tag"
+          done <<< "${{ steps.meta.outputs.tags }}"
+          
           dotnet publish Web/Web.csproj \
             --os linux \
             --arch x64 \
@@ -56,4 +60,4 @@ jobs:
             --self-contained \
             /p:PublishProfile=DefaultContainer \
             /p:ContainerRepository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-            /p:ContainerImageTags="$TAGS"
+            /p:ContainerBuildArgs="$TAGS"
