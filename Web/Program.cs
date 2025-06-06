@@ -6,7 +6,7 @@ using Web.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().WithStaticAssets();
 builder.Services.AddControllers(); // Add controller support for API endpoints
 builder.Services.AddMvc().AddViewComponentsAsServices(); // Register view components
 
@@ -29,7 +29,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.MapRazorPages();
 app.MapControllers(); // Map controller routes for API endpoints
 
