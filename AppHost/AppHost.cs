@@ -1,8 +1,13 @@
 using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.Azure;
 using Projects;
+using AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+// NOTE: The type returned by AddAzureStorage is IResourceBuilder<AzureStorageResource>,
+// but if storage is being cast or wrapped, ensure it is of the correct type for extension methods.
 var storage = builder.AddAzureStorage("azure-storage")
 	.RunAsEmulator(options =>
 	{
@@ -10,7 +15,8 @@ var storage = builder.AddAzureStorage("azure-storage")
 		options.WithLifetime(ContainerLifetime.Persistent);
 	});
 
-var tables = storage.AddTables("tables");
+var tables = storage.AddTables("tables")
+	.WithLoadContentCommand();
 
 var web = builder.AddProject<Web>("web")
 	.WithReference(tables)
