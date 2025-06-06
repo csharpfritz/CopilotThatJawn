@@ -1,4 +1,5 @@
 using Markdig;
+using Microsoft.Extensions.Caching.Memory;
 using System.Text.RegularExpressions;
 using Web.Models;
 using YamlDotNet.Serialization;
@@ -13,14 +14,22 @@ public class ContentService : IContentService
 {
     private readonly ILogger<ContentService> _logger;
     private readonly IWebHostEnvironment _environment;
+    private readonly IMemoryCache _cache;
     private readonly MarkdownPipeline _markdownPipeline;
     private readonly IDeserializer _yamlDeserializer;
-    private List<TipModel> _cachedTips = new();
-    private DateTime _lastRefresh = DateTime.MinValue;
-    private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);    public ContentService(ILogger<ContentService> logger, IWebHostEnvironment environment)
+    private const string TIPS_CACHE_KEY = "content_tips";
+    private static readonly TimeSpan _cacheExpiry = TimeSpan.FromHours(6);
+    
+    public ContentService(
+        ILogger<ContentService> logger, 
+        IWebHostEnvironment environment,
+        IMemoryCache cache)
     {
         _logger = logger;
-        _environment = environment;        // Configure Markdig without syntax highlighting (using Prism.js client-side instead)
+        _environment = environment;
+        _cache = cache;
+        
+        // Configure Markdig without syntax highlighting (using Prism.js client-side instead)
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAutoLinks()
             .UseEmphasisExtras()
@@ -51,23 +60,22 @@ public class ContentService : IContentService
 
     public async Task<List<TipModel>> GetAllTipsAsync()
     {
-        await EnsureCacheIsCurrentAsync();
-        return _cachedTips.OrderByDescending(t => t.PublishedDate).ToList();
+        var tips = await GetTipsFromCacheAsync();
+        return tips.OrderByDescending(t => t.PublishedDate).ToList();
     }
 
     public async Task<TipModel?> GetTipBySlugAsync(string slug)
     {
-        await EnsureCacheIsCurrentAsync();
-        return _cachedTips.FirstOrDefault(t => 
+        var tips = await GetTipsFromCacheAsync();
+        return tips.FirstOrDefault(t => 
             t.UrlSlug.Equals(slug, StringComparison.OrdinalIgnoreCase) ||
             t.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
     }
 
     public async Task<List<TipModel>> SearchTipsAsync(TipSearchRequest request)
     {
-        await EnsureCacheIsCurrentAsync();
-        
-        var query = _cachedTips.AsQueryable();
+        var tips = await GetTipsFromCacheAsync();
+        var query = tips.AsQueryable();
 
         // Filter by category
         if (!string.IsNullOrEmpty(request.Category))
@@ -103,18 +111,18 @@ public class ContentService : IContentService
 
         // Apply pagination
         var totalCount = query.Count();
-        var tips = query
+        var results = query
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToList();
 
-        return tips;
+        return results;
     }
 
     public async Task<List<string>> GetCategoriesAsync()
     {
-        await EnsureCacheIsCurrentAsync();
-        return _cachedTips
+        var tips = await GetTipsFromCacheAsync();
+        return tips
             .Select(t => t.Category)
             .Where(c => !string.IsNullOrEmpty(c))
             .Distinct()
@@ -124,8 +132,8 @@ public class ContentService : IContentService
 
     public async Task<List<string>> GetTagsAsync()
     {
-        await EnsureCacheIsCurrentAsync();
-        return _cachedTips
+        var tips = await GetTipsFromCacheAsync();
+        return tips
             .SelectMany(t => t.Tags)
             .Where(tag => !string.IsNullOrEmpty(tag))
             .Distinct()
@@ -135,9 +143,9 @@ public class ContentService : IContentService
 
     public async Task<List<TipModel>> GetRelatedTipsAsync(TipModel tip, int count = 3)
     {
-        await EnsureCacheIsCurrentAsync();
+        var tips = await GetTipsFromCacheAsync();
         
-        var relatedTips = _cachedTips
+        var relatedTips = tips
             .Where(t => t.Slug != tip.Slug)
             .Select(t => new
             {
@@ -179,9 +187,15 @@ public class ContentService : IContentService
                 }
             }
 
-            _cachedTips = tips;
-            _lastRefresh = DateTime.UtcNow;
-            
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(_cacheExpiry)
+                .SetPriority(CacheItemPriority.Normal)
+                .RegisterPostEvictionCallback((key, value, reason, state) =>
+                {
+                    _logger.LogInformation("Content cache evicted. Reason: {Reason}", reason);
+                });
+
+            _cache.Set(TIPS_CACHE_KEY, tips, cacheEntryOptions);
             _logger.LogInformation("Content cache refreshed. Loaded {Count} tips", tips.Count);
         }
         catch (Exception ex)
@@ -189,16 +203,17 @@ public class ContentService : IContentService
             _logger.LogError(ex, "Error refreshing content cache");
             throw;
         }
-    }
-
-    private async Task EnsureCacheIsCurrentAsync()
+    }    private async Task<List<TipModel>> GetTipsFromCacheAsync()
     {
-        if (_lastRefresh == DateTime.MinValue || DateTime.UtcNow - _lastRefresh > _cacheExpiry)
+        if (_cache.TryGetValue(TIPS_CACHE_KEY, out List<TipModel>? tips))
         {
-            await RefreshContentAsync();
+            return tips ?? new List<TipModel>();
         }
+        
+        await RefreshContentAsync();
+        return _cache.Get<List<TipModel>>(TIPS_CACHE_KEY) ?? new List<TipModel>();
     }
-
+    
     private string GetContentPath()
     {
         // Look for Content directory in the solution root

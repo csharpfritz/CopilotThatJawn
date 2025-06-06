@@ -11,14 +11,14 @@
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="application/rss+xml" title="Latest Tips" href="/feed.rss" />
     
-    <!-- Fonts -->
+    <!-- Fonts and External CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- Bootstrap Icons for theme toggle -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />    <!-- PrismJS CSS from CDN - will load theme based on user preference -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
     <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
-    <!-- Custom site CSS with proper theme and code highlighting overrides -->    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <!-- Bundled and minified site CSS -->
+    <link rel="stylesheet" href="~/css/bundle.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 
@@ -111,10 +111,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
     
-    <!-- Site scripts -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
-    <script src="~/js/analytics.js" asp-append-version="true"></script>
+    <!-- Bundled and minified site scripts -->
+    <script src="~/js/bundle.min.js" asp-append-version="true"></script>
     <script>
         // Fix for code highlighting in theme changes
         document.addEventListener('DOMContentLoaded', function() {
