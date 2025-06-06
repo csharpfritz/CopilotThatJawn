@@ -47,13 +47,13 @@ jobs:
 
       - name: Build and push container
         run: |
-      - name: Build and push container
-        run: |
-         dotnet publish Web/Web.csproj \
-         --os linux \
-         --arch x64 \
-         -c Release \
-         --self-contained \
-         /p:PublishProfile=DefaultContainer \
-         /p:ContainerImageName=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-         /p:ContainerImageTags='${{ steps.meta.outputs.tags }}'
+          # Convert comma-separated tags to semicolon-separated for .NET SDK
+          TAGS=$(echo "${{ steps.meta.outputs.tags }}" | tr ',' ';')
+          dotnet publish Web/Web.csproj \
+            --os linux \
+            --arch x64 \
+            -c Release \
+            --self-contained \
+            /p:PublishProfile=DefaultContainer \
+            /p:ContainerRepository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            /p:ContainerImageTags="$TAGS"
