@@ -1,6 +1,5 @@
 ---
 title: "Azure AI Services Integration Quick Start"
-slug: "azure-ai-services-integration"
 category: "Azure AI"
 tags: ["azure", "ai-services", "integration", "apis", "cloud"]
 difficulty: "Advanced"

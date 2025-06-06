@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Web.Models;
+using Shared;
 using Web.Services;
 
 namespace Web.Pages.Tips;

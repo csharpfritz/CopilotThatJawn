@@ -1,9 +1,10 @@
 using Markdig;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.RegularExpressions;
-using Web.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using Azure.Data.Tables;
+using Shared;
 
 namespace Web.Services;
 
@@ -17,18 +18,20 @@ public class ContentService : IContentService
     private readonly IMemoryCache _cache;
     private readonly MarkdownPipeline _markdownPipeline;
     private readonly IDeserializer _yamlDeserializer;
+    private readonly TableClient _tableClient;
     private const string TIPS_CACHE_KEY = "content_tips";
     private static readonly TimeSpan _cacheExpiry = TimeSpan.FromHours(6);
     
     public ContentService(
         ILogger<ContentService> logger, 
         IWebHostEnvironment environment,
-        IMemoryCache cache)
+        IMemoryCache cache,
+        TableServiceClient tableServiceClient)
     {
         _logger = logger;
         _environment = environment;
         _cache = cache;
-        
+
         // Configure Markdig without syntax highlighting (using Prism.js client-side instead)
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAutoLinks()
@@ -56,6 +59,9 @@ public class ContentService : IContentService
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .IgnoreUnmatchedProperties()
             .Build();
+
+        // Initialize Azure Table Client
+        _tableClient = tableServiceClient.GetTableClient("content");
     }
 
     public async Task<List<TipModel>> GetAllTipsAsync()
@@ -68,8 +74,7 @@ public class ContentService : IContentService
     {
         var tips = await GetTipsFromCacheAsync();
         return tips.FirstOrDefault(t => 
-            t.UrlSlug.Equals(slug, StringComparison.OrdinalIgnoreCase) ||
-            t.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+            t.UrlSlug.Equals(slug, StringComparison.OrdinalIgnoreCase));
     }
 
     public async Task<List<TipModel>> SearchTipsAsync(TipSearchRequest request)
@@ -146,7 +151,7 @@ public class ContentService : IContentService
         var tips = await GetTipsFromCacheAsync();
         
         var relatedTips = tips
-            .Where(t => t.Slug != tip.Slug)
+            .Where(t => t.UrlSlug != tip.UrlSlug)
             .Select(t => new
             {
                 Tip = t,
@@ -167,25 +172,7 @@ public class ContentService : IContentService
         
         try
         {
-            var contentPath = GetContentPath();
-            var tipFiles = Directory.GetFiles(contentPath, "*.md", SearchOption.AllDirectories);
-            var tips = new List<TipModel>();
-
-            foreach (var filePath in tipFiles)
-            {
-                try
-                {
-                    var tip = await ParseMarkdownFileAsync(filePath);
-                    if (tip != null)
-                    {
-                        tips.Add(tip);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error parsing file {FilePath}", filePath);
-                }
-            }
+            var tips = await GetTipsFromAzureTableAsync();
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(_cacheExpiry)
@@ -203,86 +190,51 @@ public class ContentService : IContentService
             _logger.LogError(ex, "Error refreshing content cache");
             throw;
         }
-    }    private async Task<List<TipModel>> GetTipsFromCacheAsync()
+    }
+
+    private async Task<List<TipModel>> GetTipsFromAzureTableAsync()
+    {
+        var tips = new List<TipModel>();
+
+        await foreach (var entity in _tableClient.QueryAsync<TableEntity>())
+        {
+            try
+            {
+                var tip = new TipModel
+                {
+                    Title = entity.GetString("Title"),
+                    Description = entity.GetString("Description"),
+                    Content = entity.GetString("Content"),
+                    Category = entity.GetString("Category"),
+                    Tags = entity.GetString("Tags")?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+                    PublishedDate = entity.GetDateTime("PublishedDate") ?? DateTime.UtcNow,
+                    Author = entity.GetString("Author"),
+                    Difficulty = entity.GetString("Difficulty")
+                 
+                };
+
+                tips.Add(tip);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error parsing entity from Azure Table");
+            }
+        }
+
+        return tips;
+    }
+
+    private async Task<List<TipModel>> GetTipsFromCacheAsync()
     {
         if (_cache.TryGetValue(TIPS_CACHE_KEY, out List<TipModel>? tips))
         {
             return tips ?? new List<TipModel>();
         }
-        
-        await RefreshContentAsync();
-        return _cache.Get<List<TipModel>>(TIPS_CACHE_KEY) ?? new List<TipModel>();
-    }
-    
-    private string GetContentPath()
-    {
-        // Look for Content directory in the solution root
-        var webRoot = _environment.ContentRootPath;
-        var solutionRoot = Directory.GetParent(webRoot)?.FullName;
-        
-        if (solutionRoot != null)
-        {
-            var contentPath = Path.Combine(solutionRoot, "Content", "Tips");
-            if (Directory.Exists(contentPath))
-            {
-                return contentPath;
-            }
-        }
 
-        // Fallback to relative path
-        var fallbackPath = Path.Combine(webRoot, "..", "Content", "Tips");
-        return Path.GetFullPath(fallbackPath);
-    }    private async Task<TipModel?> ParseMarkdownFileAsync(string filePath)
-    {
-        var content = await File.ReadAllTextAsync(filePath);
-        var fileName = Path.GetFileNameWithoutExtension(filePath);
+        tips = await GetTipsFromAzureTableAsync();
+        _cache.Set(TIPS_CACHE_KEY, tips, _cacheExpiry);
 
-        // Extract frontmatter and content
-        var frontmatterMatch = Regex.Match(content, @"^---\s*\n(.*?)\n---\s*\n(.*)", 
-            RegexOptions.Singleline | RegexOptions.IgnoreCase);
-
-        if (!frontmatterMatch.Success)
-        {
-            _logger.LogWarning("No frontmatter found in file {FileName}", fileName);
-            return null;
-        }
-
-        var yamlContent = frontmatterMatch.Groups[1].Value;
-        var markdownContent = frontmatterMatch.Groups[2].Value;
-
-        try
-        {            // Parse YAML frontmatter
-            var metadata = _yamlDeserializer.Deserialize<Dictionary<string, object>>(yamlContent);
-            
-            // Convert markdown to HTML with syntax highlighting support
-            var htmlContent = Markdown.ToHtml(markdownContent, _markdownPipeline);
-            
-            // Post-process to ensure proper CSS classes for syntax highlighting
-            htmlContent = PostProcessCodeBlocks(htmlContent);
-            
-            // Create tip model
-            var tip = new TipModel
-            {
-                Title = GetMetadataValue<string>(metadata, "title") ?? "Untitled",
-                Slug = GetMetadataValue<string>(metadata, "slug") ?? fileName,
-                Category = GetMetadataValue<string>(metadata, "category") ?? "General",
-                Tags = ParseTags(GetMetadataValue<object>(metadata, "tags")),
-                Difficulty = GetMetadataValue<string>(metadata, "difficulty") ?? "Beginner",
-                Author = GetMetadataValue<string>(metadata, "author") ?? "Unknown",
-                PublishedDate = ParseDate(GetMetadataValue<object>(metadata, "publishedDate")),
-                LastModified = ParseDate(GetMetadataValue<object>(metadata, "lastModified")),
-                Description = GetMetadataValue<string>(metadata, "description") ?? "",
-                Content = htmlContent,
-                FileName = fileName
-            };
-
-            return tip;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error parsing metadata for file {FileName}", fileName);
-            return null;
-        }
+        return tips;
     }
 
     private T? GetMetadataValue<T>(Dictionary<string, object> metadata, string key)
@@ -358,16 +310,18 @@ public class ContentService : IContentService
             score += 2;
 
         return score;
-    }    private string PostProcessCodeBlocks(string htmlContent)
-    {
-        // Ensure proper CSS classes for Prism.js syntax highlighting
-        // Handle fenced code blocks with language specification
-        
-        // Pattern 1: <pre><code class="language-xxx"> -> <pre class="language-xxx"><code class="language-xxx">
-        var pattern1 = @"<pre><code class=""language-(\w+)"">";
-        var replacement1 = @"<pre class=""language-$1""><code class=""language-$1"">";
-        htmlContent = Regex.Replace(htmlContent, pattern1, replacement1);
-        
-        return htmlContent;
     }
+
+	private string PostProcessCodeBlocks(string htmlContent)
+	{
+		// Ensure proper CSS classes for Prism.js syntax highlighting
+		// Handle fenced code blocks with language specification
+
+		// Pattern 1: <pre><code class="language-xxx"> -> <pre class="language-xxx"><code class="language-xxx">
+		var pattern1 = @"<pre><code class=""language-(\w+)"">";
+		var replacement1 = @"<pre class=""language-$1""><code class=""language-$1"">";
+		htmlContent = Regex.Replace(htmlContent, pattern1, replacement1);
+
+		return htmlContent;
+	}
 }

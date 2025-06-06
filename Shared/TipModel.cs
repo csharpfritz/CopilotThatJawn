@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models;
+namespace Shared;
 
 /// <summary>
 /// Represents a tip/article with metadata and content
@@ -8,7 +8,6 @@ namespace Web.Models;
 public class TipModel
 {
     public string Title { get; set; } = string.Empty;
-    public string Slug { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public List<string> Tags { get; set; } = new();
     public string Difficulty { get; set; } = string.Empty;
@@ -23,15 +22,20 @@ public class TipModel
     /// Gets the reading time estimate in minutes
     /// </summary>
     public int ReadingTimeMinutes => Math.Max(1, Content.Split(' ').Length / 200);
-    
-    /// <summary>
-    /// Gets a URL-friendly version of the title
-    /// </summary>
-    public string UrlSlug => !string.IsNullOrEmpty(Slug) ? Slug : 
-        Title.ToLowerInvariant()
-             .Replace(" ", "-")
-             .Replace("'", "")
-             .Replace("\"", "");
+
+	/// <summary>
+	/// Gets a URL-friendly version of the title
+	/// </summary>
+	public string UrlSlug =>
+			Title.ToLowerInvariant()
+					 .Replace(" ", "-")
+					 .Replace("'", "")
+					 .Replace("\"", "")
+					 .Replace(".", "")
+					 .Replace(",", "")
+					 .Replace("?", "")
+					 .Replace("!", "")
+					 .Replace("&", "and");
 }
 
 /// <summary>

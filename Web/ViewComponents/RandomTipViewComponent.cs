@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 using Web.Models;
 using Web.Services;
 
@@ -24,8 +25,9 @@ namespace Web.ViewComponents
                 if (tips.Any())
                 {
                     var random = new Random();
-                    var randomTip = tips[random.Next(tips.Count)];
-                    return View(randomTip);
+                    var tipModel = tips[random.Next(tips.Count)];
+                    var randomTipModel = new RandomTipModel(tipModel);
+                    return View(randomTipModel);
                 }
                 
                 return View(null);

@@ -1,6 +1,5 @@
 ---
 title: "Multi-Language Code Examples for AI Development"
-slug: "multi-language-ai-development"
 category: "Development"
 tags: ["csharp", "javascript", "python", "powershell", "ai", "examples"]
 difficulty: "Intermediate"

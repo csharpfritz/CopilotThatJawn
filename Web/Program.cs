@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
+using Shared;
 using Web.Extensions;
-using Web.Models;
 using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddAzureTableClient("tables");
 
 // Add WebOptimizer services
 builder.Services.AddWebOptimizer(pipeline =>

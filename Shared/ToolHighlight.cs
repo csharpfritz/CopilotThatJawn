@@ -1,4 +1,4 @@
-namespace Web.Models;
+namespace Shared;
 
 public class ToolHighlight
 {

@@ -1,4 +1,4 @@
-using Web.Models;
+using Shared;
 
 namespace Web.Services;
 

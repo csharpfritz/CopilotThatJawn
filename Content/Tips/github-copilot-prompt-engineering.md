@@ -1,6 +1,5 @@
 ---
 title: "GitHub Copilot Prompt Engineering Best Practices"
-slug: "github-copilot-prompt-engineering"
 category: "GitHub Copilot"
 tags: ["prompt-engineering", "best-practices", "productivity"]
 difficulty: "Beginner"

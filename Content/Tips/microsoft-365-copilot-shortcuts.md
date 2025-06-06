@@ -1,6 +1,5 @@
 ---
 title: "Microsoft 365 Copilot Power User Shortcuts"
-slug: "microsoft-365-copilot-shortcuts"
 category: "Microsoft 365 Copilot"
 tags: ["shortcuts", "productivity", "office-365", "power-user"]
 difficulty: "Intermediate"
