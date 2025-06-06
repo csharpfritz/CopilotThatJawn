@@ -97,6 +97,33 @@ Content/
 - Modern CSS with CSS Grid and Flexbox
 - Minimal JavaScript, prefer vanilla JS over heavy frameworks
 
+### Code Formatting Guidelines
+- HTML block-level elements must start on a new line
+  ```html
+  <div>
+    <p>
+      Content here
+    </p>
+    <section>
+      <h2>Heading</h2>
+      <p>More content</p>
+    </section>
+  </div>
+  ```
+- C# statements must start on a new line, including after control flow keywords
+  ```csharp
+  if (condition)
+  {
+      DoSomething();
+      AnotherStatement();
+  }
+  
+  foreach (var item in items)
+  {
+      ProcessItem(item);
+  }
+  ```
+
 ### Database Design
 - Use Entity Framework Core with Code First approach
 - Implement proper indexing for search functionality
