@@ -47,11 +47,13 @@ jobs:
 
       - name: Build and push container
         run: |
-          dotnet publish Web/Web.csproj `
-            --os linux `
-            --arch x64 `
-            -c Release `
-            --self-contained `
-            /p:PublishProfile=DefaultContainer `
-            /p:ContainerImageName=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} `
-            /p:ContainerImageTags='${{ steps.meta.outputs.tags }}'
+      - name: Build and push container
+        run: |
+         dotnet publish Web/Web.csproj \
+         --os linux \
+         --arch x64 \
+         -c Release \
+         --self-contained \
+         /p:PublishProfile=DefaultContainer \
+         /p:ContainerImageName=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+         /p:ContainerImageTags='${{ steps.meta.outputs.tags }}'
