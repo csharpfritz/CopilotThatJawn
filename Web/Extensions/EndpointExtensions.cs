@@ -112,20 +112,27 @@ public static class EndpointExtensions
     public static void MapRssFeedEndpoint(this WebApplication app)
     {
         app.MapGet("/feed.rss", async (HttpContext context, IContentService contentService) =>
-        {
-            // Create the RSS feed XML document
+        {            // Create the RSS feed XML document
             var rss = new XDocument(
                 new XDeclaration("1.0", "utf-8", null),
+                new XProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"/xsl/rss.xsl\""),
                 new XElement("rss",
                     new XAttribute("version", "2.0"),
                     new XElement("channel",
-                        // Feed metadata                        new XElement("title", "Copilot That Jawn - Latest Tips"),
+                        // Feed metadata
+                        new XElement("title", "Copilot That Jawn - Latest Tips"),
                         new XElement("link", $"{context.Request.Scheme}://{context.Request.Host}"),
                         new XElement("description", "Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips and tricks."),
                         new XElement("language", "en-us"),
                         new XElement("copyright", $"Copyright {DateTime.Now.Year}, Copilot That Jawn"),
                         new XElement("lastBuildDate", DateTime.UtcNow.ToString("r")),
-                        new XElement("generator", "Copilot That Jawn")
+                        new XElement("generator", "Copilot That Jawn"),
+                        // Add RSS feed icon
+                        new XElement("image",
+                            new XElement("url", $"{context.Request.Scheme}://{context.Request.Host}/img/icon-with-bg.webp"),
+                            new XElement("title", "Copilot That Jawn"),
+                            new XElement("link", $"{context.Request.Scheme}://{context.Request.Host}")
+                        )
                     )
                 )
             );
@@ -151,10 +158,18 @@ public static class EndpointExtensions
                         tip.Tags.Select(tag => new XElement("category", tag))
                     )
                 );
+            }            // Check if the request accepts HTML content
+            var acceptHeader = context.Request.Headers.Accept.ToString().ToLower();
+            if (acceptHeader.Contains("text/html") || acceptHeader.Contains("*/*"))
+            {
+                // For browser requests, use text/xml to allow XSL transformation
+                context.Response.ContentType = "text/xml";
             }
-
-            // Set the content type to RSS
-            context.Response.ContentType = "application/rss+xml";
+            else
+            {
+                // For RSS readers, use the standard RSS content type
+                context.Response.ContentType = "application/rss+xml";
+            }
             
             // Return the XML document as a string
             return rss.ToString();

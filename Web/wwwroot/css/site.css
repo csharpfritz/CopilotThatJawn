@@ -83,6 +83,13 @@ html[data-theme-resolved="dark"] .text-muted {
     color: #cbd5e0 !important;
 }
 
+/* Dark theme card header override */
+html[data-theme="dark"] .card-header.bg-light,
+html[data-theme-resolved="dark"] .card-header.bg-light {
+    background-color: var(--primary-color) !important;
+    color: #ffffff;
+}
+
 /* Dark theme text-primary enhancement */
 html[data-theme="dark"] .text-primary,
 html[data-theme-resolved="dark"] .text-primary {
