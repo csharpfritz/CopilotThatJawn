@@ -5,24 +5,25 @@
 }
 
 <div class="container-fluid">
-    <div class="row">
-        <!-- Header Section -->
+    <div class="row">        <!-- Header Section -->
         <div class="col-12 mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="display-4 fw-bold">AI Tips & Tricks</h1>
-                    <p class="lead text-muted">Discover the latest tips and tricks for Microsoft Copilot, GitHub Copilot, Azure AI, and more AI productivity tools.</p>
-                </div>
-                <div class="text-end">
-                    <span class="badge bg-primary fs-6">@Model.ViewModel.TotalCount Tips</span>
+            <div class="bg-primary bg-gradient text-white p-4 rounded-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-3 fw-bold brand-title mb-3">AI Tips & Tricks</h1>
+                        <p class="lead fs-4 mb-0">Level up your AI game with our hand-picked collection of productivity boosters. 
+                            From GitHub Copilot wizardry to Microsoft 365 magic, we've got your back.</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-light text-primary fs-5 rounded-pill px-4 py-2">@Model.ViewModel.TotalCount Tips</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Filter Section -->
-        <div class="col-lg-3 col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
+        <div class="col-lg-3 col-md-4 mb-4">            <div class="card shadow-sm">
+                <div class="card-header bg-primary bg-gradient text-white">
                     <h5 class="card-title mb-0">
                         <i class="bi bi-funnel"></i> Filters
                     </h5>
@@ -127,12 +128,11 @@
                                     </div>
                                     
                                     @if (!string.IsNullOrEmpty(tip.Difficulty))
-                                    {
-                                        <div class="mt-2">
+                                    {                                        <div class="mt-2">
                                             <span class="badge @(tip.Difficulty switch 
                                             {
                                                 "Beginner" => "bg-success",
-                                                "Intermediate" => "bg-warning",
+                                                "Intermediate" => "bg-warning text-dark",
                                                 "Advanced" => "bg-danger",
                                                 _ => "bg-secondary"
                                             })">@tip.Difficulty</span>
