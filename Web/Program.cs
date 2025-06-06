@@ -29,8 +29,7 @@ builder.Services.AddRazorPages()
     .AddRazorPagesOptions(options =>
     {
         options.RootDirectory = "/Pages";
-    })
-    .WithStaticAssets();
+    });
 
 builder.Services.AddControllers(); // Add controller support for API endpoints
 builder.Services.AddMvc().AddViewComponentsAsServices(); // Register view components
@@ -113,9 +112,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapRazorPages();
 app.MapControllers();
 
 // Map sitemap and RSS feed endpoints with caching
