@@ -67,9 +67,10 @@ jobs:
           tenant-id: ${{ secrets.CTJWEB_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.CTJWEB_AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
+          allow-no-subscriptions: true
       
       - name: Deploy to Azure Container App
-        uses: azure/CLI@v2
+        uses: azure/cli@v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
