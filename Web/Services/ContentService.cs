@@ -200,11 +200,15 @@ public class ContentService : IContentService
         {
             try
             {
+                // Convert Markdown content to HTML
+                var htmlContent = Markdown.ToHtml(entity.Content, _markdownPipeline);
+                htmlContent = PostProcessCodeBlocks(htmlContent);
+
                 var tip = new TipModel
                 {
                     Title = entity.Title,
                     Description = entity.Description,
-                    Content = entity.Content,
+                    Content = htmlContent, // Store the converted HTML
                     Category = entity.Category,
                     Tags = entity.Tags?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
                     PublishedDate = entity.PublishedDate,

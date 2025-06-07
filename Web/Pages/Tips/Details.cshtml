@@ -214,6 +214,42 @@
     font-size: 1.1rem;
 }
 
+/* Copy button styles for code blocks */
+.tip-content pre {
+    position: relative !important;
+}
+
+.tip-content .copy-button {
+    position: absolute !important;
+    right: 0.5rem !important;
+    top: 0.5rem !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    color: #6c757d !important;
+    background-color: transparent !important;
+    border: 1px solid #6c757d !important;
+    border-radius: 0.25rem !important;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out !important;
+    cursor: pointer !important;
+}
+
+.tip-content pre:hover .copy-button {
+    opacity: 1;
+}
+
+.tip-content .copy-button:hover {
+    color: #fff !important;
+    background-color: #6c757d !important;
+}
+
+.tip-content .copy-button.success {
+    color: #fff !important;
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+
 .tip-content h1, .tip-content h2, .tip-content h3, 
 .tip-content h4, .tip-content h5, .tip-content h6 {
     margin-top: 2rem;
@@ -334,10 +370,30 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Re-highlight everything
             Prism.highlightAll();
+
+            // Handle copy button success states
+            document.querySelectorAll('.copy-button').forEach(function(button) {
+                button.addEventListener('click', async function() {
+                    const pre = this.closest('pre');
+                    const code = pre.querySelector('code')?.textContent || pre.textContent;
+                    
+                    try {
+                        await navigator.clipboard.writeText(code.trim());
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '<i class="bi bi-check"></i>';
+                        button.classList.add('success');
+                        
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                            button.classList.remove('success');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                    }
+                });
+            });
         }
     }, 100);
-    
-    // Note: Copy-to-clipboard functionality is handled by code-clipboard.js
 });
 
 document.addEventListener('DOMContentLoaded', function() {
