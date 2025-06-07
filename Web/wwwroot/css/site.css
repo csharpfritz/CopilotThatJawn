@@ -34,8 +34,8 @@
     --footer-text: #6c757d;
     
     /* Bootstrap color overrides for light theme */
-    --bs-primary: #0d6efd;
-    --bs-primary-dark: #0a58ca;
+    --bs-primary: var(--primary-color);
+    --bs-primary-dark: var(--primary-dark);
     --bs-secondary: #6c757d;
     --bs-success: #198754;
     --bs-info: #0dcaf0;
@@ -542,4 +542,39 @@ html[data-theme-resolved="dark"] .philly-phillies-red {
                  1px -1px 0 rgba(255, 255, 255, 0.7),
                 -1px 1px 0 rgba(255, 255, 255, 0.7),
                  1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Header icon styling */
+.header-icon {
+    width: 300px;
+    height: 300px;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background-color: var(--primary-color);
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.header-icon:hover {
+    transform: scale(1.05);
+}
+
+/* Button styling */
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-dark);
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: var(--primary-hover);
+    border-color: var(--primary-dark);
+}
+
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 0.25rem rgba(98, 0, 238, 0.25);
 }
