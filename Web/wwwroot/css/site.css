@@ -48,6 +48,10 @@
     --z-index-dropdown: 1050;
     --z-index-sticky: 1020;
     --z-index-code-copy: 10;
+    
+    /* Philadelphia sports team colors */
+    --philly-eagles-green: #004C54;
+    --philly-phillies-red: #E81828;
 }
 
 /* Dark theme colors */
@@ -511,4 +515,31 @@ html[data-theme-resolved="dark"] .list-group-item.active {
     background-color: yellow !important;
     border-color: yellow !important;
     color: #333 !important;
+}
+
+/* Philadelphia sports team color classes */
+.philly-eagles-green {
+    color: var(--philly-eagles-green);
+}
+
+.philly-phillies-red {
+    color: var(--philly-phillies-red);
+}
+
+html[data-theme="dark"] .philly-eagles-green,
+html[data-theme-resolved="dark"] .philly-eagles-green {
+    color: var(--philly-eagles-green);
+    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.7),
+                 1px -1px 0 rgba(255, 255, 255, 0.7),
+                -1px 1px 0 rgba(255, 255, 255, 0.7),
+                 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="dark"] .philly-phillies-red,
+html[data-theme-resolved="dark"] .philly-phillies-red {
+    color: var(--philly-phillies-red);
+    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.7),
+                 1px -1px 0 rgba(255, 255, 255, 0.7),
+                -1px 1px 0 rgba(255, 255, 255, 0.7),
+                 1px 1px 0 rgba(255, 255, 255, 0.7);
 }
