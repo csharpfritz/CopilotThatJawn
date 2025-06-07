@@ -49,17 +49,6 @@ namespace Shared
             {
                 tip.PublishedDate = DateTime.UtcNow;
             }
-            if (frontMatterData.TryGetValue("lastModified", out object lastModifiedObj) && lastModifiedObj != null)
-            {
-                if (DateTime.TryParse(lastModifiedObj.ToString(), out DateTime lastModified))
-                {
-                    tip.LastModified = lastModified;
-                }
-            }
-            else
-            {
-                tip.LastModified = DateTime.UtcNow;
-            }
             return tip;
         }
 
@@ -112,14 +101,14 @@ namespace Shared
             var entity = new ContentEntity
             {
                 PartitionKey = tip.Category.ToLowerInvariant(),
-                RowKey = tip.UrlSlug,
+                RowKey = !string.IsNullOrWhiteSpace(tip.UrlSlug) ? tip.UrlSlug : tip.FileName,
+                Slug = tip.UrlSlug,
                 Title = tip.Title,
                 Category = tip.Category,
                 Tags = string.Join(",", tip.Tags),
                 Difficulty = tip.Difficulty,
                 Author = tip.Author,
-                PublishedDate = tip.PublishedDate,
-                LastModified = tip.LastModified,
+                PublishedDate = DateTime.SpecifyKind(tip.PublishedDate, DateTimeKind.Utc),
                 Description = tip.Description,
                 Content = tip.Content,
                 FileName = tip.FileName

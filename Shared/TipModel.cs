@@ -23,19 +23,7 @@ public class TipModel
     /// </summary>
     public int ReadingTimeMinutes => Math.Max(1, Content.Split(' ').Length / 200);
 
-	/// <summary>
-	/// Gets a URL-friendly version of the title
-	/// </summary>
-	public string UrlSlug =>
-			Title.ToLowerInvariant()
-					 .Replace(" ", "-")
-					 .Replace("'", "")
-					 .Replace("\"", "")
-					 .Replace(".", "")
-					 .Replace(",", "")
-					 .Replace("?", "")
-					 .Replace("!", "")
-					 .Replace("&", "and");
+    public string UrlSlug { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -93,5 +81,4 @@ public class TipDto
     public DateTime PublishedDate { get; set; }
     public string Description { get; set; } = string.Empty;
     public int ReadingTimeMinutes { get; set; }
-    public string UrlSlug { get; set; } = string.Empty;
 }

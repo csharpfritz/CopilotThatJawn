@@ -61,7 +61,7 @@ public class ContentService : IContentService
             .Build();
 
         // Initialize Azure Table Client
-        _tableClient = tableServiceClient.GetTableClient("content");
+        _tableClient = tableServiceClient.GetTableClient("Content");
     }
 
     public async Task<List<TipModel>> GetAllTipsAsync()
@@ -196,23 +196,24 @@ public class ContentService : IContentService
     {
         var tips = new List<TipModel>();
 
-        await foreach (var entity in _tableClient.QueryAsync<TableEntity>())
+        await foreach (var entity in _tableClient.QueryAsync<ContentEntity>())
         {
             try
             {
                 var tip = new TipModel
                 {
-                    Title = entity.GetString("Title"),
-                    Description = entity.GetString("Description"),
-                    Content = entity.GetString("Content"),
-                    Category = entity.GetString("Category"),
-                    Tags = entity.GetString("Tags")?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
-                    PublishedDate = entity.GetDateTime("PublishedDate") ?? DateTime.UtcNow,
-                    Author = entity.GetString("Author"),
-                    Difficulty = entity.GetString("Difficulty")
-                 
+                    Title = entity.Title,
+                    Description = entity.Description,
+                    Content = entity.Content,
+                    Category = entity.Category,
+                    Tags = entity.Tags?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+                    PublishedDate = entity.PublishedDate,
+                    Author = entity.Author,
+                    Difficulty = entity.Difficulty,
+                    FileName = entity.FileName,
+                    LastModified = entity.Timestamp?.UtcDateTime ?? entity.PublishedDate,
+                    UrlSlug = !string.IsNullOrWhiteSpace(entity.Slug) ? entity.Slug : entity.RowKey // Set UrlSlug
                 };
-
                 tips.Add(tip);
             }
             catch (Exception ex)

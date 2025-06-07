@@ -2,7 +2,6 @@ using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Azure;
 using Projects;
-using AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -13,10 +12,12 @@ var storage = builder.AddAzureStorage("azure-storage")
 	{
 		// Configure the Azure Storage Emulator options here if needed
 		options.WithLifetime(ContainerLifetime.Persistent);
+		options.WithTablePort(27002);
+		options.WithBlobPort(27001);
+		options.WithQueuePort(27003);
 	});
 
-var tables = storage.AddTables("tables")
-	.WithLoadContentCommand();
+var tables = storage.AddTables("tables");
 
 var web = builder.AddProject<Web>("web")
 	.WithReference(tables)
