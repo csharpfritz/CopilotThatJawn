@@ -12,18 +12,22 @@ builder.AddAzureTableClient("tables");
 // Add WebOptimizer services
 builder.Services.AddWebOptimizer(pipeline =>
 {
-    // Bundle and minify CSS files
-    pipeline.MinifyCssFiles();
-    pipeline.AddCssBundle("/css/bundle.min.css", 
-        "css/site.css",
-        "css/layout.css");
+    if (!builder.Environment.IsDevelopment())
+    {
+        // Bundle and minify CSS files in production only
+        pipeline.MinifyCssFiles();
+        pipeline.AddCssBundle("/css/bundle.min.css", 
+            "css/site.css",
+            "css/layout.css");
 
-    // Bundle and minify JavaScript files
-    pipeline.MinifyJsFiles();
-    pipeline.AddJavaScriptBundle("/js/bundle.min.js",
-        "js/site.js",
-        "js/analytics.js",
-        "js/theme-switcher.js");
+        // Bundle and minify JavaScript files in production only
+        pipeline.MinifyJsFiles();
+        pipeline.AddJavaScriptBundle("/js/bundle.min.js",
+            "js/site.js",
+            "js/analytics.js",
+            "js/theme-switcher.js");
+    }
+    // In development, no bundling or minification - serve files directly
 });
 
 // Add services to the container.
@@ -92,15 +96,25 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    
+    // Enable compression and caching only in production
+    app.UseResponseCompression();
+    app.UseResponseCaching();
+    app.UseOutputCache();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 // Enable compression and caching early in the pipeline
-app.UseResponseCompression();
-app.UseResponseCaching();
-app.UseOutputCache();
-
 app.UseHttpsRedirection();
-app.UseWebOptimizer(); // Add WebOptimizer middleware before static files
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseWebOptimizer(); // Only use WebOptimizer in production
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -109,15 +123,15 @@ app.UseStaticFiles(new StaticFileOptions
         {
             // Cache static files for 30 days in production
             ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000";
+            ctx.Context.Response.Headers.Vary = "Accept-Encoding";
         }
         else
         {
             // Disable caching in development
-            ctx.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+            ctx.Context.Response.Headers.CacheControl = "no-cache, no-store";
             ctx.Context.Response.Headers.Pragma = "no-cache";
-            ctx.Context.Response.Headers.Expires = "0";
+            ctx.Context.Response.Headers.Expires = "-1";
         }
-        ctx.Context.Response.Headers.Vary = "Accept-Encoding";
     }
 });
 
