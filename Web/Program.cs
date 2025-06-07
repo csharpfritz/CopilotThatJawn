@@ -105,8 +105,18 @@ app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
     {
-        // Cache static files for 30 days
-        ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000";
+        if (!app.Environment.IsDevelopment())
+        {
+            // Cache static files for 30 days in production
+            ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000";
+        }
+        else
+        {
+            // Disable caching in development
+            ctx.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+            ctx.Context.Response.Headers.Pragma = "no-cache";
+            ctx.Context.Response.Headers.Expires = "0";
+        }
         ctx.Context.Response.Headers.Vary = "Accept-Encoding";
     }
 });
