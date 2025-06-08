@@ -10,7 +10,7 @@ resource azure_storage 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   }
   properties: {
     accessTier: 'Hot'
-    allowSharedKeyAccess: false
+    allowSharedKeyAccess: true
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
       defaultAction: 'Allow'
