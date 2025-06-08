@@ -1,3 +1,5 @@
+name: Build and Deploy
+
 # Run when commits are pushed to main
 on:
   workflow_dispatch:
