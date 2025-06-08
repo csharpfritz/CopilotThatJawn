@@ -156,6 +156,9 @@ app.MapControllers();
 app.MapSitemapEndpoint();
 app.MapRssFeedEndpoint();
 
+// Map cache refresh endpoint
+app.MapCacheRefreshEndpoint();
+
 app.MapDefaultEndpoints();
 
 app.Run();

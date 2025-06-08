@@ -36,6 +36,26 @@ jobs:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
         run: dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content
       
+      - name: Refresh Web App Cache
+        if: success()
+        run: |
+          echo "Refreshing web application cache..."
+          # Wait a moment for the content to be fully uploaded
+          sleep 5
+          
+          # Call the cache refresh endpoint
+          response=$(curl -s -w "%{http_code}" -X POST "https://copilotthatjawn.com/api/cache/refresh" -o /tmp/cache_response.json)
+          
+          if [ "$response" = "200" ]; then
+            echo "Cache refresh successful"
+            cat /tmp/cache_response.json
+          else
+            echo "Cache refresh failed with HTTP status: $response"
+            cat /tmp/cache_response.json || echo "No response body"
+            # Don't fail the workflow if cache refresh fails - it's not critical
+            echo "Continuing workflow despite cache refresh failure..."
+          fi
+      
       - name: Handle Failure
         if: failure()
         run: |
