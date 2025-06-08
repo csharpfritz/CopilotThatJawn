@@ -46,7 +46,7 @@ jobs:
         if: success()
         shell: pwsh
         run: |
-          $date = Get-Date -Format "yyyy-MM-dd"
+          $date = Get-Date -Format "yyyy--MM--dd"
           $articleCount = "${{ steps.count-articles.outputs.article-count }}"
           
           # Create badge URLs using shields.io
