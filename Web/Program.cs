@@ -5,6 +5,7 @@ using System.IO.Compression;
 using Shared;
 using Web.Extensions;
 using Web.Services;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,20 +97,25 @@ builder.Services.AddScoped<IContentService, ContentService>();
 
 var app = builder.Build();
 
+var options = new RewriteOptions()
+	.AddRedirectToNonWwwPermanent();
+	//.AddRedirectToHttpsPermanent();
+app.UseRewriter(options);
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-    
-    // Enable compression and caching only in production
-    app.UseResponseCompression();
-    app.UseResponseCaching();
-    app.UseOutputCache();
+	app.UseExceptionHandler("/Error");
+	app.UseHsts();
+
+	// Enable compression and caching only in production
+	app.UseResponseCompression();
+	app.UseResponseCaching();
+	app.UseOutputCache();
 }
 else
 {
-    app.UseDeveloperExceptionPage();
+	app.UseDeveloperExceptionPage();
 }
 
 // Enable compression and caching early in the pipeline
