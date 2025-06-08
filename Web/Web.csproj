@@ -4,10 +4,6 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
-    <ContainerRepository>copilot-that-jawn</ContainerRepository>
-    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0</ContainerBaseImage>
-    <ContainerImageTags>latest</ContainerImageTags>
   </PropertyGroup>
 
   <ItemGroup>
