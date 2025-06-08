@@ -1,6 +1,17 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
 name: copilot-that-jawn
+infrastructure:
+  parameters:
+    domainApex:
+      default: "copilotthatjawn.com"
+    domainWww:
+      default: "www.copilotthatjawn.com"
+    certificateName:
+      default: "copilotthatjawn.com-cae-uanp-250608192822"
+    wwwCertificateName:
+      default: "www.copilotthatjawn.com-cae-uanp-250608193349"
+
 services:  
   app:
     language: dotnet
