@@ -1,0 +1,28 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "principalId": {
+        "value": "${AZURE_PRINCIPAL_ID}"
+      },
+      "certificateName": {
+        "value": "${AZURE_CERTIFICATE_NAME}"
+      },
+      "domainApex": {
+        "value": "${AZURE_DOMAIN_APEX}"
+      },
+      "domainWww": {
+        "value": "${AZURE_DOMAIN_WWW}"
+      },
+      "wwwCertificateName": {
+        "value": "${AZURE_WWW_CERTIFICATE_NAME}"
+      },
+      "environmentName": {
+        "value": "${AZURE_ENV_NAME}"
+      },
+      "location": {
+        "value": "${AZURE_LOCATION}"
+      }
+    }
+  }
+  
