@@ -4,6 +4,38 @@
     ViewData["Title"] = "Copilot That Jawn - AI Tools & Tips";
 }
 
+@section Styles {
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips." />
+    <meta name="keywords" content="GitHub Copilot, Microsoft Copilot, AI Tools, Copilot Tips, AI Programming, Philadelphia Tech" />
+    <meta name="author" content="Copilot That Jawn" />
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="Copilot That Jawn - AI Tools & Tips" />
+    <meta property="og:description" content="Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@(Url.Page("/Index", null, null, Request.Scheme))" />
+    <meta property="og:image" content="@(Url.Content("~/img/social-preview.webp"))" />
+    <meta property="og:image:alt" content="Copilot That Jawn - Where Philly meets AI" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Copilot That Jawn" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@@CopilotThatJawn" />
+    <meta name="twitter:creator" content="@@CopilotThatJawn" />
+    <meta name="twitter:title" content="Copilot That Jawn - AI Tools & Tips" />
+    <meta name="twitter:description" content="Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips." />
+    <meta name="twitter:image" content="@(Url.Content("~/img/social-preview.webp"))" />
+    <meta name="twitter:image:alt" content="Copilot That Jawn - Where Philly meets AI" />
+    
+    <!-- Additional Meta Tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="@(Url.Page("/Index", null, null, Request.Scheme))" />
+}
+
 <!-- Hero Section -->
 <div class="hero-section bg-primary bg-gradient text-white py-4 mb-4">
     <div class="container">

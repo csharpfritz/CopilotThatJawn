@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6200EE"/>
+      <stop offset="100%" stop-color="#7F39FB"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="48" fill="url(#bgGradient)"/>
+  <!-- Logo: embed icon.webp as image (relative path, will work in wwwroot/img/) -->
+  <image href="icon.webp" x="100" y="165" height="300" width="300" />
+  <!-- Main Title -->
+  <text x="440" y="290" font-family="Outfit, Arial, sans-serif" font-size="72" font-weight="800" fill="#fff">Copilot That Jawn</text>
+  <!-- Tagline -->
+  <text x="440" y="370" font-family="Outfit, Arial, sans-serif" font-size="36" font-weight="400" fill="#fff">Where Philly innovation meets AI excellence</text>
+  <!-- Vertical bars at the bottom, 8 purple gradient slices -->
+  <g opacity="0.25">
+    <rect x="440" y="500" width="80" height="60" fill="#6200EE"/>
+    <rect x="530" y="470" width="40" height="90" fill="#6C1EEB"/>
+    <rect x="580" y="520" width="60" height="40" fill="#7F39FB"/>
+    <rect x="650" y="490" width="30" height="70" fill="#A084F3"/>
+    <rect x="690" y="510" width="50" height="50" fill="#B39DDB"/>
+    <rect x="750" y="480" width="70" height="80" fill="#7F39FB"/>
+    <rect x="830" y="520" width="40" height="40" fill="#6C1EEB"/>
+    <rect x="880" y="500" width="60" height="60" fill="#6200EE"/>
+  </g>
+  <!-- AI/Code Icon (simple brackets) -->
+  <text x="1100" y="120" font-family="Outfit, Arial, sans-serif" font-size="60" font-weight="800" fill="#fff" opacity="0.15">{ }</text>
+</svg>
