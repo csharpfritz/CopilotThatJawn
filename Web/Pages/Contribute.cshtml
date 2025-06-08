@@ -62,7 +62,7 @@
                     <ol class="mb-0">
                         <li class="mb-3">
                             <strong>Fork the Repository</strong><br>
-                            Head over to <a href="https://github.com/csharpfritz/CopilotThatJawn" target="_blank" class="text-primary">github.com/csharpfritz/CopilotThatJawn</a> and fork the repo to your account.
+                            Head over to <a href="https://github.com/csharpfritz/CopilotThatJawn" target="_blank">github.com/csharpfritz/CopilotThatJawn</a> and fork the repo to your account.
                         </li>
                         <li class="mb-3">
                             <strong>Clone Your Fork</strong><br>
@@ -93,46 +93,70 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header">
+                <div class="card-header bg-primary text-white">
                     <h3 class="h5 mb-0"><i class="bi bi-file-text me-2"></i>Markdown Format Template</h3>
-                </div>
-                <div class="card-body">
+                </div>                <div class="card-body">
                     <p>Each tip should be a markdown file with YAML frontmatter. Here's the template to follow:</p>
                     <pre><code class="language-markdown">---
-title: "Your Tip Title Here"
-slug: "url-friendly-slug"
-category: "GitHub Copilot"  # or "Microsoft 365 Copilot", "Azure AI", etc.
-tags: ["relevant", "tags", "here"]
-difficulty: "Beginner"      # Beginner, Intermediate, or Advanced
+title: "Your AI Development Tip Title"
+description: "A clear, concise summary that will appear in card previews and search results"
+category: "GitHub Copilot"  # Choose: GitHub Copilot, Microsoft 365 Copilot, Azure AI, Tools
+tags: ["ai-development", "productivity", "code-generation"]  # Add 2-4 relevant tags
+difficulty: "Beginner"  # Choose: Beginner, Intermediate, Advanced
 author: "Your Name"
-publishedDate: "2025-01-15"
-lastModified: "2025-01-15"
-description: "Brief description that appears in previews and search results."
+publishedDate: "2025-06-07"  # Current date in YYYY-MM-DD format
+lastModified: "2025-06-07"  # Update when you modify the content
+featured: false  # Set to true for standout content
 ---
 
-# Your Tip Title Here
+# Descriptive Title of Your AI Development Tip
 
-Brief introduction explaining what this tip covers and why it's useful.
+Brief introduction (2-3 sentences) explaining what problem this tip solves and why it's useful for AI-assisted development.
 
-## Main Content
+## The Problem
 
-Use clear headings, code examples, and explanations. For example:
+Describe the challenge or inefficiency that developers commonly face. Example:
 
-```csharp
-// Example code with comments
-public void ExampleMethod()
-{
-    // Your code here
+```typescript
+// Without AI assistance, you might write repetitive code like this
+function validateUserInput(input: string): boolean {
+    // Manual validation logic here
+    return true;
 }
 ```
 
-## Pro Tips
+## The Solution
+
+Show how to solve it using AI tools effectively:
+
+```typescript
+// Let GitHub Copilot help by commenting your intent
+// Validate user input checking for: valid email, min 8 chars, contains number
+function validateUserInput(input: string): ValidationResult {
+    // Copilot will suggest comprehensive validation
+}
+```
+
+## Key Points
 
 - Use bullet points for quick takeaways
-- Include real-world examples
-- Add Philly references if relevant!
+- Include practical examples
+- Add Philly references when relevant
+- Link to related tips or documentation
 
-Remember to test your examples and make sure they work!</code></pre>
+## Pro Tips
+
+1. Share keyboard shortcuts
+2. Mention common pitfalls
+3. Provide real-world scenarios
+
+## Related Resources
+
+- Link to official docs
+- Reference other tips
+- Suggest next steps
+
+Remember to test all code examples and make sure they work before submitting!</code></pre>
                 </div>
             </div>
 
@@ -191,3 +215,75 @@ Remember to test your examples and make sure they work!</code></pre>
         </div>
     </div>
 </div>
+
+<style>
+	/* Copy button styles for code blocks */
+.card-body pre {
+    position: relative !important;
+}
+
+.card-body .copy-button {
+    position: absolute !important;
+    right: 0.5rem !important;
+    top: 0.35rem !important;
+    padding: 0.25rem 0.5rem !important;
+		margin-top: 0.5rem;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    color: #6c757d !important;
+    background-color: transparent !important;
+    border: 1px solid #6c757d !important;
+    border-radius: 0.25rem !important;
+    cursor: pointer !important;
+}
+
+.card-body .copy-button:hover {
+    color: #fff !important;
+    background-color: #6c757d !important;
+}
+
+.card-body .copy-button.success {
+    color: #fff !important;
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+
+.card-body h1, .card-body h2, .card-body h3, 
+.card-body h4, .card-body h5, .card-body h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.card-body p {
+    margin-bottom: 1.5rem;
+}
+
+.card-body code {
+    font-family: Consolas, monospace;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+}
+
+.card-body pre {
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure Prism.js styles take precedence over our generic styles */
+.card-body pre[class*="language-"] {
+    padding: 1rem !important;
+    border-radius: 0.5rem !important;
+    overflow-x: auto !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.card-body code[class*="language-"] {
+		font-family: Consolas, monospace !important;
+    font-size: inherit !important;
+    padding-top: 0 !important;
+    display: block !important;
+}
+</style>

@@ -21,10 +21,9 @@
 </div>
 
 <!-- Recent Tips Section -->
-<div class="container mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container mb-5">    <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold"><i class="bi bi-lightning-charge"></i> Recent Tips</h2>
-        <a asp-page="/Tips/Index" class="btn btn-outline-primary">View All Tips</a>
+        <a asp-page="/Tips/Index" class="btn btn-primary">View All Tips</a>
     </div>
       <div class="row g-4">
         @foreach (var tip in Model.RecentTips.Take(3))
