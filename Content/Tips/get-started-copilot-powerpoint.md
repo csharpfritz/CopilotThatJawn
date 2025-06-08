@@ -9,7 +9,7 @@ publishedDate: "2025-06-08"
 lastModified: "2025-06-08"
 ---
 
-# Getting Started with Copilot in Microsoft PowerPoint
+# Power Up Your Slides: A Quick Guide to Copilot in PowerPoint
 
 Microsoft Copilot brings AI-powered creativity to PowerPoint, helping you design, write, and visualize presentations faster than ever. Here’s how to get started and try a feature that will transform your slides.
 

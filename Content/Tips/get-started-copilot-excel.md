@@ -9,7 +9,7 @@ publishedDate: "2025-06-08"
 lastModified: "2025-06-08"
 ---
 
-# Getting Started with Copilot in Microsoft Excel
+# From Data to Insights: Using Copilot in Excel
 
 Microsoft Copilot supercharges Excel with AI, making it easier to analyze data, generate insights, and automate tasks. Here’s how to get started and try a feature that will change the way you work with spreadsheets.
 
