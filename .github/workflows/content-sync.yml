@@ -1,0 +1,36 @@
+name: Content Sync
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Content/**'
+
+jobs:
+  sync-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Build ContentLoader
+      run: |
+        dotnet build ContentLoader/ContentLoader.csproj --configuration Release
+        
+    - name: Upload Content
+      env:
+        AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
+      run: dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content
+      
+    - name: Handle Failure
+      if: failure()
+      run: |
+        echo "Content sync failed. Check the build output and Azure Storage connection string."
+        exit 1
