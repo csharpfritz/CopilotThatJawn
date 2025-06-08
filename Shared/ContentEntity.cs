@@ -24,4 +24,6 @@ namespace Shared;
         public string FileName { get; set; } = string.Empty;
         // Optional: Add Slug property for RowKey assignment if not already present
         public string Slug { get; set; } = string.Empty;
+        // Content hash for change detection
+        public string ContentHash { get; set; } = string.Empty;
     }
