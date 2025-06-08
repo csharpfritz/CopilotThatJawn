@@ -172,6 +172,7 @@ Content/
 - Use Philadelphia-themed examples and case studies
 - Include local tech community resources
 - Consider Philly color schemes (eagles green, phillies red, etc.)
+- In content, don't refer to the Philly Dev Community, just refer to the 'Tech Community'
 
 ## Development Workflow
 
