@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Hosting;
 using System.IO.Compression;
 using Shared;
 using Web.Extensions;
 using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add .NET Aspire service defaults
+builder.AddServiceDefaults();
 
 builder.AddAzureTableClient("tables");
 
@@ -45,25 +49,26 @@ builder.Services.AddResponseCaching();
 builder.Services.AddMemoryCache();
 builder.Services.AddOutputCache(options =>
 {
+    // Default site-wide caching policy
     options.AddBasePolicy(builder => 
         builder.Cache()
                .SetVaryByHost(true)
-               .SetVaryByQuery("*"));
-    
-    // Cache static assets for longer
-    options.AddPolicy("StaticFiles", builder => 
-        builder.Cache()
-               .Expire(TimeSpan.FromDays(30))
-               .SetVaryByHost(true));
+               .SetVaryByQuery("*")
+               .SetVaryByHeader("Accept-Language")  // Vary by language
+               .Expire(TimeSpan.FromMinutes(10))); // Cache for 10 minutes by default
                
-    // Add policies for sitemap and RSS feed
-    options.AddPolicy("SitemapPolicy", builder =>
+    // Special policy for static content pages
+    options.AddPolicy("StaticContent", builder => 
         builder.Cache()
-               .Expire(TimeSpan.FromHours(12)));
+               .SetVaryByHost(true)
+               .Expire(TimeSpan.FromHours(1))); // Cache static content for 1 hour
                
-    options.AddPolicy("RssFeedPolicy", builder =>
+    // Policy for frequently updated content
+    options.AddPolicy("DynamicContent", builder => 
         builder.Cache()
-               .Expire(TimeSpan.FromHours(1)));
+               .SetVaryByHost(true)
+               .SetVaryByQuery("*")
+               .Expire(TimeSpan.FromMinutes(5))); // Cache dynamic content for 5 minutes
 });
 
 // Add response compression
@@ -144,5 +149,7 @@ app.MapControllers();
 // Map sitemap and RSS feed endpoints with caching
 app.MapSitemapEndpoint();
 app.MapRssFeedEndpoint();
+
+app.MapDefaultEndpoints();
 
 app.Run();

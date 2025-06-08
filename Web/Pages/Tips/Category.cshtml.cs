@@ -5,10 +5,13 @@ using Web.Services;
 
 namespace Web.Pages.Tips;
 
-public class CategoryModel : PageModel
+public class CategoryModel : BasePageModel
 {
     private readonly IContentService _contentService;
     private readonly ILogger<CategoryModel> _logger;
+    
+    // Override cache duration for category pages - cache for 5 minutes
+    protected override int CacheDurationSeconds => 300;
 
     public CategoryModel(IContentService contentService, ILogger<CategoryModel> logger)
     {

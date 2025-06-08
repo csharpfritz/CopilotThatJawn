@@ -5,10 +5,13 @@ using Web.Services;
 
 namespace Web.Pages.Tips;
 
-public class TagModel : PageModel
+public class TagModel : BasePageModel
 {
     private readonly IContentService _contentService;
     private readonly ILogger<TagModel> _logger;
+    
+    // Override cache duration for tag pages - cache for 5 minutes
+    protected override int CacheDurationSeconds => 300;
 
     public TagModel(IContentService contentService, ILogger<TagModel> logger)
     {

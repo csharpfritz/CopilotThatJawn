@@ -8,11 +8,16 @@ using Web.Services;
 namespace Web.Extensions;
 
 public static class EndpointExtensions
-{
-    public static void MapSitemapEndpoint(this WebApplication app)
+{    public static void MapSitemapEndpoint(this WebApplication app)
     {
         app.MapGet("/sitemap.xml", async (HttpContext context, IContentService contentService) =>
         {
+            // Enable output caching for sitemap
+            context.Response.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromHours(1)
+            };
             // Define the XML namespace for the sitemap
             XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
             
@@ -106,13 +111,21 @@ public static class EndpointExtensions
             
             // Return the XML document as a string
             return sitemap.ToString();
-        });
-    }
-
-    public static void MapRssFeedEndpoint(this WebApplication app)
+        })
+        .CacheOutput(policy => policy
+            .Expire(TimeSpan.FromHours(1))
+            .SetVaryByHost(true)
+            .Tag("sitemap"));
+    }    public static void MapRssFeedEndpoint(this WebApplication app)
     {
         app.MapGet("/feed.rss", async (HttpContext context, IContentService contentService) =>
-        {            // Create the RSS feed XML document
+        {
+            // Enable output caching for RSS feed
+            context.Response.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromMinutes(30)
+            };// Create the RSS feed XML document
             var rss = new XDocument(
                 new XDeclaration("1.0", "utf-8", null),
                 new XProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"/xsl/rss.xsl\""),
@@ -173,6 +186,10 @@ public static class EndpointExtensions
             
             // Return the XML document as a string
             return rss.ToString();
-        });
+        })
+        .CacheOutput(policy => policy
+            .Expire(TimeSpan.FromMinutes(30))
+            .SetVaryByHost(true)
+            .Tag("rss"));
     }
 }

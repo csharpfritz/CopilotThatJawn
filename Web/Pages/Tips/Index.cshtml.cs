@@ -5,10 +5,13 @@ using Web.Services;
 
 namespace Web.Pages.Tips;
 
-public class IndexModel : PageModel
+public class IndexModel : BasePageModel
 {
     private readonly IContentService _contentService;
     private readonly ILogger<IndexModel> _logger;
+    
+    // Override cache duration for tips list - cache for 5 minutes
+    protected override int CacheDurationSeconds => 300;
 
     public IndexModel(IContentService contentService, ILogger<IndexModel> logger)
     {
