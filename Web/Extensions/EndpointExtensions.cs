@@ -195,11 +195,28 @@ public static class EndpointExtensions
 
     public static void MapCacheRefreshEndpoint(this WebApplication app)
     {
-        app.MapPost("/api/cache/refresh", async (IContentService contentService, ILogger<Program> logger, IWebHostEnvironment environment) =>
+        app.MapPost("/api/cache/refresh", async (HttpContext context, IContentService contentService, ILogger<Program> logger, IWebHostEnvironment environment, IConfiguration configuration) =>
         {
             try
             {
                 logger.LogInformation("Cache refresh requested via API endpoint");
+                
+                // Validate API key for security
+                var expectedApiKey = configuration["CacheRefresh:ApiKey"];
+                if (!string.IsNullOrEmpty(expectedApiKey))
+                {
+                    var providedApiKey = context.Request.Headers["X-API-Key"].FirstOrDefault();
+                    if (string.IsNullOrEmpty(providedApiKey) || providedApiKey != expectedApiKey)
+                    {
+                        logger.LogWarning("Cache refresh request rejected: Invalid or missing API key");
+                        return Results.Unauthorized();
+                    }
+                }
+                else if (!environment.IsDevelopment())
+                {
+                    logger.LogWarning("Cache refresh API key not configured in production environment");
+                    return Results.Problem("API key not configured", statusCode: 500);
+                }
                 
                 // Only perform cache refresh in non-development environments
                 // In development, the cache isn't as critical and may require Azure Table Storage
@@ -226,6 +243,6 @@ public static class EndpointExtensions
         })
         .WithName("RefreshCache")
         .WithSummary("Refresh the content cache")
-        .WithDescription("Triggers a refresh of the in-memory content cache from Azure Table Storage");
+        .WithDescription("Triggers a refresh of the in-memory content cache from Azure Table Storage. Requires X-API-Key header for authentication.");
     }
 }
