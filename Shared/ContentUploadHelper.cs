@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Azure.Data.Tables;
@@ -92,16 +94,55 @@ namespace Shared
             return list;
         }
 
+        private static string CalculateContentHash(TipModel tip)
+        {
+            // Create a string representation of the content that should be compared for changes
+            var contentToHash = $"{tip.Title}|{tip.Category}|{string.Join(",", tip.Tags)}|{tip.Difficulty}|{tip.Author}|{tip.Description}|{tip.Content}";
+            using var sha256 = SHA256.Create();
+            var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(contentToHash));
+            return Convert.ToBase64String(hashBytes);
+        }
+
+        private static async Task<ContentEntity?> GetExistingContent(TableClient tableClient, string partitionKey, string rowKey)
+        {
+            try
+            {
+                var response = await tableClient.GetEntityAsync<ContentEntity>(partitionKey, rowKey);
+                return response.Value;
+            }
+            catch (Exception)
+            {
+                // Entity doesn't exist or other error - treat as not found
+                return null;
+            }
+        }
+
         public static async Task UploadToTableStorage(TipModel tip, string connectionString)
         {
             var serviceClient = new TableServiceClient(connectionString);
             var tableName = "Content";
             await serviceClient.CreateTableIfNotExistsAsync(tableName);
             var tableClient = serviceClient.GetTableClient(tableName);
+
+            var partitionKey = tip.Category.ToLowerInvariant();
+            var rowKey = !string.IsNullOrWhiteSpace(tip.UrlSlug) ? tip.UrlSlug : tip.FileName;
+            
+            // Calculate content hash for change detection
+            var contentHash = CalculateContentHash(tip);
+            
+            // Check if entity already exists
+            var existingEntity = await GetExistingContent(tableClient, partitionKey, rowKey);
+            
+            if (existingEntity != null && existingEntity.ContentHash == contentHash)
+            {
+                Console.WriteLine($"Skipping {tip.FileName} - no changes detected");
+                return;
+            }
+
             var entity = new ContentEntity
             {
-                PartitionKey = tip.Category.ToLowerInvariant(),
-                RowKey = !string.IsNullOrWhiteSpace(tip.UrlSlug) ? tip.UrlSlug : tip.FileName,
+                PartitionKey = partitionKey,
+                RowKey = rowKey,
                 Slug = tip.UrlSlug,
                 Title = tip.Title,
                 Category = tip.Category,
@@ -111,9 +152,20 @@ namespace Shared
                 PublishedDate = DateTime.SpecifyKind(tip.PublishedDate, DateTimeKind.Utc),
                 Description = tip.Description,
                 Content = tip.Content,
-                FileName = tip.FileName
+                FileName = tip.FileName,
+                ContentHash = contentHash
             };
+            
             await tableClient.UpsertEntityAsync(entity);
+            
+            if (existingEntity == null)
+            {
+                Console.WriteLine($"Uploaded new content: {tip.FileName}");
+            }
+            else
+            {
+                Console.WriteLine($"Updated changed content: {tip.FileName}");
+            }
         }
     }
 }

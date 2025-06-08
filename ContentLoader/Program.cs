@@ -52,7 +52,6 @@ try
             {
                 TipModel tip = Shared.ContentUploadHelper.ParseMarkdownFile(mdFile);
                 await Shared.ContentUploadHelper.UploadToTableStorage(tip, connectionString);
-                Console.WriteLine($"Successfully uploaded {Path.GetFileName(mdFile)} to Azure Table Storage.");
                 successCount++;
             }
             catch (Exception ex)
@@ -75,7 +74,6 @@ try
         TipModel tip = Shared.ContentUploadHelper.ParseMarkdownFile(filePath);
         // Upload to Azure Table Storage
         await Shared.ContentUploadHelper.UploadToTableStorage(tip, connectionString);
-        Console.WriteLine($"Successfully uploaded {Path.GetFileName(filePath)} to Azure Table Storage.");
         return 0;
     }
 }
