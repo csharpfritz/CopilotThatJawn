@@ -27,7 +27,7 @@ resource web 'Microsoft.App/containerApps@2024-03-01' = {
         external: true
         targetPort: int(web_containerport)
         transport: 'http'
-        allowInsecure: false,
+        allowInsecure: false
         customDomains: [
           {
             name: 'copilotthatjawn.com'
