@@ -2,35 +2,77 @@ name: Content Sync
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'Content/**'
+    branches: [main]
+    paths: ['Content/**']
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
 
 jobs:
   sync-content:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
-        
-    - name: Build ContentLoader
-      run: |
-        dotnet build ContentLoader/ContentLoader.csproj --configuration Release
-        
-    - name: Upload Content
-      env:
-        AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
-      run: dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content
+      - name: Count Content Articles
+        id: count-articles
+        shell: pwsh
+        run: |
+          $count = (Get-ChildItem -Path "Content" -Recurse -File -Filter "*.md").Count
+          "article-count=$count" >> $env:GITHUB_OUTPUT
       
-    - name: Handle Failure
-      if: failure()
-      run: |
-        echo "Content sync failed. Check the build output and Azure Storage connection string."
-        exit 1
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+        
+      - name: Build ContentLoader
+        run: dotnet build ContentLoader/ContentLoader.csproj --configuration Release
+        
+      - name: Upload Content
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
+        run: dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content
+      
+      - name: Handle Failure
+        if: failure()
+        run: |
+          echo "Content sync failed. Check the build output and Azure Storage connection string."
+          exit 1
+
+      - name: Update README Badges
+        if: success()
+        shell: pwsh
+        run: |
+          $date = Get-Date -Format "yyyy-MM-dd"
+          $articleCount = "${{ steps.count-articles.outputs.article-count }}"
+          
+          # Create badge URLs using shields.io
+          $lastUpdateBadge = "![Content Last Updated](https://img.shields.io/badge/Content%20Last%20Updated-${date}-blue)"
+          $articleCountBadge = "![Content Articles](https://img.shields.io/badge/Content%20Articles-${articleCount}-green)"
+          
+          # Read current README content
+          $readmeContent = Get-Content README.md -Raw
+          
+          # Replace existing badges or add new ones at the top of the file
+          $badgeSection = "${lastUpdateBadge}`n${articleCountBadge}`n"
+          
+          if ($readmeContent -match "!\[Content Last Updated\].*`n!\[Content Articles\].*`n") {
+              $readmeContent = $readmeContent -replace "!\[Content Last Updated\].*`n!\[Content Articles\].*`n", $badgeSection
+          } else {
+              $readmeContent = $badgeSection + $readmeContent
+          }
+          
+          # Write updated content back to README
+          $readmeContent | Set-Content README.md -NoNewline
+
+      - name: Commit README Changes
+        if: success()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git commit -m "docs: update content sync badges [skip ci]" || exit 0
+          git push
