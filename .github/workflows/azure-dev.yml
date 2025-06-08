@@ -25,6 +25,11 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_DOMAINAPEX: "copilotthatjawn.com"
+      AZURE_DOMAINWWW: "www.copilotthatjawn.com"
+      AZURE_CERTIFICATENAME: "copilotthatjawn.com-cae-uanp-250608192822"
+      AZURE_WWWCERTIFICATENAME: "www.copilotthatjawn.com-cae-uanp-250608193349"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
