@@ -175,7 +175,7 @@
                         @if (!string.IsNullOrEmpty(Model.ViewModel.Tip.Category))
                         {
                             <a asp-page="/Tips/Category" asp-route-category="@Model.ViewModel.Tip.Category" 
-                               class="btn btn-outline-primary btn-sm mt-2 d-block">
+                               class="btn btn-outline-purple btn-sm mt-2 d-block">
                                 More from @Model.ViewModel.Tip.Category
                             </a>
                         }
@@ -187,15 +187,15 @@
 
 <style>
 .btn-outline-x {
-    color: #1DA1F2;
-    border-color: #1DA1F2;
+    color: #563ACC;
+    border-color: #563ACC;
     font-weight: bold;
 }
 
 .btn-outline-x:hover {
     color: #fff;
-    background-color: #1DA1F2;
-    border-color: #1DA1F2;
+    background-color: #563ACC;
+    border-color: #563ACC;
 }
 
 .btn-outline-purple {
@@ -222,8 +222,9 @@
 .tip-content .copy-button {
     position: absolute !important;
     right: 0.5rem !important;
-    top: 0.5rem !important;
+    top: 0.35rem !important;
     padding: 0.25rem 0.5rem !important;
+		margin-top: 0.5rem;
     font-size: 0.875rem !important;
     line-height: 1.5 !important;
     color: #6c757d !important;
@@ -255,14 +256,13 @@
 }
 
 .tip-content code {
-    background-color: #f8f9fa;
+    font-family: Consolas, monospace;
     padding: 0.2rem 0.4rem;
     border-radius: 0.25rem;
     font-size: 0.9em;
 }
 
 .tip-content pre {
-    background-color: #f8f9fa;
     padding: 1rem;
     border-radius: 0.375rem;
     overflow-x: auto;
@@ -271,18 +271,17 @@
 
 /* Ensure Prism.js styles take precedence over our generic styles */
 .tip-content pre[class*="language-"] {
-    background-color: transparent !important;
     padding: 1rem !important;
-    border-radius: 0.375rem !important;
+    border-radius: 0.5rem !important;
     overflow-x: auto !important;
     margin-bottom: 1.5rem !important;
 }
 
 .tip-content code[class*="language-"] {
-    background-color: transparent !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
+		font-family: Consolas, monospace !important;
     font-size: inherit !important;
+    padding-top: 0 !important;
+    display: block !important;
 }
 
 .tip-content blockquote {

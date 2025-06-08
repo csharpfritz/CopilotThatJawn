@@ -400,9 +400,6 @@ body {
     text-align: start;
 }
 
-/* Import modern code fonts */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
-
 /* Basic code block styling with theme support */
 pre[class*="language-"] {
     position: relative;
@@ -415,16 +412,13 @@ pre[class*="language-"] {
     transition: border-color 0.3s ease;
 }
 
-/* Code styling with modern fonts */
+/* Code styling with Consolas fonts */
 pre[class*="language-"] code,
 code[class*="language-"],
 :not(pre) > code {
-    font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Cascadia Code', 'SF Mono', Consolas, monospace;
+    font-family: Consolas, monospace;
     font-size: 0.875rem;
-    font-weight: 500;
     line-height: 1.6;
-    letter-spacing: 0.025em;
-    font-feature-settings: "liga" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
