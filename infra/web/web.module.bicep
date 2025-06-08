@@ -1,8 +1,6 @@
 @description('The location for the resource(s) to be deployed.')
 param location string = resourceGroup().location
 
-param outputs_azure_container_apps_environment_default_domain string
-
 param outputs_azure_container_apps_environment_id string
 
 param outputs_azure_container_registry_endpoint string
@@ -29,17 +27,17 @@ resource web 'Microsoft.App/containerApps@2024-03-01' = {
         external: true
         targetPort: int(web_containerport)
         transport: 'http'
-        allowInsecure: false
+        allowInsecure: false,
         customDomains: [
           {
             name: 'copilotthatjawn.com'
             bindingType: 'SniEnabled'
-            certificateId: '/subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/copilotthatjawn.com-cae-uanp-250608192822'
+            certificateId: '/subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/copilotthatjawn-com'
           }
           {
             name: 'www.copilotthatjawn.com'
             bindingType: 'SniEnabled'
-            certificateId: '/subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/www.copilotthatjawn.com-cae-uanp-250608193349'
+            certificateId: '/subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/www-copilotthatjawn-com'
           }
         ]
       }
