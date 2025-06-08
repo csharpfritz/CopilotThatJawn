@@ -20,10 +20,10 @@ properties:
       customDomains:
         - name: copilotthatjawn.com
           bindingType: SniEnabled
-          certificateId: /subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/copilotthatjawn-com
+          certificateId: /subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/copilotthatjawn.com-cae-uanp-250608192822
         - name: www.copilotthatjawn.com
           bindingType: SniEnabled
-          certificateId: /subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/www-copilotthatjawn-com
+          certificateId: /subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/www.copilotthatjawn.com-cae-uanp-250608193349
     registries:
       - server: {{ .Env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
         identity: {{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
