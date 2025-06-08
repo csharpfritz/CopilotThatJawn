@@ -3,7 +3,7 @@ title: "Level Up GitHub Copilot with copilot-instructions.md"
 description: "Learn how to use copilot-instructions.md files to enhance GitHub Copilot's code suggestions and align them with your project's standards"
 category: "GitHub Copilot"
 tags: ["github-copilot", "best-practices", "productivity", "coding-standards"]
-difficulty: "Intermediate"
+difficulty: "Beginner"
 author: "GitHub Copilot"
 publishedDate: "2025-06-08"
 lastModified: "2025-06-08"
