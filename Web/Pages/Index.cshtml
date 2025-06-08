@@ -63,15 +63,14 @@
 <!-- Categories Section -->
 <div class="container-fluid py-5 mb-5">
     <div class="container">
-        <h2 class="fw-bold mb-4"><i class="bi bi-folder2-open"></i> Explore Categories</h2>
+        <h2 class="fw-bold mb-4"><i class="bi bi-folder2-open text-primary"></i> Explore Categories</h2>
         <div class="row g-4">
             @foreach (var category in Model.Categories)
             {
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <a asp-page="/Tips/Category" asp-route-category="@category.ToLowerInvariant()" 
+                <div class="col-lg-3 col-md-4 col-sm-6">                    <a asp-page="/Tips/Category" asp-route-category="@category.ToLowerInvariant()" 
                        class="card text-decoration-none text-dark hover-card h-100">
                         <div class="card-body d-flex align-items-center gap-3">
-                            <i class="bi bi-folder2 fs-3"></i>
+                            <i class="bi bi-folder2-fill fs-3 text-primary"></i>
                             <h5 class="card-title mb-0">@category</h5>
                         </div>
                     </a>

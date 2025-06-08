@@ -36,7 +36,8 @@
 
     <div class="row">
         <!-- Category Filter Sidebar -->
-        <div class="col-lg-3 col-md-4 mb-4">            <div class="card shadow-sm">
+        <div class="col-lg-3 col-md-4 mb-4">            
+					<div class="card shadow-sm">
                 <div class="card-header category-filter-header">
                     <h5 class="card-title mb-0">
                         <i class="bi bi-grid-3x3-gap"></i> Browse Categories
@@ -47,17 +48,17 @@
                     {
                         <a asp-page="/Tips/Category" asp-route-category="@cat" 
                            class="list-group-item list-group-item-action border-0 @(cat == Model.Category ? "active" : "")">
-                            @cat
-                            @if (cat == Model.Category)
+                            @cat                            @if (cat == Model.Category)
                             {
-                                <span class="badge bg-light text-primary ms-2">@Model.ViewModel.TotalCount</span>
+                                <span class="badge bg-light text-primary ms-2 border border-primary">@Model.ViewModel.TotalCount</span>
                             }
                         </a>
                     }
                 </div>
             </div>
 
-            <!-- Additional Filters -->            <div class="card shadow-sm mt-3">
+            <!-- Additional Filters -->           
+						 <div class="card shadow-sm mt-3">
                 <div class="card-header category-filter-header">
                     <h6 class="card-title mb-0">
                         <i class="bi bi-funnel"></i> Refine Results

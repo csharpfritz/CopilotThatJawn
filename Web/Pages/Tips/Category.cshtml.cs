@@ -31,6 +31,26 @@ public class CategoryModel : PageModel
 
         try
         {
+            // Get filter options first to validate category
+            var categories = await _contentService.GetCategoriesAsync();
+            var tags = await _contentService.GetTagsAsync();
+
+            // Find the matching category with correct casing
+            var matchingCategory = categories.FirstOrDefault(c => 
+                c.Equals(Category, StringComparison.OrdinalIgnoreCase));
+
+            // If category doesn't exist, redirect to index
+            if (matchingCategory == null)
+            {
+                return RedirectToPage("/Tips/Index");
+            }
+
+            // If category exists but with different casing, redirect to correct casing
+            if (matchingCategory != Category)
+            {
+                return RedirectToPage("/Tips/Category", new { category = matchingCategory });
+            }
+
             var request = new TipSearchRequest
             {
                 Category = Category,
@@ -40,10 +60,6 @@ public class CategoryModel : PageModel
 
             var tips = await _contentService.SearchTipsAsync(request);
             var totalCount = tips.Count;
-
-            // Get filter options
-            var categories = await _contentService.GetCategoriesAsync();
-            var tags = await _contentService.GetTagsAsync();
 
             ViewModel = new TipListViewModel
             {
