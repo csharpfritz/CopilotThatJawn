@@ -12,11 +12,6 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
-param certificateName string
-param domainApex string
-param domainWww string
-param wwwCertificateName string
-
 var tags = {
   'azd-env-name': environmentName
 }

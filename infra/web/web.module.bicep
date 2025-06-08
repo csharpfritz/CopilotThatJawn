@@ -19,14 +19,6 @@ param azure_storage_outputs_tableendpoint string
 
 param web_identity_outputs_clientid string
 
-param certificateName string
-
-param domainApex string
-
-param wwwCertificateName string
-
-param domainWww string
-
 resource web 'Microsoft.App/containerApps@2024-03-01' = {
   name: 'web'
   location: location
@@ -37,16 +29,17 @@ resource web 'Microsoft.App/containerApps@2024-03-01' = {
         external: true
         targetPort: int(web_containerport)
         transport: 'http'
+        allowInsecure: false
         customDomains: [
           {
-            name: domainApex
-            bindingType: (certificateName != '') ? 'SniEnabled' : 'Disabled'
-            certificateId: (certificateName != '') ? '${outputs_azure_container_apps_environment_id}/managedCertificates/${certificateName}' : null
+            name: 'copilotthatjawn.com'
+            bindingType: 'SniEnabled'
+            certificateId: '/subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/copilotthatjawn.com-cae-uanp-250608192822'
           }
           {
-            name: domainWww
-            bindingType: (wwwCertificateName != '') ? 'SniEnabled' : 'Disabled'
-            certificateId: (wwwCertificateName != '') ? '${outputs_azure_container_apps_environment_id}/managedCertificates/${wwwCertificateName}' : null
+            name: 'www.copilotthatjawn.com'
+            bindingType: 'SniEnabled'
+            certificateId: '/subscriptions/09153f92-3cbc-46f1-8872-1683749eda4b/resourceGroups/rg-copilotthatjawn/providers/Microsoft.App/managedEnvironments/cae-uanpydy4xv63a/managedCertificates/www.copilotthatjawn.com-cae-uanp-250608193349'
           }
         ]
       }

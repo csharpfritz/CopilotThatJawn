@@ -5,18 +5,6 @@
       "principalId": {
         "value": "${AZURE_PRINCIPAL_ID}"
       },
-      "certificateName": {
-        "value": "copilotthatjawn.com-cae-uanp-250608192822"
-      },
-      "domainApex": {
-        "value": "copilotthatjawn.com"
-      },
-      "domainWww": {
-        "value": "www.copilotthatjawn.com"
-      },
-      "wwwCertificateName": {
-        "value": "www.copilotthatjawn.com-cae-uanp-250608193349"
-      },
       "environmentName": {
         "value": "${AZURE_ENV_NAME}"
       },
