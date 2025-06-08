@@ -3,6 +3,8 @@ param location string = resourceGroup().location
 
 param azure_storage_outputs_name string
 
+param principalType string
+
 param principalId string
 
 resource azure_storage 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
@@ -14,7 +16,7 @@ resource azure_storage_StorageBlobDataContributor 'Microsoft.Authorization/roleA
   properties: {
     principalId: principalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-    principalType: 'ServicePrincipal'
+    principalType: principalType
   }
   scope: azure_storage
 }
@@ -24,7 +26,7 @@ resource azure_storage_StorageTableDataContributor 'Microsoft.Authorization/role
   properties: {
     principalId: principalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')
-    principalType: 'ServicePrincipal'
+    principalType: principalType
   }
   scope: azure_storage
 }
@@ -34,7 +36,7 @@ resource azure_storage_StorageQueueDataContributor 'Microsoft.Authorization/role
   properties: {
     principalId: principalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')
-    principalType: 'ServicePrincipal'
+    principalType: principalType
   }
   scope: azure_storage
 }

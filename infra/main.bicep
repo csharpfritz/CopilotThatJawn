@@ -12,6 +12,7 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+
 var tags = {
   'azd-env-name': environmentName
 }
@@ -38,20 +39,14 @@ module azure_storage 'azure-storage/azure-storage.module.bicep' = {
     location: location
   }
 }
-module web_identity 'web-identity/web-identity.module.bicep' = {
-  name: 'web-identity'
-  scope: rg
-  params: {
-    location: location
-  }
-}
-module web_roles_azure_storage 'web-roles-azure-storage/web-roles-azure-storage.module.bicep' = {
-  name: 'web-roles-azure-storage'
+module azure_storage_roles 'azure-storage-roles/azure-storage-roles.module.bicep' = {
+  name: 'azure-storage-roles'
   scope: rg
   params: {
     azure_storage_outputs_name: azure_storage.outputs.name
     location: location
-    principalId: web_identity.outputs.principalId
+    principalId: resources.outputs.MANAGED_IDENTITY_PRINCIPAL_ID
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -65,5 +60,3 @@ output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = resources.outputs.AZURE_CO
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_ID
 output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN
 output AZURE_STORAGE_TABLEENDPOINT string = azure_storage.outputs.tableEndpoint
-output WEB_IDENTITY_CLIENTID string = web_identity.outputs.clientId
-output WEB_IDENTITY_ID string = web_identity.outputs.id
