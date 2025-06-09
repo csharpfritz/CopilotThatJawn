@@ -142,13 +142,13 @@ Agent mode can help with complex mocking:
 
 ## Best Practices Checklist
 
-✅ Start with clear test objectives
-✅ Specify testing framework and patterns
-✅ Include both positive and negative test cases
-✅ Request mock generation for dependencies
-✅ Verify edge cases and error handling
-✅ Maintain consistency with existing tests
-✅ Include cleanup and tear-down logic
+✅ Start with clear test objectives  
+✅ Specify testing framework and patterns  
+✅ Include both positive and negative test cases  
+✅ Request mock generation for dependencies  
+✅ Verify edge cases and error handling  
+✅ Maintain consistency with existing tests  
+✅ Include cleanup and tear-down logic  
 ✅ Document test assumptions and requirements
 
 ## Example Workflow
