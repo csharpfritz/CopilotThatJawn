@@ -34,6 +34,48 @@
         })();
     </script>
     
+    <!-- Critical CSS for immediate theme application -->
+    <style>
+        :root {
+            /* Light theme colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --navbar-bg: #ffffff;
+            --navbar-text: #212529;
+        }
+        
+        /* Dark theme colors */
+        html[data-theme="dark"],
+        html[data-theme-resolved="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d3748;
+            --text-primary: #f7fafc;
+            --text-secondary: #cbd5e0;
+            --navbar-bg: #1a1a1a;
+            --navbar-text: #f7fafc;
+        }
+        
+        /* Immediate body styling */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Immediate navbar styling */
+        .navbar {
+            background-color: var(--navbar-bg) !important;
+            color: var(--navbar-text) !important;
+        }
+        .navbar .navbar-brand,
+        .navbar .nav-link {
+            color: var(--navbar-text) !important;
+        }
+    </style>
+    
     <!-- Feeds and Sitemap -->
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="application/rss+xml" title="Latest Tips" href="/feed.rss" />
