@@ -1,6 +1,6 @@
 name: Build and Deploy
 
-# Run when commits are pushed to main
+# Run when commits are pushed to main (excluding Content folder changes)
 on:
   workflow_dispatch:
   push:
@@ -8,6 +8,9 @@ on:
     # Set this to the mainline branch you are using
     branches:
       - main
+    # Exclude Content folder changes to avoid unnecessary deployments
+    paths-ignore:
+      - 'Content/**'
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -25,6 +28,7 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      CACHE_REFRESH_API_KEY: ${{ secrets.CACHE_REFRESH_API_KEY }}
 
     steps:
       - name: Checkout

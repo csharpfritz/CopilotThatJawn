@@ -12,6 +12,10 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+@description('API key for cache refresh endpoint security')
+@secure()
+param cacheRefreshApiKey string = ''
+
 
 var tags = {
   'azd-env-name': environmentName
@@ -29,6 +33,7 @@ module resources 'resources.bicep' = {
     location: location
     tags: tags
     principalId: principalId
+    cacheRefreshApiKey: cacheRefreshApiKey
   }
 }
 

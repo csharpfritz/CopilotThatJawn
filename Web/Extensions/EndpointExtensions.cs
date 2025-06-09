@@ -192,4 +192,57 @@ public static class EndpointExtensions
             .SetVaryByHost(true)
             .Tag("rss"));
     }
+
+    public static void MapCacheRefreshEndpoint(this WebApplication app)
+    {
+        app.MapPost("/api/cache/refresh", async (HttpContext context, IContentService contentService, ILogger<Program> logger, IWebHostEnvironment environment, IConfiguration configuration) =>
+        {
+            try
+            {
+                logger.LogInformation("Cache refresh requested via API endpoint");
+                
+                // Validate API key for security
+                var expectedApiKey = configuration["CacheRefresh:ApiKey"];
+                if (!string.IsNullOrEmpty(expectedApiKey))
+                {
+                    var providedApiKey = context.Request.Headers["X-API-Key"].FirstOrDefault();
+                    if (string.IsNullOrEmpty(providedApiKey) || providedApiKey != expectedApiKey)
+                    {
+                        logger.LogWarning("Cache refresh request rejected: Invalid or missing API key");
+                        return Results.Unauthorized();
+                    }
+                }
+                else if (!environment.IsDevelopment())
+                {
+                    logger.LogWarning("Cache refresh API key not configured in production environment");
+                    return Results.Problem("API key not configured", statusCode: 500);
+                }
+                
+                // Only perform cache refresh in non-development environments
+                // In development, the cache isn't as critical and may require Azure Table Storage
+                if (environment.IsDevelopment())
+                {
+                    logger.LogInformation("Development environment detected. Skipping cache refresh.");
+                    return Results.Ok(new { 
+                        message = "Cache refresh skipped in development environment", 
+                        timestamp = DateTime.UtcNow,
+                        environment = "Development" 
+                    });
+                }
+                
+                await contentService.RefreshContentAsync();
+                
+                logger.LogInformation("Cache refresh completed successfully");
+                return Results.Ok(new { message = "Cache refreshed successfully", timestamp = DateTime.UtcNow });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error refreshing cache via API endpoint");
+                return Results.Problem("Failed to refresh cache", statusCode: 500);
+            }
+        })
+        .WithName("RefreshCache")
+        .WithSummary("Refresh the content cache")
+        .WithDescription("Triggers a refresh of the in-memory content cache from Azure Table Storage. Requires X-API-Key header for authentication.");
+    }
 }
