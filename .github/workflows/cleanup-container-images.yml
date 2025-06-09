@@ -1,0 +1,165 @@
+name: Cleanup Container Images
+
+# Run daily at 2 AM UTC to clean up old container images
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:     # Allow manual triggering
+    inputs:
+      dry_run:
+        description: 'Dry run mode (show what would be deleted without actually deleting)'
+        required: false
+        default: 'false'
+        type: boolean
+
+# Set up permissions for Azure authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cleanup-images:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+
+    steps:
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      
+      - name: Log in with Azure (Federated Credentials)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Get Azure Container Registry Name
+        id: get-acr
+        run: |
+          # Get the resource group name
+          rg_name="rg-${{ env.AZURE_ENV_NAME }}"
+          echo "Resource group: $rg_name"
+          
+          # Verify the resource group exists
+          if ! az group show --name "$rg_name" >/dev/null 2>&1; then
+            echo "Resource group '$rg_name' not found. Skipping cleanup."
+            echo "acr_name=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Get the ACR name from the resource group
+          acr_name=$(az acr list --resource-group "$rg_name" --query "[0].name" --output tsv 2>/dev/null)
+          
+          if [ -z "$acr_name" ] || [ "$acr_name" = "null" ]; then
+            echo "No Azure Container Registry found in resource group '$rg_name'."
+            echo "acr_name=" >> $GITHUB_OUTPUT
+          else
+            echo "Found ACR: $acr_name"
+            echo "acr_name=$acr_name" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Cleanup Old Container Images
+        run: |
+          acr_name="${{ steps.get-acr.outputs.acr_name }}"
+          dry_run="${{ github.event.inputs.dry_run || 'false' }}"
+          
+          if [ -z "$acr_name" ]; then
+            echo "No Azure Container Registry found. Skipping cleanup."
+            exit 0
+          fi
+          
+          echo "Starting container image cleanup for ACR: $acr_name"
+          echo "Retention policy: Keep 5 most recent images per repository"
+          
+          if [ "$dry_run" = "true" ]; then
+            echo "🔍 DRY RUN MODE: Will show what would be deleted without actually deleting"
+          fi
+          
+          # Get all repositories in the ACR
+          repositories=$(az acr repository list --name "$acr_name" --output tsv 2>/dev/null)
+          
+          if [ -z "$repositories" ]; then
+            echo "No repositories found in ACR. Nothing to clean up."
+            exit 0
+          fi
+          
+          total_deleted=0
+          total_kept=0
+          
+          # Process each repository
+          echo "Found repositories: $(echo "$repositories" | wc -l)"
+          for repo in $repositories; do
+            echo ""
+            echo "Processing repository: $repo"
+            
+            # Get all tags for this repository, sorted by creation time (newest first)
+            # Include detailed information to help with debugging
+            tags=$(az acr repository show-tags --name "$acr_name" --repository "$repo" \
+              --orderby time_desc --output tsv 2>/dev/null)
+            
+            if [ -z "$tags" ]; then
+              echo "  No tags found for repository $repo"
+              continue
+            fi
+            
+            # Count total tags
+            tag_count=$(echo "$tags" | wc -l)
+            echo "  Found $tag_count tags in repository $repo"
+            
+            # If we have more than 5 tags, delete the older ones
+            if [ "$tag_count" -gt 5 ]; then
+              # Skip the first 5 tags (most recent) and delete the rest
+              tags_to_keep=$(echo "$tags" | head -5)
+              tags_to_delete=$(echo "$tags" | tail -n +6)
+              delete_count=$(echo "$tags_to_delete" | wc -l)
+              
+              echo "  Keeping 5 most recent tags:"
+              for tag in $tags_to_keep; do
+                echo "    Keeping: $repo:$tag"
+              done
+              
+              if [ "$dry_run" = "true" ]; then
+                echo "  🔍 Would delete $delete_count old tags (DRY RUN):"
+                for tag in $tags_to_delete; do
+                  echo "    Would delete: $repo:$tag"
+                done
+                ((total_deleted += delete_count))
+              else
+                echo "  Deleting $delete_count old tags:"
+                
+                for tag in $tags_to_delete; do
+                  echo "    Deleting: $repo:$tag"
+                  
+                  # Add error handling for individual deletions
+                  if az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes 2>/dev/null; then
+                    echo "      ✓ Successfully deleted $repo:$tag"
+                    ((total_deleted++))
+                  else
+                    echo "      ✗ Failed to delete $repo:$tag (may no longer exist)"
+                  fi
+                done
+              fi
+              
+              ((total_kept += 5))
+            else
+              echo "  Repository $repo has $tag_count tags (≤5), no cleanup needed"
+              ((total_kept += tag_count))
+            fi
+          done
+          
+          echo ""
+          echo "=== Cleanup Summary ==="
+          echo "Total images kept: $total_kept"
+          if [ "$dry_run" = "true" ]; then
+            echo "Total images that would be deleted: $total_deleted"
+            echo "🔍 DRY RUN MODE: No images were actually deleted"
+          else
+            echo "Total images deleted: $total_deleted"
+            echo "Container image cleanup completed successfully!"
+          fi
