@@ -1,0 +1,26 @@
+{
+    "name": "Copilot That Jawn",
+    "short_name": "CTJ",    "description": "Master Microsoft Copilot and GitHub Copilot with our expert-curated tips",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#6200EE",
+    "theme_color": "#6200EE",
+    "icons": [
+        {
+            "src": "/img/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/img/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/img/maskable-icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
