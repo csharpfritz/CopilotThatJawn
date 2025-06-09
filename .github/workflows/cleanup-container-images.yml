@@ -28,9 +28,6 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
       - name: Install Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
