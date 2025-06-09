@@ -18,7 +18,7 @@ public class ContentService : IContentService
     private readonly IMemoryCache _cache;
     private readonly MarkdownPipeline _markdownPipeline;
     private readonly IDeserializer _yamlDeserializer;
-    private readonly TableClient? _tableClient;
+    private readonly TableClient _tableClient;
     private const string TIPS_CACHE_KEY = "content_tips";
     private static readonly TimeSpan _cacheExpiry = TimeSpan.FromHours(6);
     
@@ -26,7 +26,7 @@ public class ContentService : IContentService
         ILogger<ContentService> logger, 
         IWebHostEnvironment environment,
         IMemoryCache cache,
-        TableServiceClient? tableServiceClient = null)
+        TableServiceClient tableServiceClient)
     {
         _logger = logger;
         _environment = environment;
@@ -60,8 +60,8 @@ public class ContentService : IContentService
             .IgnoreUnmatchedProperties()
             .Build();
 
-        // Initialize Azure Table Client if available
-        _tableClient = tableServiceClient?.GetTableClient("Content");
+        // Initialize Azure Table Client
+        _tableClient = tableServiceClient.GetTableClient("Content");
     }
 
     public async Task<List<TipModel>> GetAllTipsAsync()

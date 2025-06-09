@@ -6,15 +6,13 @@ using Shared;
 using Web.Extensions;
 using Web.Services;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add .NET Aspire service defaults
 builder.AddServiceDefaults();
 
-// Commenting out Azure Table Storage for development
-// builder.AddAzureTableClient("tables");
+builder.AddAzureTableClient("tables");
 
 // Add WebOptimizer services
 builder.Services.AddWebOptimizer(pipeline =>
@@ -95,17 +93,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });
 
 // Register content service
-builder.Services.AddScoped<IContentService>(provider =>
-{
-    var logger = provider.GetRequiredService<ILogger<ContentService>>();
-    var environment = provider.GetRequiredService<IWebHostEnvironment>();
-    var cache = provider.GetRequiredService<IMemoryCache>();
-    
-    // Try to get the table service client, but don't fail if it's not available
-    var tableServiceClient = provider.GetService<Azure.Data.Tables.TableServiceClient>();
-    
-    return new ContentService(logger, environment, cache, tableServiceClient);
-});
+builder.Services.AddScoped<IContentService, ContentService>();
 
 var app = builder.Build();
 
