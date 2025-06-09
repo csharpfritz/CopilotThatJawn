@@ -3,6 +3,7 @@ using System.Net.Mime;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.OutputCaching;
 using Web.Services;
 
 namespace Web.Extensions;
@@ -195,7 +196,7 @@ public static class EndpointExtensions
 
     public static void MapCacheRefreshEndpoint(this WebApplication app)
     {
-        app.MapPost("/api/cache/refresh", async (HttpContext context, IContentService contentService, ILogger<Program> logger, IWebHostEnvironment environment, IConfiguration configuration) =>
+        app.MapPost("/api/cache/refresh", async (HttpContext context, IContentService contentService, IOutputCacheStore outputCacheStore, ILogger<Program> logger, IWebHostEnvironment environment, IConfiguration configuration) =>
         {
             try
             {
@@ -219,7 +220,6 @@ public static class EndpointExtensions
                 }
                 
                 // Only perform cache refresh in non-development environments
-                // In development, the cache isn't as critical and may require Azure Table Storage
                 if (environment.IsDevelopment())
                 {
                     logger.LogInformation("Development environment detected. Skipping cache refresh.");
@@ -230,10 +230,26 @@ public static class EndpointExtensions
                     });
                 }
                 
+                // Refresh content cache
                 await contentService.RefreshContentAsync();
                 
-                logger.LogInformation("Cache refresh completed successfully");
-                return Results.Ok(new { message = "Cache refreshed successfully", timestamp = DateTime.UtcNow });
+                // Evict all output cache entries
+                await outputCacheStore.EvictByTagAsync("sitemap", default);
+                await outputCacheStore.EvictByTagAsync("rss", default);
+                await outputCacheStore.EvictByTagAsync("Web.Pages.IndexModel", default);
+                await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.IndexModel", default);
+                await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.CategoryModel", default);
+                await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.TagModel", default);
+                await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.DetailsModel", default);
+                
+                // Also evict by the base policy
+                await outputCacheStore.EvictByTagAsync("", default);
+                
+                logger.LogInformation("Cache refresh completed successfully (content and output cache)");
+                return Results.Ok(new { 
+                    message = "Content and output cache refreshed successfully", 
+                    timestamp = DateTime.UtcNow 
+                });
             }
             catch (Exception ex)
             {
@@ -243,6 +259,6 @@ public static class EndpointExtensions
         })
         .WithName("RefreshCache")
         .WithSummary("Refresh the content cache")
-        .WithDescription("Triggers a refresh of the in-memory content cache from Azure Table Storage. Requires X-API-Key header for authentication.");
+        .WithDescription("Triggers a refresh of the in-memory content cache and output cache for all pages. Requires X-API-Key header for authentication.");
     }
 }
