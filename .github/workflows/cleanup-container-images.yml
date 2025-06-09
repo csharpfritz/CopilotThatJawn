@@ -1,0 +1,106 @@
+name: Cleanup Container Images
+
+# Run daily at 2 AM UTC to clean up old container images
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:     # Allow manual triggering
+
+# Set up permissions for Azure authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cleanup-images:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      
+      - name: Log in with Azure (Federated Credentials)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Get Azure Container Registry Name
+        id: get-acr
+        run: |
+          # Get the resource group name
+          rg_name="rg-${{ env.AZURE_ENV_NAME }}"
+          echo "Resource group: $rg_name"
+          
+          # Get the ACR name from the resource group
+          acr_name=$(az acr list --resource-group "$rg_name" --query "[0].name" --output tsv)
+          echo "ACR Name: $acr_name"
+          echo "acr_name=$acr_name" >> $GITHUB_OUTPUT
+      
+      - name: Cleanup Old Container Images
+        run: |
+          acr_name="${{ steps.get-acr.outputs.acr_name }}"
+          
+          if [ -z "$acr_name" ]; then
+            echo "No Azure Container Registry found. Skipping cleanup."
+            exit 0
+          fi
+          
+          echo "Cleaning up old images in ACR: $acr_name"
+          
+          # Get all repositories in the ACR
+          repositories=$(az acr repository list --name "$acr_name" --output tsv)
+          
+          if [ -z "$repositories" ]; then
+            echo "No repositories found in ACR. Nothing to clean up."
+            exit 0
+          fi
+          
+          # Process each repository
+          for repo in $repositories; do
+            echo "Processing repository: $repo"
+            
+            # Get all tags for this repository, sorted by creation time (newest first)
+            tags=$(az acr repository show-tags --name "$acr_name" --repository "$repo" \
+              --orderby time_desc --output tsv)
+            
+            if [ -z "$tags" ]; then
+              echo "  No tags found for repository $repo"
+              continue
+            fi
+            
+            # Count total tags
+            tag_count=$(echo "$tags" | wc -l)
+            echo "  Found $tag_count tags in repository $repo"
+            
+            # If we have more than 5 tags, delete the older ones
+            if [ "$tag_count" -gt 5 ]; then
+              # Skip the first 5 tags (most recent) and delete the rest
+              tags_to_delete=$(echo "$tags" | tail -n +6)
+              delete_count=$(echo "$tags_to_delete" | wc -l)
+              
+              echo "  Deleting $delete_count old tags from repository $repo"
+              
+              for tag in $tags_to_delete; do
+                echo "    Deleting tag: $repo:$tag"
+                az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes
+              done
+              
+              echo "  Successfully deleted $delete_count old tags from repository $repo"
+            else
+              echo "  Repository $repo has $tag_count tags (≤5), no cleanup needed"
+            fi
+          done
+          
+          echo "Container image cleanup completed!"
