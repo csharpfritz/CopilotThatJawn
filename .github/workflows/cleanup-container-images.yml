@@ -5,6 +5,12 @@ on:
   schedule:
     - cron: '0 2 * * *'  # Daily at 2 AM UTC
   workflow_dispatch:     # Allow manual triggering
+    inputs:
+      dry_run:
+        description: 'Dry run mode (show what would be deleted without actually deleting)'
+        required: false
+        default: 'false'
+        type: boolean
 
 # Set up permissions for Azure authentication
 permissions:
@@ -64,6 +70,7 @@ jobs:
       - name: Cleanup Old Container Images
         run: |
           acr_name="${{ steps.get-acr.outputs.acr_name }}"
+          dry_run="${{ github.event.inputs.dry_run || 'false' }}"
           
           if [ -z "$acr_name" ]; then
             echo "No Azure Container Registry found. Skipping cleanup."
@@ -72,6 +79,10 @@ jobs:
           
           echo "Starting container image cleanup for ACR: $acr_name"
           echo "Retention policy: Keep 5 most recent images per repository"
+          
+          if [ "$dry_run" = "true" ]; then
+            echo "🔍 DRY RUN MODE: Will show what would be deleted without actually deleting"
+          fi
           
           # Get all repositories in the ACR
           repositories=$(az acr repository list --name "$acr_name" --output tsv 2>/dev/null)
@@ -116,19 +127,27 @@ jobs:
                 echo "    Keeping: $repo:$tag"
               done
               
-              echo "  Deleting $delete_count old tags:"
-              
-              for tag in $tags_to_delete; do
-                echo "    Deleting: $repo:$tag"
+              if [ "$dry_run" = "true" ]; then
+                echo "  🔍 Would delete $delete_count old tags (DRY RUN):"
+                for tag in $tags_to_delete; do
+                  echo "    Would delete: $repo:$tag"
+                done
+                ((total_deleted += delete_count))
+              else
+                echo "  Deleting $delete_count old tags:"
                 
-                # Add error handling for individual deletions
-                if az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes 2>/dev/null; then
-                  echo "      ✓ Successfully deleted $repo:$tag"
-                  ((total_deleted++))
-                else
-                  echo "      ✗ Failed to delete $repo:$tag (may no longer exist)"
-                fi
-              done
+                for tag in $tags_to_delete; do
+                  echo "    Deleting: $repo:$tag"
+                  
+                  # Add error handling for individual deletions
+                  if az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes 2>/dev/null; then
+                    echo "      ✓ Successfully deleted $repo:$tag"
+                    ((total_deleted++))
+                  else
+                    echo "      ✗ Failed to delete $repo:$tag (may no longer exist)"
+                  fi
+                done
+              fi
               
               ((total_kept += 5))
             else
@@ -140,5 +159,10 @@ jobs:
           echo ""
           echo "=== Cleanup Summary ==="
           echo "Total images kept: $total_kept"
-          echo "Total images deleted: $total_deleted"
-          echo "Container image cleanup completed successfully!"
+          if [ "$dry_run" = "true" ]; then
+            echo "Total images that would be deleted: $total_deleted"
+            echo "🔍 DRY RUN MODE: No images were actually deleted"
+          else
+            echo "Total images deleted: $total_deleted"
+            echo "Container image cleanup completed successfully!"
+          fi
