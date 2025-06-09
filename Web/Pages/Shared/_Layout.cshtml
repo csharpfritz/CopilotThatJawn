@@ -6,7 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@(ViewData["Description"] ?? "Where Philly innovation meets AI excellence. Master Microsoft Copilot and GitHub Copilot with our expert-curated tips.")" />
     <title>@ViewData["Title"] - Copilot That Jawn</title>
-      <!-- Prevent theme flash -->
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="~/img/favicon.ico" asp-append-version="true">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/img/favicon-32x32.png" asp-append-version="true">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/img/favicon-16x16.png" asp-append-version="true">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/img/apple-touch-icon.png" asp-append-version="true">
+      <!-- PWA Support -->
+    <link rel="manifest" href="~/manifest.json" asp-append-version="true">
+    <meta name="theme-color" content="#6200EE">
+    <meta name="msapplication-TileColor" content="#6200EE">
+    <meta name="msapplication-config" content="~/browserconfig.xml" asp-append-version="true">
+
+    <!-- Prevent theme flash -->
     <script>
         (function() {
             const theme = localStorage.getItem('theme') || 'auto';
