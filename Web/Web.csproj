@@ -8,8 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Azure.Data.Tables" Version="9.3.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.436" />
     <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.9" />
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
   <ItemGroup>

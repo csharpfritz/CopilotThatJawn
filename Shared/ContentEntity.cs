@@ -26,4 +26,7 @@ namespace Shared;
         public string Slug { get; set; } = string.Empty;
         // Content hash for change detection
         public string ContentHash { get; set; } = string.Empty;
+        
+        // Store as JSON string of ImageInfo objects
+        public string Images { get; set; } = string.Empty;
     }

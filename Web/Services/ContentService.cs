@@ -19,6 +19,7 @@ public class ContentService : IContentService
     private readonly MarkdownPipeline _markdownPipeline;
     private readonly IDeserializer _yamlDeserializer;
     private readonly TableClient _tableClient;
+    private readonly IImageService _imageService;
     private const string TIPS_CACHE_KEY = "content_tips";
     private static readonly TimeSpan _cacheExpiry = TimeSpan.FromHours(6);
     
@@ -26,13 +27,15 @@ public class ContentService : IContentService
         ILogger<ContentService> logger, 
         IWebHostEnvironment environment,
         IMemoryCache cache,
-        TableServiceClient tableServiceClient)
+        TableServiceClient tableServiceClient,
+        IImageService imageService)
     {
         _logger = logger;
         _environment = environment;
         _cache = cache;
+        _imageService = imageService;
 
-        // Configure Markdig without syntax highlighting (using Prism.js client-side instead)
+        // Configure Markdig with image processing
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAutoLinks()
             .UseEmphasisExtras()
@@ -51,7 +54,8 @@ public class ContentService : IContentService
             .UseCustomContainers()
             .UseFigures()
             .UseEmojiAndSmiley()
-            .UseGenericAttributes() // Enables CSS class attributes on code blocks
+            .UseGenericAttributes()
+            .Use<ImageUrlRewriterExtension>() // Custom extension for image processing
             .Build();
 
         // Configure YAML deserializer
@@ -329,4 +333,31 @@ public class ContentService : IContentService
 
 		return htmlContent;
 	}
+
+    private string ProcessImagesInContent(string content, List<ImageInfo> images)
+    {
+        // Process markdown image syntax: ![alt](url "caption")
+        var imagePattern = new Regex(@"!\[([^\]]*)\]\(([^)\s]+)(?:\s+""([^""]*)"")?\)");
+        return imagePattern.Replace(content, match =>
+        {
+            var altText = match.Groups[1].Value;
+            var url = match.Groups[2].Value;
+            var caption = match.Groups[3].Success ? match.Groups[3].Value : null;
+
+            // If it's already a full URL, leave it as is
+            if (Uri.TryCreate(url, UriKind.Absolute, out _))
+                return match.Value;
+
+            // Find matching image in our processed list
+            var image = images.FirstOrDefault(i => i.FileName == url);
+            if (image == null)
+                return match.Value; // Keep original if not found
+
+            // Build new markdown with processed URL
+            var newUrl = _imageService.GetImageUrl(image.ImageId);
+            var captionPart = !string.IsNullOrEmpty(caption) ? $" \"{caption}\"" : "";
+            
+            return $"![{altText}]({newUrl}{captionPart})";
+        });
+    }
 }

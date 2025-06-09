@@ -21,9 +21,12 @@ public class TipModel
     /// <summary>
     /// Gets the reading time estimate in minutes
     /// </summary>
-    public int ReadingTimeMinutes => Math.Max(1, Content.Split(' ').Length / 200);
+    public int ReadingTimeMinutes => Math.Max(1, Content.Split(' ').Length / 200);    public string UrlSlug { get; set; } = string.Empty;
 
-    public string UrlSlug { get; set; } = string.Empty;
+    /// <summary>
+    /// JSON string containing array of ImageInfo objects
+    /// </summary>
+    public string Images { get; set; } = "[]";
 }
 
 /// <summary>
