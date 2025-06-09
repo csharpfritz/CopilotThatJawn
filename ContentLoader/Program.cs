@@ -43,25 +43,49 @@ try
         {
             Console.WriteLine($"No markdown files found in directory: {filePath}");
             return 1;
-        }
-        int successCount = 0;
-        int failCount = 0;
+        }        int addedCount = 0;
+        int updatedCount = 0;
+        int unchangedCount = 0;
+        int failedCount = 0;
+
         foreach (var mdFile in mdFiles)
         {
             try
             {
                 TipModel tip = Shared.ContentUploadHelper.ParseMarkdownFile(mdFile);
-                await Shared.ContentUploadHelper.UploadToTableStorage(tip, connectionString);
-                successCount++;
+                var status = await Shared.ContentUploadHelper.UploadToTableStorage(tip, connectionString);
+                
+                switch (status)
+                {
+                    case UploadStatus.Added:
+                        addedCount++;
+                        break;
+                    case UploadStatus.Updated:
+                        updatedCount++;
+                        break;
+                    case UploadStatus.Unchanged:
+                        unchangedCount++;
+                        break;
+                    case UploadStatus.Failed:
+                        failedCount++;
+                        break;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error uploading {mdFile}: {ex.Message}");
-                failCount++;
+                failedCount++;
             }
         }
-        Console.WriteLine($"Upload complete. Success: {successCount}, Failed: {failCount}");
-        return failCount == 0 ? 0 : 1;
+
+        Console.WriteLine("\nSync Summary:");
+        Console.WriteLine($"Added:     {addedCount}");
+        Console.WriteLine($"Updated:   {updatedCount}");
+        Console.WriteLine($"Unchanged: {unchangedCount}");
+        Console.WriteLine($"Failed:    {failedCount}");
+        Console.WriteLine($"Total:     {mdFiles.Length}");
+
+        return failedCount == 0 ? 0 : 1;
     }
     else
     {

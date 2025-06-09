@@ -115,56 +115,64 @@ namespace Shared
                 // Entity doesn't exist or other error - treat as not found
                 return null;
             }
-        }
-
-        public static async Task UploadToTableStorage(TipModel tip, string connectionString)
+        }        public static async Task<UploadStatus> UploadToTableStorage(TipModel tip, string connectionString)
         {
-            var serviceClient = new TableServiceClient(connectionString);
-            var tableName = "Content";
-            await serviceClient.CreateTableIfNotExistsAsync(tableName);
-            var tableClient = serviceClient.GetTableClient(tableName);
+            try
+            {
+                var serviceClient = new TableServiceClient(connectionString);
+                var tableName = "Content";
+                await serviceClient.CreateTableIfNotExistsAsync(tableName);
+                var tableClient = serviceClient.GetTableClient(tableName);
 
-            var partitionKey = tip.Category.ToLowerInvariant();
-            var rowKey = !string.IsNullOrWhiteSpace(tip.UrlSlug) ? tip.UrlSlug : tip.FileName;
-            
-            // Calculate content hash for change detection
-            var contentHash = CalculateContentHash(tip);
-            
-            // Check if entity already exists
-            var existingEntity = await GetExistingContent(tableClient, partitionKey, rowKey);
-            
-            if (existingEntity != null && existingEntity.ContentHash == contentHash)
-            {
-                Console.WriteLine($"Skipping {tip.FileName} - no changes detected");
-                return;
-            }
+                var partitionKey = tip.Category.ToLowerInvariant();
+                var rowKey = !string.IsNullOrWhiteSpace(tip.UrlSlug) ? tip.UrlSlug : tip.FileName;
+                
+                // Calculate content hash for change detection
+                var contentHash = CalculateContentHash(tip);
+                
+                // Check if entity already exists
+                var existingEntity = await GetExistingContent(tableClient, partitionKey, rowKey);
+                
+                if (existingEntity != null && existingEntity.ContentHash == contentHash)
+                {
+                    Console.WriteLine($"Skipping {tip.FileName} - no changes detected");
+                    return UploadStatus.Unchanged;
+                }
 
-            var entity = new ContentEntity
-            {
-                PartitionKey = partitionKey,
-                RowKey = rowKey,
-                Slug = tip.UrlSlug,
-                Title = tip.Title,
-                Category = tip.Category,
-                Tags = string.Join(",", tip.Tags),
-                Difficulty = tip.Difficulty,
-                Author = tip.Author,
-                PublishedDate = DateTime.SpecifyKind(tip.PublishedDate, DateTimeKind.Utc),
-                Description = tip.Description,
-                Content = tip.Content,
-                FileName = tip.FileName,
-                ContentHash = contentHash
-            };
-            
-            await tableClient.UpsertEntityAsync(entity);
-            
-            if (existingEntity == null)
-            {
-                Console.WriteLine($"Uploaded new content: {tip.FileName}");
+                var entity = new ContentEntity
+                {
+                    PartitionKey = partitionKey,
+                    RowKey = rowKey,
+                    Slug = tip.UrlSlug,
+                    Title = tip.Title,
+                    Category = tip.Category,
+                    Tags = string.Join(",", tip.Tags),
+                    Difficulty = tip.Difficulty,
+                    Author = tip.Author,
+                    PublishedDate = DateTime.SpecifyKind(tip.PublishedDate, DateTimeKind.Utc),
+                    Description = tip.Description,
+                    Content = tip.Content,
+                    FileName = tip.FileName,
+                    ContentHash = contentHash
+                };
+                
+                await tableClient.UpsertEntityAsync(entity);
+                
+                if (existingEntity == null)
+                {
+                    Console.WriteLine($"Uploaded new content: {tip.FileName}");
+                    return UploadStatus.Added;
+                }
+                else
+                {
+                    Console.WriteLine($"Updated changed content: {tip.FileName}");
+                    return UploadStatus.Updated;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Updated changed content: {tip.FileName}");
+                Console.WriteLine($"Failed to upload {tip.FileName}: {ex.Message}");
+                return UploadStatus.Failed;
             }
         }
     }
