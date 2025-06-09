@@ -30,6 +30,8 @@ properties:
     secrets:
       - name: connectionstrings--tables
         value: '{{ .Env.AZURE_STORAGE_TABLEENDPOINT }}'
+      - name: cacherefresh--apikey
+        value: '{{ .Env.CACHE_REFRESH_API_KEY }}'
   template:
     containers:
       - image: {{ .Image }}
@@ -49,6 +51,8 @@ properties:
             value: in_memory
           - name: ConnectionStrings__tables
             secretRef: connectionstrings--tables
+          - name: CacheRefresh__ApiKey
+            secretRef: cacherefresh--apikey
     scale:
       minReplicas: 1
 tags:

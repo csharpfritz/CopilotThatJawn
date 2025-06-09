@@ -10,6 +10,9 @@
       },
       "location": {
         "value": "${AZURE_LOCATION}"
+      },
+      "cacheRefreshApiKey": {
+        "value": "${CACHE_REFRESH_API_KEY}"
       }
     }
   }
