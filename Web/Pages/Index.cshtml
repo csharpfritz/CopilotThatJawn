@@ -68,7 +68,8 @@
                             <small class="text-muted">@tip.PublishedDate.ToString("MMM dd, yyyy")</small>
                         </div>
                         <h5 class="card-title">@tip.Title</h5>
-                        <p class="card-text text-truncate-3">@tip.Description</p>                        <div class="d-flex flex-wrap gap-1 mb-2" style="max-width: 100%; overflow: hidden;">
+                        <p class="card-text text-truncate-3">@tip.Description</p>
+                        <div class="d-flex flex-wrap gap-1 mb-2" style="max-width: 100%; overflow: hidden;">
                             @foreach (var tag in tip.Tags.Take(3))
                             {
                                 <span class="badge bg-light text-dark text-truncate" style="max-width: 150px;">#@tag</span>
@@ -82,6 +83,16 @@
                     <div class="card-footer border-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted"><i class="bi bi-clock"></i> @tip.ReadingTimeMinutes min read</small>
+                            @if (!string.IsNullOrEmpty(tip.Difficulty))
+                            {
+                                <span class="badge @(tip.Difficulty switch 
+                                {
+                                    "Beginner" => "bg-success",
+                                    "Intermediate" => "bg-warning text-dark",
+                                    "Advanced" => "bg-danger",
+                                    _ => "bg-secondary"
+                                })">@tip.Difficulty</span>
+                            }
                             <a asp-page="/Tips/Details" asp-route-slug="@tip.UrlSlug" class="btn btn-sm btn-primary">Read More</a>
                         </div>
                     </div>
