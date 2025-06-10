@@ -6,7 +6,7 @@ tags: ["github-copilot", "best-practices", "productivity", "coding-standards"]
 difficulty: "Beginner"
 author: "GitHub Copilot"
 publishedDate: "2025-06-08"
-lastModified: "2025-01-21"
+lastModified: "2025-06-10"
 ---
 
 # Level Up GitHub Copilot with copilot-instructions.md
