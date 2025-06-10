@@ -6,12 +6,20 @@ tags: ["github-copilot", "best-practices", "productivity", "coding-standards"]
 difficulty: "Beginner"
 author: "GitHub Copilot"
 publishedDate: "2025-06-08"
-lastModified: "2025-06-08"
+lastModified: "2025-01-21"
 ---
 
 # Level Up GitHub Copilot with copilot-instructions.md
 
 A `copilot-instructions.md` file is an effective way to customize GitHub Copilot's behavior for your project. By adding this file to your repository, you can guide Copilot to follow your project's coding standards, naming conventions, and architectural patterns.
+
+## Learn More
+
+For comprehensive information about customizing GitHub Copilot, check out these authoritative resources:
+
+- **[GitHub Copilot Documentation](https://docs.github.com/en/copilot)** - Official GitHub documentation covering all aspects of GitHub Copilot
+- **[Configuring GitHub Copilot in your environment](https://docs.github.com/en/copilot/configuring-github-copilot)** - Detailed guide on customizing GitHub Copilot settings and behavior
+- **[GitHub Copilot in Visual Studio Code](https://learn.microsoft.com/en-us/training/modules/introduction-to-github-copilot/)** - Microsoft Learn training module on using GitHub Copilot effectively
 
 ## Setting Up copilot-instructions.md
 
