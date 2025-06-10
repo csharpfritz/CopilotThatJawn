@@ -16,7 +16,7 @@ on:
 permissions:
   id-token: write
   contents: read
-  packages: write # Required for Azure Container Registry operations
+  packages: write
 
 jobs:
   cleanup-images:
@@ -65,39 +65,7 @@ jobs:
             echo "acr_name=$acr_name" >> $GITHUB_OUTPUT
           fi
       
-      - name: Check ACR Permissions
-        id: check-permissions
-        run: |
-          acr_name="${{ steps.get-acr.outputs.acr_name }}"
-          
-          if [ -z "$acr_name" ]; then
-            echo "No Azure Container Registry found. Skipping permission check."
-            exit 0
-          fi
-          
-          echo "Checking permissions for ACR: $acr_name"
-          
-          # Check if current identity has AcrDelete role
-          permissions=$(az role assignment list --assignee ${{ env.AZURE_CLIENT_ID }} --scope "/subscriptions/${{ env.AZURE_SUBSCRIPTION_ID }}/providers/Microsoft.ContainerRegistry/registries/$acr_name" --query "[?roleDefinitionName=='AcrDelete'].roleDefinitionName" -o tsv)
-          
-          if [ -z "$permissions" ]; then
-            echo "❌ Warning: Current identity does not have AcrDelete role on the registry"
-            echo "has_delete_permission=false" >> $GITHUB_OUTPUT
-          else
-            echo "✅ Current identity has AcrDelete role"
-            echo "has_delete_permission=true" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check if current identity has AcrPush role (which includes delete capabilities)
-          push_permissions=$(az role assignment list --assignee ${{ env.AZURE_CLIENT_ID }} --scope "/subscriptions/${{ env.AZURE_SUBSCRIPTION_ID }}/providers/Microsoft.ContainerRegistry/registries/$acr_name" --query "[?roleDefinitionName=='AcrPush'].roleDefinitionName" -o tsv)
-          
-          if [ -n "$push_permissions" ]; then
-            echo "✅ Current identity has AcrPush role (includes delete capabilities)"
-            echo "has_delete_permission=true" >> $GITHUB_OUTPUT
-          fi
-
       - name: Cleanup Old Container Images
-        if: steps.check-permissions.outputs.has_delete_permission == 'true'
         run: |
           acr_name="${{ steps.get-acr.outputs.acr_name }}"
           dry_run="${{ github.event.inputs.dry_run || 'false' }}"
@@ -215,30 +183,15 @@ jobs:
             echo "Total images failed to delete: $total_failed"
             echo "Container image cleanup completed!"
           fi
-            # Always exit successfully if we're in dry run mode
-          if [ "$dry_run" = "true" ]; then
-            echo "✅ Cleanup process completed successfully (DRY RUN)!"
-            exit 0
-          fi
-
-          # If we deleted at least one image, consider it a success
-          if [ "$total_deleted" -gt 0 ]; then
-            if [ "$total_failed" -gt 0 ]; then
-              echo "⚠️ Cleanup completed with partial success"
-              echo "   - Successfully deleted: $total_deleted images"
-              echo "   - Failed to delete: $total_failed images"
-            else
-              echo "✅ Cleanup process completed successfully!"
-            fi
-            exit 0
-          fi
-
-          # If we didn't delete anything but there were things to delete
-          if [ "$total_failed" -gt 0 ]; then
+          
+          # Exit with error only if all deletions failed
+          if [ "$total_failed" -gt 0 ] && [ "$total_deleted" -eq 0 ]; then
             echo "❌ All deletion attempts failed. Please check ACR permissions and image locks."
             exit 1
           fi
-
-          # If we get here, there was nothing to delete
-          echo "✅ Cleanup process completed (no images needed deletion)"
-          exit 0
+          
+          # Exit successfully if we deleted at least some images
+          if [ "$total_deleted" -gt 0 ] || [ "$dry_run" = "true" ]; then
+            echo "✅ Cleanup process completed successfully!"
+            exit 0
+          fi
