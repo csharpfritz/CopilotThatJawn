@@ -412,6 +412,18 @@ pre[class*="language-"] {
     transition: border-color 0.3s ease;
 }
 
+/* Word wrap for code blocks without language specification */
+pre:not([class*="language-"]) {
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    padding: 1.25rem !important;
+    white-space: pre-wrap;       /* Since this is not a language-specific block, enable wrapping */
+    word-wrap: break-word;       /* Allow breaking of words */
+    transition: border-color 0.3s ease;
+}
+
 /* Code styling with Consolas fonts */
 pre[class*="language-"] code,
 code[class*="language-"],
