@@ -91,6 +91,7 @@ jobs:
           
           total_deleted=0
           total_kept=0
+          total_failed=0
           
           # Process each repository
           echo "Found repositories: $(echo "$repositories" | wc -l)"
@@ -136,13 +137,30 @@ jobs:
                 for tag in $tags_to_delete; do
                   echo "    Deleting: $repo:$tag"
                   
-                  # Add error handling for individual deletions
-                  if az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes 2>/dev/null; then
-                    echo "      ✓ Successfully deleted $repo:$tag"
-                    ((total_deleted++))
-                  else
-                    echo "      ✗ Failed to delete $repo:$tag (may no longer exist)"
-                  fi
+                  # Add better error handling and retry logic for deletions
+                  max_retries=3
+                  retry_count=0
+                  success=false
+                  
+                  while [ $retry_count -lt $max_retries ] && [ "$success" = "false" ]; do
+                    if [ $retry_count -gt 0 ]; then
+                      echo "      Retry attempt $retry_count for $repo:$tag"
+                      sleep 5
+                    fi
+                    
+                    if az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes >/dev/null 2>&1; then
+                      echo "      ✓ Successfully deleted $repo:$tag"
+                      success=true
+                      ((total_deleted++))
+                      break
+                    else
+                      ((retry_count++))
+                      if [ $retry_count -eq $max_retries ]; then
+                        echo "      ✗ Failed to delete $repo:$tag after $max_retries attempts"
+                        ((total_failed++))
+                      fi
+                    fi
+                  done
                 done
               fi
               
@@ -161,5 +179,18 @@ jobs:
             echo "🔍 DRY RUN MODE: No images were actually deleted"
           else
             echo "Total images deleted: $total_deleted"
-            echo "Container image cleanup completed successfully!"
+            echo "Total images failed to delete: $total_failed"
+            echo "Container image cleanup completed!"
+          fi
+          
+          # Exit with error only if all deletions failed
+          if [ "$total_failed" -gt 0 ] && [ "$total_deleted" -eq 0 ]; then
+            echo "❌ All deletion attempts failed. Please check ACR permissions and image locks."
+            exit 1
+          fi
+          
+          # Exit successfully if we deleted at least some images
+          if [ "$total_deleted" -gt 0 ] || [ "$dry_run" = "true" ]; then
+            echo "✅ Cleanup process completed successfully!"
+            exit 0
           fi
