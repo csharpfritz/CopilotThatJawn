@@ -1,10 +1,12 @@
 ---
 title: "Advanced Financial Analysis with Copilot in Excel (Part 2: Financial Modeling)"
 description: "Master advanced financial modeling and analysis using Microsoft Copilot in Excel with real-world examples"
-date: 2025-06-09
 category: "Microsoft 365 Copilot"
 tags: ["excel", "finance", "financial-modeling", "analysis", "microsoft-365-copilot"]
+difficulty: "Advanced"
 author: "Copilot That Jawn"
+publishedDate: "2025-06-09"
+lastModified: "2025-06-09"
 series: "Copilot for Finance"
 part: 2
 ---

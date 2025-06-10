@@ -1,10 +1,12 @@
 ---
 title: "Understanding GitHub Copilot: Ask Mode vs. Agent Mode"
 description: "Learn the key differences between GitHub Copilot's Ask and Agent modes and when to use each for maximum productivity"
-date: 2025-06-09
 category: "GitHub Copilot"
 tags: ["github-copilot", "productivity", "tips", "coding"]
+difficulty: "Beginner"
 author: "Copilot That Jawn"
+publishedDate: "2025-06-09"
+lastModified: "2025-06-09"
 ---
 
 # Ask Mode vs. Agent Mode in GitHub Copilot

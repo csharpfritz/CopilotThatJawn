@@ -1,10 +1,12 @@
 ---
 title: "Supercharge Your Testing with GitHub Copilot Agent Mode"
 description: "Learn how to leverage GitHub Copilot's Agent mode to efficiently generate and maintain comprehensive unit tests"
-date: 2025-06-09
 category: "GitHub Copilot"
 tags: ["github-copilot", "testing", "unit-tests", "productivity", "coding"]
+difficulty: "Intermediate"
 author: "Copilot That Jawn"
+publishedDate: "2025-06-09"
+lastModified: "2025-06-09"
 ---
 
 # Generating Unit Tests with GitHub Copilot Agent Mode
