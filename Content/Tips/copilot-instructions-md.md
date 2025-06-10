@@ -13,14 +13,6 @@ lastModified: "2025-06-10"
 
 A `copilot-instructions.md` file is an effective way to customize GitHub Copilot's behavior for your project. By adding this file to your repository, you can guide Copilot to follow your project's coding standards, naming conventions, and architectural patterns.
 
-## Learn More
-
-For comprehensive information about customizing GitHub Copilot, check out these authoritative resources:
-
-- **[GitHub Copilot Documentation](https://docs.github.com/en/copilot)** - Official GitHub documentation covering all aspects of GitHub Copilot
-- **[Configuring GitHub Copilot in your environment](https://docs.github.com/en/copilot/configuring-github-copilot)** - Detailed guide on customizing GitHub Copilot settings and behavior
-- **[GitHub Copilot in Visual Studio Code](https://learn.microsoft.com/en-us/training/modules/introduction-to-github-copilot/)** - Microsoft Learn training module on using GitHub Copilot effectively
-
 ## Setting Up copilot-instructions.md
 
 1. Create a `.github` folder in your project's root directory if it doesn't exist
@@ -122,3 +114,11 @@ and clean architecture patterns.
 - 🔄 Keep instructions in sync with your linting rules
 
 Remember, Copilot reads these instructions when generating suggestions, helping ensure consistent, high-quality code that matches your project's standards.
+
+## Learn More
+
+For comprehensive information about customizing GitHub Copilot, check out these authoritative resources:
+
+- **[GitHub Copilot Documentation](https://docs.github.com/en/copilot)** - Official GitHub documentation covering all aspects of GitHub Copilot
+- **[Configuring GitHub Copilot in your environment](https://docs.github.com/en/copilot/configuring-github-copilot)** - Detailed guide on customizing GitHub Copilot settings and behavior
+- **[GitHub Copilot in Visual Studio Code](https://learn.microsoft.com/en-us/training/modules/introduction-to-github-copilot/)** - Microsoft Learn training module on using GitHub Copilot effectively
