@@ -5,7 +5,7 @@ category: "Microsoft 365 Copilot"
 tags: ["microsoft-copilot", "productivity", "career-development", "ai-consultation"]
 difficulty: "Beginner"
 author: "Eva Etchells"
-publishedDate: "2025-06-10
+publishedDate: "2025-06-10"
 lastModified: "2025-06-10"
 ---
 
