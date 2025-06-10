@@ -64,7 +64,7 @@ jobs:
             echo "Found ACR: $acr_name"
             echo "acr_name=$acr_name" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Cleanup Old Container Images
         run: |
           acr_name="${{ steps.get-acr.outputs.acr_name }}"
@@ -78,10 +78,6 @@ jobs:
           echo "Starting container image cleanup for ACR: $acr_name"
           echo "Retention policy: Keep 5 most recent images per repository"
           
-          if [ "$dry_run" = "true" ]; then
-            echo "🔍 DRY RUN MODE: Will show what would be deleted without actually deleting"
-          fi
-          
           # Get all repositories in the ACR
           repositories=$(az acr repository list --name "$acr_name" --output tsv 2>/dev/null)
           
@@ -90,108 +86,35 @@ jobs:
             exit 0
           fi
           
-          total_deleted=0
-          total_kept=0
-          total_failed=0
-          
-          # Process each repository
           echo "Found repositories: $(echo "$repositories" | wc -l)"
+          
+          # Build the purge command with filters for each repository
+          PURGE_FILTERS=""
           for repo in $repositories; do
-            echo ""
-            echo "Processing repository: $repo"
-            
-            # Get all tags for this repository, sorted by creation time (newest first)
-            # Include detailed information to help with debugging
-            tags=$(az acr repository show-tags --name "$acr_name" --repository "$repo" \
-              --orderby time_desc --output tsv 2>/dev/null)
-            
-            if [ -z "$tags" ]; then
-              echo "  No tags found for repository $repo"
-              continue
-            fi
-            
-            # Count total tags
-            tag_count=$(echo "$tags" | wc -l)
-            echo "  Found $tag_count tags in repository $repo"
-            
-            # If we have more than 5 tags, delete the older ones
-            if [ "$tag_count" -gt 5 ]; then
-              # Skip the first 5 tags (most recent) and delete the rest
-              tags_to_keep=$(echo "$tags" | head -5)
-              tags_to_delete=$(echo "$tags" | tail -n +6)
-              delete_count=$(echo "$tags_to_delete" | wc -l)
-              
-              echo "  Keeping 5 most recent tags:"
-              for tag in $tags_to_keep; do
-                echo "    Keeping: $repo:$tag"
-              done
-              
-              if [ "$dry_run" = "true" ]; then
-                echo "  🔍 Would delete $delete_count old tags (DRY RUN):"
-                for tag in $tags_to_delete; do
-                  echo "    Would delete: $repo:$tag"
-                done
-                ((total_deleted += delete_count))
-              else
-                echo "  Deleting $delete_count old tags:"
-                
-                for tag in $tags_to_delete; do
-                  echo "    Deleting: $repo:$tag"
-                  
-                  # Add better error handling and retry logic for deletions
-                  max_retries=3
-                  retry_count=0
-                  success=false
-                  
-                  while [ $retry_count -lt $max_retries ] && [ "$success" = "false" ]; do
-                    if [ $retry_count -gt 0 ]; then
-                      echo "      Retry attempt $retry_count for $repo:$tag"
-                      sleep 5
-                    fi
-                    
-                    if az acr repository delete --name "$acr_name" --image "$repo:$tag" --yes >/dev/null 2>&1; then
-                      echo "      ✓ Successfully deleted $repo:$tag"
-                      success=true
-                      ((total_deleted++))
-                      break
-                    else
-                      ((retry_count++))
-                      if [ $retry_count -eq $max_retries ]; then
-                        echo "      ✗ Failed to delete $repo:$tag after $max_retries attempts"
-                        ((total_failed++))
-                      fi
-                    fi
-                  done
-                done
-              fi
-              
-              ((total_kept += 5))
-            else
-              echo "  Repository $repo has $tag_count tags (≤5), no cleanup needed"
-              ((total_kept += tag_count))
-            fi
+            PURGE_FILTERS="$PURGE_FILTERS --filter '$repo:.*'"
           done
           
-          echo ""
-          echo "=== Cleanup Summary ==="
-          echo "Total images kept: $total_kept"
+          # Construct the purge command
+          PURGE_CMD="acr purge $PURGE_FILTERS --ago 0d --keep 5 --untagged"
+          
           if [ "$dry_run" = "true" ]; then
-            echo "Total images that would be deleted: $total_deleted"
-            echo "🔍 DRY RUN MODE: No images were actually deleted"
-          else
-            echo "Total images deleted: $total_deleted"
-            echo "Total images failed to delete: $total_failed"
-            echo "Container image cleanup completed!"
+            PURGE_CMD="$PURGE_CMD --dry-run"
+            echo "🔍 DRY RUN MODE: Will show what would be deleted without actually deleting"
           fi
           
-          # Exit with error only if all deletions failed
-          if [ "$total_failed" -gt 0 ] && [ "$total_deleted" -eq 0 ]; then
-            echo "❌ All deletion attempts failed. Please check ACR permissions and image locks."
-            exit 1
-          fi
+          echo "Running purge command..."
+          # Set longer timeout (1 hour) for large registries
+          az acr run \
+            --cmd "$PURGE_CMD" \
+            --registry "$acr_name" \
+            --timeout 3600 \
+            /dev/null
           
-          # Exit successfully if we deleted at least some images
-          if [ "$total_deleted" -gt 0 ] || [ "$dry_run" = "true" ]; then
+          exit_code=$?
+          
+          if [ $exit_code -eq 0 ]; then
             echo "✅ Cleanup process completed successfully!"
-            exit 0
+          else
+            echo "❌ Cleanup process failed with exit code $exit_code"
+            exit $exit_code
           fi
