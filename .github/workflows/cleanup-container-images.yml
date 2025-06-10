@@ -16,7 +16,7 @@ on:
 permissions:
   id-token: write
   contents: read
-	packages: write # Required for Azure Container Registry operations
+  packages: write # Required for Azure Container Registry operations
 
 jobs:
   cleanup-images:
