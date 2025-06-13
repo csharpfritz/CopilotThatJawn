@@ -20,19 +20,28 @@ builder.Services.AddWebOptimizer(pipeline =>
     if (!builder.Environment.IsDevelopment())
     {
         // Bundle and minify CSS files in production only
-        pipeline.MinifyCssFiles();
         pipeline.AddCssBundle("/css/bundle.min.css", 
             "css/site.css",
             "css/layout.css");
 
         // Bundle and minify JavaScript files in production only
-        pipeline.MinifyJsFiles();
         pipeline.AddJavaScriptBundle("/js/bundle.min.js",
             "js/site.js",
             "js/analytics.js",
             "js/theme-switcher.js");
+            
+        // Enable minification for all CSS files
+        pipeline.MinifyCssFiles();
+        
+        // Enable minification for all JavaScript files  
+        pipeline.MinifyJsFiles();
     }
-    // In development, no bundling or minification - serve files directly
+    else
+    {
+        // In development, still enable basic minification for testing
+        pipeline.MinifyCssFiles("css/*.css");
+        pipeline.MinifyJsFiles("js/*.js");
+    }
 });
 
 // Add services to the container.
@@ -94,7 +103,6 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 // Register content service
 builder.Services.AddScoped<IContentService, ContentService>();
-builder.Services.AddSingleton<IVersionService, VersionService>();
 
 var app = builder.Build();
 
@@ -124,7 +132,24 @@ app.UseHttpsRedirection();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseWebOptimizer(); // Only use WebOptimizer in production
+    app.UseWebOptimizer(); // Use WebOptimizer in production
+    
+    // Add middleware to handle cache headers for WebOptimizer files
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path.StartsWithSegments("/css/bundle.min.css") || 
+            context.Request.Path.StartsWithSegments("/js/bundle.min.js"))
+        {
+            // Set headers to ensure proper cache behavior for bundled files
+            context.Response.OnStarting(() =>
+            {
+                context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+                context.Response.Headers.Vary = "Accept-Encoding";
+                return Task.CompletedTask;
+            });
+        }
+        await next();
+    });
 }
 
 app.UseStaticFiles(new StaticFileOptions
@@ -133,8 +158,35 @@ app.UseStaticFiles(new StaticFileOptions
     {
         if (!app.Environment.IsDevelopment())
         {
-            // Cache static files for 30 days in production
-            ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000";
+            var path = ctx.Context.Request.Path.Value?.ToLowerInvariant();
+            
+            // Different caching strategies based on file type and path
+            if (path != null)
+            {
+                // WebOptimizer bundles and files with version query strings - cache aggressively
+                if (path.Contains("bundle.min.") || ctx.Context.Request.Query.ContainsKey("v"))
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable"; // 1 year
+                }
+                // Regular CSS/JS files - shorter cache with validation
+                else if (path.EndsWith(".css") || path.EndsWith(".js"))
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=3600,must-revalidate"; // 1 hour
+                }
+                // Images and fonts - medium cache
+                else if (path.EndsWith(".png") || path.EndsWith(".jpg") || path.EndsWith(".jpeg") || 
+                        path.EndsWith(".gif") || path.EndsWith(".svg") || path.EndsWith(".webp") ||
+                        path.EndsWith(".woff") || path.EndsWith(".woff2") || path.EndsWith(".ttf"))
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000"; // 30 days
+                }
+                // Other static files - short cache
+                else
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=3600"; // 1 hour
+                }
+            }
+            
             ctx.Context.Response.Headers.Vary = "Accept-Encoding";
         }
         else

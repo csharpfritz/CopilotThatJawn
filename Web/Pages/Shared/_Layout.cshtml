@@ -1,5 +1,4 @@
 ﻿@inject IConfiguration Configuration
-@inject Web.Services.IVersionService VersionService
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,7 +91,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
     <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />    <!-- Site CSS -->
     <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/bundle.min.css?v=@VersionService.GetVersion()" />
+        <link rel="stylesheet" href="~/css/bundle.min.css" asp-append-version="true" />
     </environment>
     <environment include="Development">
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -191,7 +190,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <!-- Site scripts -->
     <environment exclude="Development">
-        <script src="~/js/bundle.min.js?v=@VersionService.GetVersion()"></script>
+        <script src="~/js/bundle.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
         <script src="~/js/site.js" asp-append-version="true"></script>
