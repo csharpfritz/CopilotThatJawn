@@ -84,12 +84,20 @@
     
     <!-- Feeds and Sitemap -->
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-    <link rel="alternate" type="application/rss+xml" title="Latest Tips" href="/feed.rss" />
-      <!-- Fonts and External CSS -->
+    <link rel="alternate" type="application/rss+xml" title="Latest Tips" href="/feed.rss" />      <!-- Fonts and External CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />    <!-- Site CSS -->
+    
+    <!-- Preload critical CSS for faster loading -->
+    <link rel="preload" href="~/lib/bootstrap/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"></noscript>
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"></noscript>
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"></noscript>
+    
+    <!-- Site CSS -->
     <environment exclude="Development">
         <link rel="stylesheet" href="~/css/bundle.min.css" asp-append-version="true" />
     </environment>
@@ -230,7 +238,65 @@
                     }
                 }
             });
-        });
+        });    </script>
+
+    <!-- CSS loading polyfill for better browser support -->
+    <script>
+        /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+        (function(w){
+            "use strict";
+            if(!w.loadCSS){
+                w.loadCSS = function(){};
+            }
+            var rp = loadCSS.relpreload = {};
+            rp.support = (function(){
+                var ret;
+                try {
+                    ret = w.document.createElement("link").relList.supports("preload");
+                } catch (e) {
+                    ret = false;
+                }
+                return function(){
+                    return ret;
+                };
+            })();
+            rp.bindMediaToggle = function(link){
+                var finalMedia = link.media || "all";
+                function enableStylesheet(){
+                    if(link.addEventListener){
+                        link.removeEventListener("load", enableStylesheet);
+                    }
+                    link.media = finalMedia;
+                }
+                if(link.addEventListener){
+                    link.addEventListener("load", enableStylesheet);
+                }
+                link.onloadcssdefined = enableStylesheet;
+            };
+            rp.poly = function(){
+                if(rp.support()){
+                    return;
+                }
+                var links = w.document.getElementsByTagName("link");
+                for(var i = 0; i < links.length; i++){
+                    var link = links[i];
+                    if(link.rel === "preload" && link.getAttribute("as") === "style" && !link.getAttribute("data-loadcss")){
+                        link.setAttribute("data-loadcss", true);
+                        rp.bindMediaToggle(link);
+                    }
+                }
+            };
+            if(!rp.support()){
+                rp.poly();
+                var run = w.setInterval(rp.poly, 500);
+                if(w.addEventListener){
+                    w.addEventListener("load", function(){
+                        rp.poly();
+                        w.clearInterval(run);
+                    });
+                }
+            }
+        })(this);
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
