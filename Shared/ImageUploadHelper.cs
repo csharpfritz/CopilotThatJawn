@@ -19,7 +19,8 @@ public static class ImageUploadHelper
         await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
         // Process image and get metadata
-        using var image = await Image.LoadAsync(imagePath);        var imageInfo = new ImageInfo
+        using var image = await Image.LoadAsync(imagePath);
+				var imageInfo = new ImageInfo
         {
             FileName = fileName,
             ImageId = imageId,

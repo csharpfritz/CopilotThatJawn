@@ -7,25 +7,11 @@ namespace Web.Services;
 /// </summary>
 public interface IImageService
 {
-    /// <summary>
-    /// Upload an image file to blob storage
-    /// </summary>
-    Task<ImageInfo> UploadImageAsync(Stream imageStream, string fileName, string? altText = null, string? caption = null);
 
     /// <summary>
     /// Get an image by its ID
     /// </summary>
     Task<ImageInfo?> GetImageAsync(string imageId);
-
-    /// <summary>
-    /// Delete an image from storage
-    /// </summary>
-    Task DeleteImageAsync(string imageId);
-
-    /// <summary>
-    /// Update image metadata (alt text, caption)
-    /// </summary>
-    Task UpdateImageMetadataAsync(string imageId, string? altText = null, string? caption = null);
 
     /// <summary>
     /// Get the public URL for an image

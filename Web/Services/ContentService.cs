@@ -5,6 +5,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Azure.Data.Tables;
 using Shared;
+using Web.Extensions;
 
 namespace Web.Services;
 
@@ -33,9 +34,7 @@ public class ContentService : IContentService
         _logger = logger;
         _environment = environment;
         _cache = cache;
-        _imageService = imageService;
-
-        // Configure Markdig with image processing
+        _imageService = imageService;        // Configure Markdig with image processing
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAutoLinks()
             .UseEmphasisExtras()
@@ -55,7 +54,7 @@ public class ContentService : IContentService
             .UseFigures()
             .UseEmojiAndSmiley()
             .UseGenericAttributes()
-            .Use<ImageUrlRewriterExtension>() // Custom extension for image processing
+            .Use(new ImageUrlRewriterExtension(_imageService)) // Custom extension for image processing
             .Build();
 
         // Configure YAML deserializer
