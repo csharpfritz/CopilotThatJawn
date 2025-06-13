@@ -1,0 +1,193 @@
+name: Content Sync
+
+on:
+  push:
+    branches: [main]
+    paths: ['Content/**']
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+
+jobs:
+  sync-content:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Count Content Articles
+        id: count-articles
+        shell: pwsh
+        run: |
+          $count = (Get-ChildItem -Path "Content" -Recurse -File -Filter "*.md").Count
+          "article-count=$count" >> $env:GITHUB_OUTPUT
+      
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+        
+      - name: Build ContentLoader
+        run: dotnet build ContentLoader/ContentLoader.csproj --configuration Release
+        
+      - name: Upload Content
+        id: upload-content
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
+        run: |
+          # Capture the output from the ContentLoader
+          output=$(dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content 2>&1)
+          echo "$output"
+          
+          # Extract sync summary numbers using grep and sed
+          added=$(echo "$output" | grep "Added:" | sed 's/Added: *\([0-9]*\)/\1/')
+          updated=$(echo "$output" | grep "Updated:" | sed 's/Updated: *\([0-9]*\)/\1/')
+          unchanged=$(echo "$output" | grep "Unchanged:" | sed 's/Unchanged: *\([0-9]*\)/\1/')
+          failed=$(echo "$output" | grep "Failed:" | sed 's/Failed: *\([0-9]*\)/\1/')
+          total=$(echo "$output" | grep "Total:" | sed 's/Total: *\([0-9]*\)/\1/')
+          
+          # Set outputs for the next steps
+          echo "added=$added" >> $GITHUB_OUTPUT
+          echo "updated=$updated" >> $GITHUB_OUTPUT
+          echo "unchanged=$unchanged" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+          echo "total=$total" >> $GITHUB_OUTPUT
+          
+          # Check if upload failed
+          if [ "$failed" != "0" ]; then
+            echo "Content upload failed with $failed failures"
+            exit 1
+          fi
+
+      - name: Create Content Sync Summary
+        if: always()
+        run: |
+          # Create a beautiful summary with emojis and markdown formatting
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          ## 📝 Content Sync Report
+          
+          | Status | Count | Description |
+          |--------|-------|-------------|
+          | ✅ Added | ${{ steps.upload-content.outputs.added }} | New content files uploaded |
+          | 🔄 Updated | ${{ steps.upload-content.outputs.updated }} | Existing content updated |
+          | ⚪ Unchanged | ${{ steps.upload-content.outputs.unchanged }} | Files with no changes |
+          | ❌ Failed | ${{ steps.upload-content.outputs.failed }} | Upload failures |
+          | 📊 **Total** | **${{ steps.upload-content.outputs.total }}** | **Total files processed** |
+          
+          ### 🎯 Summary
+          
+          - **Success Rate**: $(( (${{ steps.upload-content.outputs.total }} - ${{ steps.upload-content.outputs.failed }}) * 100 / ${{ steps.upload-content.outputs.total }} ))%
+          - **Content Articles**: ${{ steps.count-articles.outputs.article-count }} total files in repository
+          - **Sync Status**: ${{ steps.upload-content.outputs.failed == '0' && '🟢 All Good!' || '🔴 Some Issues' }}
+          
+          > 🚀 **Copilot That Jawn** content is now synced and ready to help developers level up their AI game!
+          EOF
+      
+      - name: Refresh Web App Cache
+        if: success()
+        env:
+          CACHE_REFRESH_API_KEY: ${{ secrets.CACHE_REFRESH_API_KEY }}
+        run: |
+          echo "Refreshing web application cache..."
+          # Wait a moment for the content to be fully uploaded
+          sleep 5
+          
+          # Call the cache refresh endpoint with API key authentication
+          response=$(curl -s -w "%{http_code}" -X POST "https://copilotthatjawn.com/api/cache/refresh" \
+            -H "X-API-Key: $CACHE_REFRESH_API_KEY" \
+            -o /tmp/cache_response.json)
+          
+          if [ "$response" = "200" ]; then
+            echo "Cache refresh successful"
+            cat /tmp/cache_response.json
+          else
+            echo "Cache refresh failed with HTTP status: $response"
+            cat /tmp/cache_response.json || echo "No response body"
+            # Don't fail the workflow if cache refresh fails - it's not critical
+            echo "Continuing workflow despite cache refresh failure..."
+          fi
+      
+      - name: Handle Failure
+        if: failure()
+        run: |
+          echo "Content sync failed. Check the build output and Azure Storage connection string."
+          exit 1
+
+      - name: Update README Badges
+        if: success()
+        shell: pwsh
+        run: |
+          $date = Get-Date -Format "yyyy--MM--dd"
+          $articleCount = "${{ steps.count-articles.outputs.article-count }}"
+          
+          # Create badge URLs using shields.io
+          $lastUpdateBadge = "![Content Last Updated](https://img.shields.io/badge/Content%20Last%20Updated-${date}-blue)"
+          $articleCountBadge = "![Content Articles](https://img.shields.io/badge/Content%20Articles-${articleCount}-green)"
+          
+          # Read current README content
+          $readmeContent = Get-Content README.md -Raw
+          
+          # Replace existing badges or add new ones at the top of the file
+          $badgeSection = "${lastUpdateBadge}`n${articleCountBadge}`n"
+          
+          if ($readmeContent -match "!\[Content Last Updated\].*`n!\[Content Articles\].*`n") {
+              $readmeContent = $readmeContent -replace "!\[Content Last Updated\].*`n!\[Content Articles\].*`n", $badgeSection
+          } else {
+              $readmeContent = $badgeSection + $readmeContent
+          }
+          
+          # Write updated content back to README
+          $readmeContent | Set-Content README.md -NoNewline
+
+      - name: Commit README Changes
+        if: success()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git commit -m "docs: update content sync badges [skip ci]" || exit 0
+          git push
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const added = '${{ steps.upload-content.outputs.added }}';
+            const updated = '${{ steps.upload-content.outputs.updated }}';
+            const unchanged = '${{ steps.upload-content.outputs.unchanged }}';
+            const failed = '${{ steps.upload-content.outputs.failed }}';
+            const total = '${{ steps.upload-content.outputs.total }}';
+            const success = failed === '0';
+            
+            const successRate = total > 0 ? Math.round(((total - failed) * 100) / total) : 0;
+            
+            const body = `## 📝 Content Sync Results
+            
+            | Status | Count | Description |
+            |--------|-------|-------------|
+            | ✅ Added | ${added} | New content files uploaded |
+            | 🔄 Updated | ${updated} | Existing content updated |
+            | ⚪ Unchanged | ${unchanged} | Files with no changes |
+            | ❌ Failed | ${failed} | Upload failures |
+            | 📊 **Total** | **${total}** | **Total files processed** |
+            
+            ### 🎯 Results Summary
+            
+            - **Success Rate**: ${successRate}%
+            - **Sync Status**: ${success ? '🟢 All content synced successfully!' : '🔴 Some content failed to sync'}
+            
+            ${success 
+              ? '> 🚀 **Great job!** All content changes have been successfully synced to the cloud storage.' 
+              : `> ⚠️ **Attention needed:** ${failed} file(s) failed to sync. Please check the workflow logs for details.`
+            }
+            
+            *This comment was automatically generated by the Content Sync workflow.*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
