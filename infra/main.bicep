@@ -16,6 +16,8 @@ param principalId string = ''
 @secure()
 param cacheRefreshApiKey string = ''
 
+param redis string
+
 
 var tags = {
   'azd-env-name': environmentName

@@ -14,6 +14,17 @@ builder.AddServiceDefaults();
 
 builder.AddAzureTableClient("tables");
 
+// Add Redis distributed caching - manual configuration since extension doesn't exist
+
+builder.AddRedisDistributedCache("redis");
+builder.AddRedisOutputCache("redis");
+
+// Configure Redis key prefixes for better organization
+builder.Services.PostConfigure<Microsoft.Extensions.Caching.StackExchangeRedis.RedisCacheOptions>(options =>
+{
+    options.InstanceName = "CopilotThatJawn:";
+});
+
 // Add WebOptimizer services
 builder.Services.AddWebOptimizer(pipeline =>
 {
@@ -57,7 +68,9 @@ builder.Services.AddMvc().AddViewComponentsAsServices(); // Register view compon
 // Add caching services
 builder.Services.AddResponseCaching();
 builder.Services.AddMemoryCache();
-builder.Services.AddOutputCache(options =>
+
+// Configure output cache policies (Redis is already configured above via AddRedisOutputCache)
+builder.Services.Configure<Microsoft.AspNetCore.OutputCaching.OutputCacheOptions>(options =>
 {
     // Default site-wide caching policy
     options.AddBasePolicy(builder => 
@@ -65,20 +78,30 @@ builder.Services.AddOutputCache(options =>
                .SetVaryByHost(true)
                .SetVaryByQuery("*")
                .SetVaryByHeader("Accept-Language")  // Vary by language
-               .Expire(TimeSpan.FromMinutes(10))); // Cache for 10 minutes by default
-               
-    // Special policy for static content pages
+               .Expire(TimeSpan.FromMinutes(10))    // Cache for 10 minutes by default
+               .Tag("outputcache", "site")); // Add tags for better organization
+                 // Special policy for static content pages
     options.AddPolicy("StaticContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
-               .Expire(TimeSpan.FromHours(1))); // Cache static content for 1 hour
+               .Expire(TimeSpan.FromHours(1))       // Cache static content for 1 hour
+               .Tag("outputcache", "static")); // Add tags for better organization
+               
+    // Special policy for tips and content pages - cache for 24 hours since they're relatively static
+    options.AddPolicy("TipsContent", builder => 
+        builder.Cache()
+               .SetVaryByHost(true)
+               .SetVaryByRouteValue("slug")         // Vary by tip slug
+               .Expire(TimeSpan.FromHours(24))      // Cache tips for 24 hours
+               .Tag("outputcache", "tips", "content")); // Add tags for better organization
                
     // Policy for frequently updated content
     options.AddPolicy("DynamicContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
                .SetVaryByQuery("*")
-               .Expire(TimeSpan.FromMinutes(5))); // Cache dynamic content for 5 minutes
+               .Expire(TimeSpan.FromMinutes(5))     // Cache dynamic content for 5 minutes
+               .Tag("outputcache", "dynamic")); // Add tags for better organization
 });
 
 // Add response compression
@@ -126,6 +149,9 @@ else
 {
 	app.UseDeveloperExceptionPage();
 }
+
+// Enable output cache in all environments to test Redis
+// app.UseOutputCache();
 
 // Enable compression and caching early in the pipeline
 app.UseHttpsRedirection();

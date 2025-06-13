@@ -5,6 +5,9 @@
       "principalId": {
         "value": "${AZURE_PRINCIPAL_ID}"
       },
+      "redis": {
+        "value": "${AZURE_REDIS}"
+      },
       "environmentName": {
         "value": "${AZURE_ENV_NAME}"
       },

@@ -1,17 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.OutputCaching;
 using Shared;
 using Web.Services;
 
 namespace Web.Pages.Tips;
 
+[OutputCache(PolicyName = "TipsContent")]
 public class DetailsModel : BasePageModel
 {
     private readonly IContentService _contentService;
     private readonly ILogger<DetailsModel> _logger;
-    
-    // Override cache duration for individual tips - cache for 1 hour since they change less frequently
-    protected override int CacheDurationSeconds => 3600;
+      // Override cache duration for individual tips - cache for 24 hours since tips are relatively static content
+    protected override int CacheDurationSeconds => 86400; // 24 hours
 
     public DetailsModel(IContentService contentService, ILogger<DetailsModel> logger)
     {

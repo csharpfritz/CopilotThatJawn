@@ -9,9 +9,8 @@ public class IndexModel : BasePageModel
 {
     private readonly IContentService _contentService;
     private readonly ILogger<IndexModel> _logger;
-    
-    // Override cache duration for tips list - cache for 5 minutes
-    protected override int CacheDurationSeconds => 300;
+      // Override cache duration for tips list - cache for 1 hour since new tips are added infrequently
+    protected override int CacheDurationSeconds => 3600; // 1 hour
 
     public IndexModel(IContentService contentService, ILogger<IndexModel> logger)
     {

@@ -14,4 +14,5 @@ public interface IContentService
     Task<List<string>> GetTagsAsync();
     Task<List<TipModel>> GetRelatedTipsAsync(TipModel tip, int count = 3);
     Task RefreshContentAsync();
+    Task InvalidateTipsCacheAsync();
 }
