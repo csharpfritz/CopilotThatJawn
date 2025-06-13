@@ -16,7 +16,9 @@ param principalId string = ''
 @secure()
 param cacheRefreshApiKey string = ''
 
-param redis string
+@description('Connection string for Redis cache')
+@secure()
+param redis string // Used by AZD for container app deployment via securedParameter in web.tmpl.yaml
 
 
 var tags = {

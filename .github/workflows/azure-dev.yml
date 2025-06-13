@@ -30,6 +30,7 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       CACHE_REFRESH_API_KEY: ${{ secrets.CACHE_REFRESH_API_KEY }}
+      AZURE_REDIS: ${{ secrets.AZURE_REDIS }}
 
     steps:
       - name: Checkout
