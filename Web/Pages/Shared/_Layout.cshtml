@@ -98,18 +98,19 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
-    </environment>
-    <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
+    </environment>    <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=@Configuration["GoogleAnalytics:MeasurementId"]"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '@Configuration["GoogleAnalytics:MeasurementId"]');
-    </script>
+    <!-- Google Analytics - Production Only -->
+    <environment exclude="Development">
+        <script async src="https://www.googletagmanager.com/gtag/js?id=@Configuration["GoogleAnalytics:MeasurementId"]"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '@Configuration["GoogleAnalytics:MeasurementId"]');
+        </script>
+    </environment>
 </head>
 <body>
     <header>
@@ -189,15 +190,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
-    
-    <!-- Site scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>    <!-- Site scripts -->
     <environment exclude="Development">
         <script src="~/js/bundle.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
         <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/js/analytics.js" asp-append-version="true"></script>
+        <script src="~/js/analytics-stub.js" asp-append-version="true"></script>
         <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
     </environment>
     <script>

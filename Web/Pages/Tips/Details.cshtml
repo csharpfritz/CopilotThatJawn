@@ -436,16 +436,10 @@ document.addEventListener('DOMContentLoaded', function() {
             tag.addEventListener('click', function() {
                 Analytics.trackTagClick(this.getAttribute('asp-route-tag'));
             });
-        });
-
-        // Track social shares
+        });        // Track social shares
         document.querySelectorAll('.btn[href^="https://x.com"], .btn[href^="https://bsky.app"]').forEach(function(shareBtn) {
             shareBtn.addEventListener('click', function() {
-                gtag('event', 'share', {
-                    method: this.textContent.trim(),
-                    content_type: 'tip',
-                    item_id: '@Model.ViewModel.Tip.UrlSlug'
-                });
+                Analytics.trackShare(this.textContent.trim(), 'tip', '@Model.ViewModel.Tip.UrlSlug');
             });
         });
     });

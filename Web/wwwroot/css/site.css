@@ -550,6 +550,144 @@ html[data-theme-resolved="dark"] .philly-phillies-red {
                  1px 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+/* Markdown Table Styling */
+.tip-content table {
+    width: 100%;
+    margin: 2rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.tip-content table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.tip-content table thead th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid var(--primary-dark);
+    position: relative;
+}
+
+.tip-content table thead th:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tip-content table tbody tr {
+    background-color: var(--bg-primary);
+    transition: background-color 0.2s ease;
+}
+
+.tip-content table tbody tr:nth-child(even) {
+    background-color: var(--bg-secondary);
+}
+
+.tip-content table tbody tr:hover {
+    background-color: var(--bg-tertiary);
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tip-content table tbody td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+    line-height: 1.7;
+}
+
+.tip-content table tbody td:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.tip-content table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Dark theme table adjustments */
+html[data-theme="dark"] .tip-content table,
+html[data-theme-resolved="dark"] .tip-content table {
+    border-color: var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .tip-content table thead,
+html[data-theme="dark"] .tip-content table thead {
+    background-color: var(--primary-color);
+}
+
+html[data-theme="dark"] .tip-content table tbody tr:hover,
+html[data-theme="dark"] .tip-content table tbody tr:hover {
+    background-color: var(--bg-tertiary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive table styling */
+@media (max-width: 768px) {
+    .tip-content table {
+        font-size: 0.875rem;
+        margin: 1.5rem 0;
+    }
+    
+    .tip-content table thead th,
+    .tip-content table tbody td {
+        padding: 0.75rem 1rem;
+    }
+    
+    .tip-content table thead th {
+        font-size: 0.8rem;
+    }
+}
+
+/* Enhanced table for comparison tables */
+.tip-content table.comparison-table {
+    margin: 2.5rem 0;
+}
+
+.tip-content table.comparison-table thead th:first-child {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.tip-content table.comparison-table thead th:last-child {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+.tip-content table.comparison-table tbody td {
+    position: relative;
+}
+
+.tip-content table.comparison-table tbody td:first-child {
+    background-color: rgba(220, 53, 69, 0.05);
+}
+
+.tip-content table.comparison-table tbody td:last-child {
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* Dark theme comparison table adjustments */
+html[data-theme="dark"] .tip-content table.comparison-table tbody td:first-child,
+html[data-theme-resolved="dark"] .tip-content table.comparison-table tbody td:first-child {
+    background-color: rgba(220, 53, 69, 0.15);
+}
+
+html[data-theme="dark"] .tip-content table.comparison-table tbody td:last-child,
+html[data-theme-resolved="dark"] .tip-content table.comparison-table tbody td:last-child {
+    background-color: rgba(40, 167, 69, 0.15);
+}
+
 /* Header icon styling */
 .header-icon {
     width: 300px;
