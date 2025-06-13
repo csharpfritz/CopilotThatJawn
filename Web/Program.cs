@@ -94,6 +94,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 // Register content service
 builder.Services.AddScoped<IContentService, ContentService>();
+builder.Services.AddSingleton<IVersionService, VersionService>();
 
 var app = builder.Build();
 
