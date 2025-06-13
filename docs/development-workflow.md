@@ -13,36 +13,93 @@ This guide explains the recommended development workflow for contributing to the
 ### Getting Started
 
 1. Clone the repository:
-   ```
+   ```bash
    git clone https://github.com/yourusername/CopilotThatJawn.git
    cd CopilotThatJawn
    ```
 
 2. Restore packages:
-   ```
+   ```bash
    dotnet restore
    ```
 
-3. Run the application with hot reload:
-   ```
-   dotnet watch run --project Web
+3. Run the application using .NET Aspire:
+   ```bash
+   dotnet run --project AppHost
    ```
 
-4. Access the site at `https://localhost:5001` (or the port configured in your environment)
+4. Access the Aspire dashboard at the URL shown in the console output (typically `https://localhost:15888`)
+5. Access the main application at `https://localhost:5001` (or the port shown in the Aspire dashboard)
+
+## .NET Aspire Development
+
+The project uses .NET Aspire for service orchestration, which manages Redis, Azure Storage, and the web application.
+
+### Aspire Dashboard
+
+The Aspire dashboard provides:
+- **Service Status**: Monitor all running services (Web, Redis, Azure Storage)
+- **Logs**: Centralized logging from all services
+- **Metrics**: Performance metrics and health checks
+- **Resource Management**: View connection strings and service endpoints
+
+### Redis Development
+
+#### Local Redis Setup
+
+Redis runs automatically through Aspire orchestration:
+
+```bash
+# Start the full application stack (includes Redis)
+dotnet run --project AppHost
+
+# Redis will be available at localhost:6379 (default port)
+# RedisInsight dashboard available through Aspire dashboard
+```
+
+#### Redis Cache Management
+
+The application provides several ways to interact with the Redis cache:
+
+1. **Through the Application**: Content is automatically cached during normal operation
+2. **RedisInsight**: Visual Redis management tool accessible through Aspire dashboard
+3. **Cache Refresh API**: Manual cache refresh endpoint
+
+#### Cache Refresh API
+
+```bash
+# Refresh cache via API (requires API key in production)
+curl -X POST https://localhost:5001/api/cache/refresh \
+  -H "X-API-Key: your-api-key"
+```
+
+#### Monitoring Redis
+
+- **Aspire Dashboard**: View Redis logs and metrics
+- **RedisInsight**: Inspect keys, values, and performance
+- **Application Logs**: ContentService logs cache hits/misses
 
 ## Using Hot Reload
 
-The project is configured to take advantage of ASP.NET Core's hot reload capabilities:
+The project is configured to take advantage of ASP.NET Core's hot reload capabilities through .NET Aspire:
 
 - **Automatic Rebuilding**: When you modify C# files, the application automatically rebuilds
 - **Browser Refresh**: Changes to Razor pages, CSS, and JavaScript trigger automatic browser refresh
 - **Content Updates**: Adding or modifying content files will be reflected in the application
+- **Service Orchestration**: All services (Web, Redis, Storage) are managed together
 
 ### Commands
 
-- `dotnet watch run --project Web`: Start the application with hot reload
-- `dotnet watch test`: Run tests with automatic re-execution when code changes
-- `dotnet watch build`: Build with automatic rebuilding when code changes
+- `dotnet run --project AppHost`: Start the full application stack
+- `dotnet watch run --project AppHost`: Start with enhanced hot reload monitoring
+- `dotnet test`: Run tests for the entire solution
+
+### Service Dependencies
+
+The Aspire orchestration ensures proper startup order:
+1. Redis container starts and becomes ready
+2. Azure Storage emulator starts and becomes ready  
+3. Web application starts and connects to dependencies
 
 ## Code Organization
 

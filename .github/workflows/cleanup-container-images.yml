@@ -1,0 +1,120 @@
+name: Cleanup Container Images
+
+# Run daily at 2 AM UTC to clean up old container images
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:     # Allow manual triggering
+    inputs:
+      dry_run:
+        description: 'Dry run mode (show what would be deleted without actually deleting)'
+        required: false
+        default: 'false'
+        type: boolean
+
+# Set up permissions for Azure authentication
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+jobs:
+  cleanup-images:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+
+    steps:
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      
+      - name: Log in with Azure (Federated Credentials)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Get Azure Container Registry Name
+        id: get-acr
+        run: |
+          # Get the resource group name
+          rg_name="rg-${{ env.AZURE_ENV_NAME }}"
+          echo "Resource group: $rg_name"
+          
+          # Verify the resource group exists
+          if ! az group show --name "$rg_name" >/dev/null 2>&1; then
+            echo "Resource group '$rg_name' not found. Skipping cleanup."
+            echo "acr_name=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Get the ACR name from the resource group
+          acr_name=$(az acr list --resource-group "$rg_name" --query "[0].name" --output tsv 2>/dev/null)
+          
+          if [ -z "$acr_name" ] || [ "$acr_name" = "null" ]; then
+            echo "No Azure Container Registry found in resource group '$rg_name'."
+            echo "acr_name=" >> $GITHUB_OUTPUT
+          else
+            echo "Found ACR: $acr_name"
+            echo "acr_name=$acr_name" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Cleanup Old Container Images
+        run: |
+          acr_name="${{ steps.get-acr.outputs.acr_name }}"
+          dry_run="${{ github.event.inputs.dry_run || 'false' }}"
+          
+          if [ -z "$acr_name" ]; then
+            echo "No Azure Container Registry found. Skipping cleanup."
+            exit 0
+          fi
+          
+          echo "Starting container image cleanup for ACR: $acr_name"
+          echo "Retention policy: Keep 5 most recent images per repository"
+          
+          # Get all repositories in the ACR
+          repositories=$(az acr repository list --name "$acr_name" --output tsv 2>/dev/null)
+          
+          if [ -z "$repositories" ]; then
+            echo "No repositories found in ACR. Nothing to clean up."
+            exit 0
+          fi
+          
+          echo "Found repositories: $(echo "$repositories" | wc -l)"
+          
+          # Build the purge command with filters for each repository
+          PURGE_FILTERS=""
+          for repo in $repositories; do
+            PURGE_FILTERS="$PURGE_FILTERS --filter '$repo:.*'"
+          done
+          
+          # Construct the purge command
+          PURGE_CMD="acr purge $PURGE_FILTERS --ago 0d --keep 5 --untagged"
+          
+          if [ "$dry_run" = "true" ]; then
+            PURGE_CMD="$PURGE_CMD --dry-run"
+            echo "🔍 DRY RUN MODE: Will show what would be deleted without actually deleting"
+          fi
+          
+          echo "Running purge command..."
+          # Set longer timeout (1 hour) for large registries
+          az acr run \
+            --cmd "$PURGE_CMD" \
+            --registry "$acr_name" \
+            --timeout 3600 \
+            /dev/null
+          
+          exit_code=$?
+          
+          if [ $exit_code -eq 0 ]; then
+            echo "✅ Cleanup process completed successfully!"
+          else
+            echo "❌ Cleanup process failed with exit code $exit_code"
+            exit $exit_code
+          fi

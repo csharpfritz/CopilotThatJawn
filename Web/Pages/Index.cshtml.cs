@@ -9,9 +9,8 @@ public class IndexModel : BasePageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IContentService _contentService;
-    
-    // Override cache duration for home page - cache for 10 minutes
-    protected override int CacheDurationSeconds => 600;
+      // Use default cache duration for home page (6 hours) - good balance for fresh content
+    // protected override int CacheDurationSeconds => base.CacheDurationSeconds; // 6 hours default
     
     public List<TipModel> RecentTips { get; set; } = new();
     public List<string> Categories { get; set; } = new();

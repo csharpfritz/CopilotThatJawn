@@ -10,11 +10,74 @@ This is "Copilot That Jawn" - a comprehensive ASP.NET Core web application that 
 
 ## Technology Stack
 - **Framework**: ASP.NET Core 9.0+ with Razor Pages
-- **Architecture**: Razor Pages application with MVC controllers for complex operations
+- **Architecture**: .NET Aspire cloud-native application stack with Razor Pages application and MVC controllers for complex operations
+- **Orchestration**: .NET Aspire AppHost for service orchestration and configuration
 - **Content Storage**: Markdown files in Content/ directory for tips, tutorials, and guides
 - **Database**: Entity Framework Core (SQL Server or SQLite for development) for dynamic data
 - **Frontend**: Bootstrap 5, modern responsive design with CSS Grid/Flexbox
 - **JavaScript**: Vanilla JS with modern ES6+ features, minimal dependencies
+- **Cloud Services**: Azure integration through .NET Aspire service defaults and components
+
+## .NET Aspire Architecture
+
+This application is built using .NET Aspire, Microsoft's cloud-native application stack that provides a consistent, opinionated set of tools and patterns for building observable, production-ready apps.
+
+### Aspire Project Structure
+```
+├── AppHost/                 # .NET Aspire orchestration project
+│   ├── AppHost.cs          # Application composition and service configuration
+│   ├── appsettings.json    # Aspire host configuration
+│   └── infra/              # Infrastructure templates for deployment
+├── Web/                    # Main web application project
+├── ServiceDefaults/        # Shared service configuration and extensions
+├── ContentLoader/          # Background service for content processing
+└── Shared/                 # Shared models and utilities
+```
+
+### Key Aspire Components Used
+- **Service Discovery**: Automatic service discovery and configuration
+- **Service Defaults**: Shared telemetry, health checks, and service configuration
+- **Resource Management**: Simplified resource provisioning and management
+- **Observability**: Built-in logging, metrics, and distributed tracing
+- **Development Dashboard**: Real-time monitoring and debugging during development
+
+### Aspire Development Best Practices
+
+#### AppHost Configuration
+- Define all services and their dependencies in `AppHost.cs`
+- Use environment-specific configuration for different deployment targets
+- Leverage Aspire's built-in resource templates for databases, caching, messaging
+- Configure service-to-service communication through Aspire's service discovery
+
+#### Service Defaults Integration
+- All projects should reference the `ServiceDefaults` project
+- Use `builder.AddServiceDefaults()` in each service's `Program.cs`
+- Implement consistent logging, health checks, and telemetry across services
+- Follow Aspire's conventions for configuration and dependency injection
+
+#### Running the Application
+- **Primary Development Command**: `dotnet run --project AppHost` 
+- **Alternative**: Use `dotnet watch run --project AppHost` for development with hot reload
+- **Aspire Dashboard**: Access the development dashboard at the URL shown in console output
+- **Service Monitoring**: Use the Aspire dashboard to monitor service health, logs, and metrics
+
+#### Resource Management
+- Define infrastructure requirements in the AppHost project
+- Use Aspire's resource provisioning for local development dependencies
+- Leverage infrastructure templates in `infra/` directory for cloud deployment
+- Configure connection strings and service endpoints through Aspire's configuration system
+
+#### Testing with Aspire
+- Use Aspire's testing utilities for integration tests
+- Test service communication through Aspire's service discovery
+- Validate configuration and resource dependencies
+- Implement health checks for all services
+
+### Deployment Considerations
+- Aspire applications can be deployed to various cloud platforms
+- Infrastructure templates generate appropriate deployment artifacts
+- Service configuration is managed through Aspire's configuration system
+- Observability and monitoring are built-in through Aspire's telemetry
 
 ## Project Structure Guidelines
 
@@ -198,22 +261,30 @@ Content/
 ### Development Workflow Best Practices
 
 #### Running and Testing the Application
-- **Prefer `dotnet watch`**: Always use `dotnet watch run` for development instead of manually building, running, stopping, and restarting the application
-- **Hot Reload Benefits**: `dotnet watch` provides automatic rebuilding and browser refresh when files change, significantly improving development efficiency
-- **Recommended Commands**:
-  - `dotnet watch run` - Start the application with hot reload
-  - `dotnet watch test` - Run tests with automatic re-execution on file changes
-  - `dotnet watch build` - Build with automatic rebuilding on changes
+- **Primary Development Command**: `dotnet run --project AppHost` - Starts the entire Aspire application stack
+- **With Hot Reload**: `dotnet watch run --project AppHost` - Starts with automatic rebuilding and browser refresh
+- **Aspire Dashboard**: Monitor services, logs, and metrics through the Aspire development dashboard
+- **Individual Service Testing**: Use `dotnet test` in specific project directories for unit tests
+- **Integration Testing**: Run full stack tests using Aspire's testing framework
 
-#### File Monitoring
-- `dotnet watch` automatically monitors C# files, Razor pages, CSS, JavaScript, and other static assets
-- Changes trigger automatic compilation and browser refresh
-- Reduces context switching and speeds up the development cycle
+#### Aspire-Specific Development Workflow
+- **Service Orchestration**: All services are managed through the AppHost project
+- **Configuration Management**: Use Aspire's configuration system for service settings and connection strings
+- **Service Discovery**: Services communicate through Aspire's built-in service discovery
+- **Observability**: Monitor application performance through the Aspire dashboard during development
+
+#### File Monitoring and Hot Reload
+- Aspire's `dotnet watch` automatically monitors all projects in the application stack
+- Changes to any service trigger appropriate rebuilds and restarts
+- The Aspire dashboard provides real-time feedback on service status during development
+- Static assets (CSS, JS) are monitored and trigger browser refresh automatically
 
 #### Development Environment Setup
-- Ensure the development environment is configured for optimal `dotnet watch` performance
-- Use the `--verbose` flag for debugging watch issues: `dotnet watch run --verbose`
-- Configure file exclusions in `.csproj` if needed to avoid unnecessary rebuilds
+- Ensure .NET 9.0+ SDK is installed for Aspire support
+- Use `dotnet run --project AppHost` as the primary development command
+- Configure the Aspire dashboard for optimal monitoring during development
+- Set up appropriate logging levels in `appsettings.Development.json` for each service
+- Use environment variables through Aspire's configuration system rather than direct file configuration
 
 ## Content Strategy
 

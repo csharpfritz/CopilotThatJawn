@@ -9,9 +9,8 @@ public class CategoryModel : BasePageModel
 {
     private readonly IContentService _contentService;
     private readonly ILogger<CategoryModel> _logger;
-    
-    // Override cache duration for category pages - cache for 5 minutes
-    protected override int CacheDurationSeconds => 300;
+      // Use default cache duration for category pages (6 hours) - categories change infrequently
+    // protected override int CacheDurationSeconds => base.CacheDurationSeconds; // 6 hours default
 
     public CategoryModel(IContentService contentService, ILogger<CategoryModel> logger)
     {

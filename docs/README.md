@@ -6,6 +6,7 @@ Welcome to the documentation for "Copilot That Jawn"! This documentation explain
 
 - [Project Overview](overview.md): General information about the project, its purpose, and structure
 - [Technical Architecture](technical-architecture.md): Detailed explanation of the application architecture and technology stack
+- [Redis and Caching](redis-caching.md): Comprehensive guide to Redis configuration and caching strategy
 - [Content Management](content-management.md): How content is organized, stored, and processed
 - [Development Workflow](development-workflow.md): Guide to setting up a development environment and contributing
 - [Markdown Format](markdown-format.md): Detailed guide to the Markdown format used for content
@@ -17,8 +18,9 @@ If you're new to the project, we recommend reading the documentation in this ord
 1. [Project Overview](overview.md)
 2. [Development Workflow](development-workflow.md)
 3. [Technical Architecture](technical-architecture.md)
-4. [Content Management](content-management.md)
-5. [Markdown Format](markdown-format.md)
+4. [Redis and Caching](redis-caching.md)
+5. [Content Management](content-management.md)
+6. [Markdown Format](markdown-format.md)
 
 ## Contributing
 
@@ -28,7 +30,8 @@ We welcome contributions to both the codebase and content. Please refer to the [
 
 "Copilot That Jawn" is built with:
 
-- **ASP.NET Core 9.0+** with Razor Pages
+- **ASP.NET Core 9.0+** with .NET Aspire cloud-native stack
+- **Redis** distributed caching for performance and scalability
 - **Markdown** content files with YAML frontmatter
 - **Bootstrap 5** for styling
 - **Modern JavaScript** for interactive features

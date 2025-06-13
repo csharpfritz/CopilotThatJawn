@@ -15,25 +15,45 @@ builder.AddServiceDefaults();
 
 builder.AddAzureTableClient("tables");
 
+// Add Redis distributed caching - manual configuration since extension doesn't exist
+
+builder.AddRedisDistributedCache("redis");
+builder.AddRedisOutputCache("redis");
+
+// Configure Redis key prefixes for better organization
+builder.Services.PostConfigure<Microsoft.Extensions.Caching.StackExchangeRedis.RedisCacheOptions>(options =>
+{
+    options.InstanceName = "CopilotThatJawn:";
+});
+
 // Add WebOptimizer services
 builder.Services.AddWebOptimizer(pipeline =>
 {
     if (!builder.Environment.IsDevelopment())
     {
         // Bundle and minify CSS files in production only
-        pipeline.MinifyCssFiles();
         pipeline.AddCssBundle("/css/bundle.min.css", 
             "css/site.css",
             "css/layout.css");
 
         // Bundle and minify JavaScript files in production only
-        pipeline.MinifyJsFiles();
         pipeline.AddJavaScriptBundle("/js/bundle.min.js",
             "js/site.js",
             "js/analytics.js",
             "js/theme-switcher.js");
+            
+        // Enable minification for all CSS files
+        pipeline.MinifyCssFiles();
+        
+        // Enable minification for all JavaScript files  
+        pipeline.MinifyJsFiles();
     }
-    // In development, no bundling or minification - serve files directly
+    else
+    {
+        // In development, still enable basic minification for testing
+        pipeline.MinifyCssFiles("css/*.css");
+        pipeline.MinifyJsFiles("js/*.js");
+    }
 });
 
 // Add services to the container.
@@ -49,28 +69,41 @@ builder.Services.AddMvc().AddViewComponentsAsServices(); // Register view compon
 // Add caching services
 builder.Services.AddResponseCaching();
 builder.Services.AddMemoryCache();
-builder.Services.AddOutputCache(options =>
+
+// Configure output cache policies (Redis is already configured above via AddRedisOutputCache)
+builder.Services.Configure<Microsoft.AspNetCore.OutputCaching.OutputCacheOptions>(options =>
 {
-    // Default site-wide caching policy
+    // Default site-wide caching policy - extended to 6 hours for better performance
     options.AddBasePolicy(builder => 
         builder.Cache()
                .SetVaryByHost(true)
                .SetVaryByQuery("*")
                .SetVaryByHeader("Accept-Language")  // Vary by language
-               .Expire(TimeSpan.FromMinutes(10))); // Cache for 10 minutes by default
-               
-    // Special policy for static content pages
+               .Expire(TimeSpan.FromHours(6))       // Cache for 6 hours by default
+               .Tag("outputcache", "site")); // Add tags for better organization
+                 
+    // Special policy for static content pages - extended to 3 days
     options.AddPolicy("StaticContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
-               .Expire(TimeSpan.FromHours(1))); // Cache static content for 1 hour
+               .Expire(TimeSpan.FromDays(3))        // Cache static content for 3 days
+               .Tag("outputcache", "static")); // Add tags for better organization
                
-    // Policy for frequently updated content
+    // Special policy for tips and content pages - extended to 3 days since they're static
+    options.AddPolicy("TipsContent", builder => 
+        builder.Cache()
+               .SetVaryByHost(true)
+               .SetVaryByRouteValue("slug")         // Vary by tip slug
+               .Expire(TimeSpan.FromDays(3))        // Cache tips for 3 days
+               .Tag("outputcache", "tips", "content")); // Add tags for better organization
+               
+    // Policy for frequently updated content - extended to 6 hours minimum
     options.AddPolicy("DynamicContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
                .SetVaryByQuery("*")
-               .Expire(TimeSpan.FromMinutes(5))); // Cache dynamic content for 5 minutes
+               .Expire(TimeSpan.FromHours(6))       // Cache dynamic content for 6 hours
+               .Tag("outputcache", "dynamic")); // Add tags for better organization
 });
 
 // Add response compression
@@ -129,12 +162,32 @@ else
 	app.UseDeveloperExceptionPage();
 }
 
+// Enable output cache in all environments to test Redis
+// app.UseOutputCache();
+
 // Enable compression and caching early in the pipeline
 app.UseHttpsRedirection();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseWebOptimizer(); // Only use WebOptimizer in production
+    app.UseWebOptimizer(); // Use WebOptimizer in production
+    
+    // Add middleware to handle cache headers for WebOptimizer files
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path.StartsWithSegments("/css/bundle.min.css") || 
+            context.Request.Path.StartsWithSegments("/js/bundle.min.js"))
+        {
+            // Set headers to ensure proper cache behavior for bundled files
+            context.Response.OnStarting(() =>
+            {
+                context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+                context.Response.Headers.Vary = "Accept-Encoding";
+                return Task.CompletedTask;
+            });
+        }
+        await next();
+    });
 }
 
 app.UseStaticFiles(new StaticFileOptions
@@ -143,8 +196,35 @@ app.UseStaticFiles(new StaticFileOptions
     {
         if (!app.Environment.IsDevelopment())
         {
-            // Cache static files for 30 days in production
-            ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000";
+            var path = ctx.Context.Request.Path.Value?.ToLowerInvariant();
+            
+            // Different caching strategies based on file type and path
+            if (path != null)
+            {
+                // WebOptimizer bundles and files with version query strings - cache aggressively
+                if (path.Contains("bundle.min.") || ctx.Context.Request.Query.ContainsKey("v"))
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable"; // 1 year
+                }
+                // Regular CSS/JS files - shorter cache with validation
+                else if (path.EndsWith(".css") || path.EndsWith(".js"))
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=3600,must-revalidate"; // 1 hour
+                }
+                // Images and fonts - medium cache
+                else if (path.EndsWith(".png") || path.EndsWith(".jpg") || path.EndsWith(".jpeg") || 
+                        path.EndsWith(".gif") || path.EndsWith(".svg") || path.EndsWith(".webp") ||
+                        path.EndsWith(".woff") || path.EndsWith(".woff2") || path.EndsWith(".ttf"))
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=2592000"; // 30 days
+                }
+                // Other static files - short cache
+                else
+                {
+                    ctx.Context.Response.Headers.CacheControl = "public,max-age=3600"; // 1 hour
+                }
+            }
+            
             ctx.Context.Response.Headers.Vary = "Accept-Encoding";
         }
         else

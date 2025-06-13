@@ -1,10 +1,12 @@
 ---
 title: "Microsoft Copilot in Excel: A Game-Changer for Finance Professionals"
 description: "Learn how finance professionals can leverage Microsoft Copilot in Excel to streamline financial analysis, automate tasks, and enhance productivity"
-date: 2025-06-09
 category: "Microsoft 365 Copilot"
 tags: ["excel", "finance", "financial-analysis", "investment", "productivity", "microsoft-365-copilot"]
+difficulty: "Intermediate"
 author: "Copilot That Jawn"
+publishedDate: "2025-06-09"
+lastModified: "2025-06-09"
 ---
 
 As a finance professional, Excel is your essential toolkit. With Microsoft Copilot integration, your spreadsheet capabilities just got a major upgrade. Let's explore how Copilot can transform your daily financial tasks.

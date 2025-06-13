@@ -1,40 +1,50 @@
 using Markdig;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Azure.Data.Tables;
 using Shared;
 using Web.Extensions;
+using System.Text.Json;
 
 namespace Web.Services;
 
 /// <summary>
-/// Service for managing markdown-based content
+/// Service for managing markdown-based content with Redis distributed caching
 /// </summary>
 public class ContentService : IContentService
-{
-    private readonly ILogger<ContentService> _logger;
+{    private readonly ILogger<ContentService> _logger;
     private readonly IWebHostEnvironment _environment;
-    private readonly IMemoryCache _cache;
+    private readonly IMemoryCache _cache; // Keep for very short-term local caching
+    private readonly IDistributedCache _distributedCache; // Redis cache
+    private readonly IOutputCacheStore _outputCacheStore; // Output cache store for invalidation
     private readonly MarkdownPipeline _markdownPipeline;
     private readonly IDeserializer _yamlDeserializer;
     private readonly TableClient _tableClient;
     private readonly IImageService _imageService;
     private const string TIPS_CACHE_KEY = "content_tips";
-    private static readonly TimeSpan _cacheExpiry = TimeSpan.FromHours(6);
-    
-    public ContentService(
+    private static readonly TimeSpan _distributedCacheExpiry = TimeSpan.FromHours(6);
+    private static readonly TimeSpan _localCacheExpiry = TimeSpan.FromMinutes(5); // Short local cache for frequently accessed data
+      public ContentService(
         ILogger<ContentService> logger, 
         IWebHostEnvironment environment,
         IMemoryCache cache,
+        IDistributedCache distributedCache,
+        IOutputCacheStore outputCacheStore,
         TableServiceClient tableServiceClient,
         IImageService imageService)
     {
         _logger = logger;
         _environment = environment;
         _cache = cache;
-        _imageService = imageService;        // Configure Markdig with image processing
+        _distributedCache = distributedCache;
+        _outputCacheStore = outputCacheStore;
+        _imageService = imageService;
+
+        // Configure Markdig with image processing
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAutoLinks()
             .UseEmphasisExtras()
@@ -167,9 +177,7 @@ public class ContentService : IContentService
             .ToList();
 
         return relatedTips;
-    }
-
-    public async Task RefreshContentAsync()
+    }    public async Task RefreshContentAsync()
     {
         _logger.LogInformation("Refreshing content cache...");
         
@@ -177,15 +185,24 @@ public class ContentService : IContentService
         {
             var tips = await GetTipsFromAzureTableAsync();
 
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(_cacheExpiry)
+            // Update Redis cache
+            var serializedTips = JsonSerializer.Serialize(tips);
+            var distributedCacheOptions = new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = _distributedCacheExpiry
+            };
+            await _distributedCache.SetStringAsync(TIPS_CACHE_KEY, serializedTips, distributedCacheOptions);
+
+            // Update local cache
+            var localCacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(_localCacheExpiry)
                 .SetPriority(CacheItemPriority.Normal)
                 .RegisterPostEvictionCallback((key, value, reason, state) =>
                 {
-                    _logger.LogInformation("Content cache evicted. Reason: {Reason}", reason);
+                    _logger.LogDebug("Local content cache evicted. Reason: {Reason}", reason);
                 });
 
-            _cache.Set(TIPS_CACHE_KEY, tips, cacheEntryOptions);
+            _cache.Set(TIPS_CACHE_KEY, tips, localCacheEntryOptions);
             _logger.LogInformation("Content cache refreshed. Loaded {Count} tips", tips.Count);
         }
         catch (Exception ex)
@@ -230,17 +247,48 @@ public class ContentService : IContentService
         }
 
         return tips;
-    }
-
-    private async Task<List<TipModel>> GetTipsFromCacheAsync()
+    }    private async Task<List<TipModel>> GetTipsFromCacheAsync()
     {
-        if (_cache.TryGetValue(TIPS_CACHE_KEY, out List<TipModel>? tips))
+        // First, check local memory cache for very recent data
+        if (_cache.TryGetValue(TIPS_CACHE_KEY, out List<TipModel>? localTips))
         {
-            return tips ?? new List<TipModel>();
+            return localTips ?? new List<TipModel>();
         }
 
-        tips = await GetTipsFromAzureTableAsync();
-        _cache.Set(TIPS_CACHE_KEY, tips, _cacheExpiry);
+        // Check Redis distributed cache
+        var distributedTipsJson = await _distributedCache.GetStringAsync(TIPS_CACHE_KEY);
+        List<TipModel> tips;
+
+        if (!string.IsNullOrEmpty(distributedTipsJson))
+        {
+            try
+            {
+                tips = JsonSerializer.Deserialize<List<TipModel>>(distributedTipsJson) ?? new List<TipModel>();
+                _logger.LogDebug("Loaded {Count} tips from Redis cache", tips.Count);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogWarning(ex, "Failed to deserialize tips from Redis cache, falling back to database");
+                tips = await GetTipsFromAzureTableAsync();
+            }
+        }
+        else
+        {
+            // Cache miss - load from database
+            tips = await GetTipsFromAzureTableAsync();
+            
+            // Store in Redis
+            var serializedTips = JsonSerializer.Serialize(tips);
+            var distributedCacheOptions = new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = _distributedCacheExpiry
+            };
+            await _distributedCache.SetStringAsync(TIPS_CACHE_KEY, serializedTips, distributedCacheOptions);
+            _logger.LogInformation("Cached {Count} tips in Redis", tips.Count);
+        }
+
+        // Store in local memory cache for very short term
+        _cache.Set(TIPS_CACHE_KEY, tips, _localCacheExpiry);
 
         return tips;
     }
@@ -324,12 +372,10 @@ public class ContentService : IContentService
 	{
 		// Ensure proper CSS classes for Prism.js syntax highlighting
 		// Handle fenced code blocks with language specification
-
 		// Pattern 1: <pre><code class="language-xxx"> -> <pre class="language-xxx"><code class="language-xxx">
 		var pattern1 = @"<pre><code class=""language-(\w+)"">";
 		var replacement1 = @"<pre class=""language-$1""><code class=""language-$1"">";
 		htmlContent = Regex.Replace(htmlContent, pattern1, replacement1);
-
 		return htmlContent;
 	}
 
@@ -358,5 +404,29 @@ public class ContentService : IContentService
             
             return $"![{altText}]({newUrl}{captionPart})";
         });
+    }
+
+    /// <summary>
+    /// Invalidate all tips-related cache entries
+    /// </summary>
+    public async Task InvalidateTipsCacheAsync()
+    {
+        try
+        {
+            // Clear distributed cache
+            await _distributedCache.RemoveAsync(TIPS_CACHE_KEY);
+            
+            // Clear local memory cache
+            _cache.Remove(TIPS_CACHE_KEY);
+            
+            // Clear output cache for tips pages
+            await _outputCacheStore.EvictByTagAsync("tips", default);
+            await _outputCacheStore.EvictByTagAsync("content", default);
+            
+            _logger.LogInformation("Tips cache invalidated successfully");
+        }        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error invalidating tips cache");
+        }
     }
 }

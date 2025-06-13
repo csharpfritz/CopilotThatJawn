@@ -36,8 +36,10 @@ As the name suggests, "Copilot That Jawn" incorporates Philadelphia terminology 
 
 ## Technology Stack
 
-- **Framework**: ASP.NET Core 9.0+ with Razor Pages
-- **Architecture**: Razor Pages application with MVC controllers for complex operations
+- **Framework**: ASP.NET Core 9.0+ with .NET Aspire cloud-native stack
+- **Service Orchestration**: .NET Aspire AppHost for managing Redis, Azure Storage, and web application
+- **Caching**: Redis distributed caching with multi-layer caching strategy
 - **Content Storage**: Markdown files in Content/ directory processed with Markdig
 - **Frontend**: Bootstrap 5, modern responsive design with CSS Grid/Flexbox
 - **JavaScript**: Vanilla JS with modern ES6+ features, minimal dependencies
+- **Observability**: Built-in logging, metrics, and distributed tracing through Aspire

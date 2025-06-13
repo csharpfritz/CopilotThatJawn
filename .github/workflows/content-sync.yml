@@ -32,9 +32,97 @@ jobs:
         run: dotnet build ContentLoader/ContentLoader.csproj --configuration Release
         
       - name: Upload Content
+        id: upload-content
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
-        run: dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content
+        run: |
+          # Capture the output from the ContentLoader
+          output=$(dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content 2>&1)
+          echo "$output"          # Extract sync summary numbers using awk for more reliable parsing
+          added=$(echo "$output" | awk '/Added:/ {print $2}')
+          updated=$(echo "$output" | awk '/Updated:/ {print $2}')
+          unchanged=$(echo "$output" | awk '/Unchanged:/ {print $2}')
+          failed=$(echo "$output" | awk '/Failed:/ {print $2}')
+          total=$(echo "$output" | awk '/Total:/ {print $2}')
+          
+          # Fallback to 0 if extraction failed
+          added=${added:-0}
+          updated=${updated:-0}
+          unchanged=${unchanged:-0}
+          failed=${failed:-0}
+          total=${total:-0}
+          
+          # Debug output
+          echo "Extracted values: added=$added, updated=$updated, unchanged=$unchanged, failed=$failed, total=$total"
+          
+          # Set outputs for the next steps
+          echo "added=$added" >> $GITHUB_OUTPUT
+          echo "updated=$updated" >> $GITHUB_OUTPUT
+          echo "unchanged=$unchanged" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+          echo "total=$total" >> $GITHUB_OUTPUT
+            # Check if upload failed
+          if [ "$failed" != "0" ]; then
+            echo "Content upload failed with $failed failures"
+            exit 1
+          fi
+
+      - name: Create Content Sync Summary
+        if: always()
+        run: |
+          # Get the values from the previous step with fallback defaults
+          added="${{ steps.upload-content.outputs.added }}"
+          updated="${{ steps.upload-content.outputs.updated }}"
+          unchanged="${{ steps.upload-content.outputs.unchanged }}"
+          failed="${{ steps.upload-content.outputs.failed }}"
+          total="${{ steps.upload-content.outputs.total }}"
+          article_count="${{ steps.count-articles.outputs.article-count }}"
+          
+          # Ensure all values are numbers (fallback to 0 if empty)
+          added=${added:-0}
+          updated=${updated:-0}
+          unchanged=${unchanged:-0}
+          failed=${failed:-0}
+          total=${total:-0}
+          article_count=${article_count:-0}
+          
+          # Debug output
+          echo "Summary values: added=$added, updated=$updated, unchanged=$unchanged, failed=$failed, total=$total, article_count=$article_count"
+          
+          # Calculate success rate
+          if [ "$total" -gt 0 ]; then
+            success_rate=$(( (total - failed) * 100 / total ))
+          else
+            success_rate=0
+          fi
+          
+          # Determine sync status
+          if [ "$failed" = "0" ]; then
+            sync_status="🟢 All Good!"
+          else
+            sync_status="🔴 Some Issues"
+          fi
+          
+          # Create a beautiful summary with emojis and markdown formatting
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## 📝 Content Sync Report
+          
+          | Status | Count | Description |
+          |--------|-------|-------------|
+          | ✅ Added | ${added} | New content files uploaded |
+          | 🔄 Updated | ${updated} | Existing content updated |
+          | ⚪ Unchanged | ${unchanged} | Files with no changes |
+          | ❌ Failed | ${failed} | Upload failures |
+          | 📊 **Total** | **${total}** | **Total files processed** |
+          
+          ### 🎯 Summary
+          
+          - **Success Rate**: ${success_rate}%
+          - **Content Articles**: ${article_count} total files in repository
+          - **Sync Status**: ${sync_status}
+          
+          > 🚀 **Copilot That Jawn** content is now synced and ready to help developers level up their AI game!
+          EOF
       
       - name: Refresh Web App Cache
         if: success()
@@ -100,3 +188,46 @@ jobs:
           git add README.md
           git commit -m "docs: update content sync badges [skip ci]" || exit 0
           git push
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const added = '${{ steps.upload-content.outputs.added }}';
+            const updated = '${{ steps.upload-content.outputs.updated }}';
+            const unchanged = '${{ steps.upload-content.outputs.unchanged }}';
+            const failed = '${{ steps.upload-content.outputs.failed }}';
+            const total = '${{ steps.upload-content.outputs.total }}';
+            const success = failed === '0';
+            
+            const successRate = total > 0 ? Math.round(((total - failed) * 100) / total) : 0;
+            
+            const body = `## 📝 Content Sync Results
+            
+            | Status | Count | Description |
+            |--------|-------|-------------|
+            | ✅ Added | ${added} | New content files uploaded |
+            | 🔄 Updated | ${updated} | Existing content updated |
+            | ⚪ Unchanged | ${unchanged} | Files with no changes |
+            | ❌ Failed | ${failed} | Upload failures |
+            | 📊 **Total** | **${total}** | **Total files processed** |
+            
+            ### 🎯 Results Summary
+            
+            - **Success Rate**: ${successRate}%
+            - **Sync Status**: ${success ? '🟢 All content synced successfully!' : '🔴 Some content failed to sync'}
+            
+            ${success 
+              ? '> 🚀 **Great job!** All content changes have been successfully synced to the cloud storage.' 
+              : `> ⚠️ **Attention needed:** ${failed} file(s) failed to sync. Please check the workflow logs for details.`
+            }
+            
+            *This comment was automatically generated by the Content Sync workflow.*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

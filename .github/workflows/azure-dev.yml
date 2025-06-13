@@ -11,6 +11,8 @@ on:
     # Exclude Content folder changes to avoid unnecessary deployments
     paths-ignore:
       - 'Content/**'
+      - '.github/**'
+      - 'docs/*'
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -29,6 +31,7 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       CACHE_REFRESH_API_KEY: ${{ secrets.CACHE_REFRESH_API_KEY }}
+      AZURE_REDIS: ${{ secrets.AZURE_REDIS }}
 
     steps:
       - name: Checkout
@@ -39,7 +42,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: | 
-            8.x.x
             9.x.x
 
       - name: Log in with Azure (Federated Credentials)

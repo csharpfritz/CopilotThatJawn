@@ -1,10 +1,12 @@
 ---
 title: "Getting Started with Copilot in Excel for Finance (Part 1: Basics)"
 description: "Master the fundamentals of using Microsoft Copilot in Excel for financial work, with practical examples and prompts"
-date: 2025-06-09
 category: "Microsoft 365 Copilot"
 tags: ["excel", "finance", "getting-started", "productivity", "microsoft-365-copilot"]
+difficulty: "Beginner"
 author: "Copilot That Jawn"
+publishedDate: "2025-06-09"
+lastModified: "2025-06-09"
 series: "Copilot for Finance"
 part: 1
 ---
