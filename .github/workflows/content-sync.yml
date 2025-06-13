@@ -38,22 +38,30 @@ jobs:
         run: |
           # Capture the output from the ContentLoader
           output=$(dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content 2>&1)
-          echo "$output"
+          echo "$output"          # Extract sync summary numbers using awk for more reliable parsing
+          added=$(echo "$output" | awk '/Added:/ {print $2}')
+          updated=$(echo "$output" | awk '/Updated:/ {print $2}')
+          unchanged=$(echo "$output" | awk '/Unchanged:/ {print $2}')
+          failed=$(echo "$output" | awk '/Failed:/ {print $2}')
+          total=$(echo "$output" | awk '/Total:/ {print $2}')
           
-          # Extract sync summary numbers using grep and sed
-          added=$(echo "$output" | grep "Added:" | sed 's/Added: *\([0-9]*\)/\1/')
-          updated=$(echo "$output" | grep "Updated:" | sed 's/Updated: *\([0-9]*\)/\1/')
-          unchanged=$(echo "$output" | grep "Unchanged:" | sed 's/Unchanged: *\([0-9]*\)/\1/')
-          failed=$(echo "$output" | grep "Failed:" | sed 's/Failed: *\([0-9]*\)/\1/')
-          total=$(echo "$output" | grep "Total:" | sed 's/Total: *\([0-9]*\)/\1/')
+          # Fallback to 0 if extraction failed
+          added=${added:-0}
+          updated=${updated:-0}
+          unchanged=${unchanged:-0}
+          failed=${failed:-0}
+          total=${total:-0}
+          
+          # Debug output
+          echo "Extracted values: added=$added, updated=$updated, unchanged=$unchanged, failed=$failed, total=$total"
           
           # Set outputs for the next steps
           echo "added=$added" >> $GITHUB_OUTPUT
           echo "updated=$updated" >> $GITHUB_OUTPUT
           echo "unchanged=$unchanged" >> $GITHUB_OUTPUT
-          echo "failed=$failed" >> $GITHUB_OUTPUT          echo "total=$total" >> $GITHUB_OUTPUT
-          
-          # Check if upload failed
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+          echo "total=$total" >> $GITHUB_OUTPUT
+            # Check if upload failed
           if [ "$failed" != "0" ]; then
             echo "Content upload failed with $failed failures"
             exit 1
@@ -62,13 +70,24 @@ jobs:
       - name: Create Content Sync Summary
         if: always()
         run: |
-          # Get the values from the previous step
+          # Get the values from the previous step with fallback defaults
           added="${{ steps.upload-content.outputs.added }}"
           updated="${{ steps.upload-content.outputs.updated }}"
           unchanged="${{ steps.upload-content.outputs.unchanged }}"
           failed="${{ steps.upload-content.outputs.failed }}"
           total="${{ steps.upload-content.outputs.total }}"
           article_count="${{ steps.count-articles.outputs.article-count }}"
+          
+          # Ensure all values are numbers (fallback to 0 if empty)
+          added=${added:-0}
+          updated=${updated:-0}
+          unchanged=${unchanged:-0}
+          failed=${failed:-0}
+          total=${total:-0}
+          article_count=${article_count:-0}
+          
+          # Debug output
+          echo "Summary values: added=$added, updated=$updated, unchanged=$unchanged, failed=$failed, total=$total, article_count=$article_count"
           
           # Calculate success rate
           if [ "$total" -gt 0 ]; then
