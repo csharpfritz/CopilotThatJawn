@@ -72,35 +72,36 @@ builder.Services.AddMemoryCache();
 // Configure output cache policies (Redis is already configured above via AddRedisOutputCache)
 builder.Services.Configure<Microsoft.AspNetCore.OutputCaching.OutputCacheOptions>(options =>
 {
-    // Default site-wide caching policy
+    // Default site-wide caching policy - extended to 6 hours for better performance
     options.AddBasePolicy(builder => 
         builder.Cache()
                .SetVaryByHost(true)
                .SetVaryByQuery("*")
                .SetVaryByHeader("Accept-Language")  // Vary by language
-               .Expire(TimeSpan.FromMinutes(10))    // Cache for 10 minutes by default
+               .Expire(TimeSpan.FromHours(6))       // Cache for 6 hours by default
                .Tag("outputcache", "site")); // Add tags for better organization
-                 // Special policy for static content pages
+                 
+    // Special policy for static content pages - extended to 3 days
     options.AddPolicy("StaticContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
-               .Expire(TimeSpan.FromHours(1))       // Cache static content for 1 hour
+               .Expire(TimeSpan.FromDays(3))        // Cache static content for 3 days
                .Tag("outputcache", "static")); // Add tags for better organization
                
-    // Special policy for tips and content pages - cache for 24 hours since they're relatively static
+    // Special policy for tips and content pages - extended to 3 days since they're static
     options.AddPolicy("TipsContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
                .SetVaryByRouteValue("slug")         // Vary by tip slug
-               .Expire(TimeSpan.FromHours(24))      // Cache tips for 24 hours
+               .Expire(TimeSpan.FromDays(3))        // Cache tips for 3 days
                .Tag("outputcache", "tips", "content")); // Add tags for better organization
                
-    // Policy for frequently updated content
+    // Policy for frequently updated content - extended to 6 hours minimum
     options.AddPolicy("DynamicContent", builder => 
         builder.Cache()
                .SetVaryByHost(true)
                .SetVaryByQuery("*")
-               .Expire(TimeSpan.FromMinutes(5))     // Cache dynamic content for 5 minutes
+               .Expire(TimeSpan.FromHours(6))       // Cache dynamic content for 6 hours
                .Tag("outputcache", "dynamic")); // Add tags for better organization
 });
 

@@ -7,11 +7,10 @@ namespace Web.Pages;
 
 [OutputCache]
 public abstract class BasePageModel : PageModel
-{
-    /// <summary>
-    /// The default output cache duration for dynamic pages
+{    /// <summary>
+    /// The default output cache duration for dynamic pages - extended to 6 hours
     /// </summary>
-    protected virtual int CacheDurationSeconds => 300; // 5 minutes by default
+    protected virtual int CacheDurationSeconds => 21600; // 6 hours by default
 
     /// <summary>
     /// Whether the page allows caching by default

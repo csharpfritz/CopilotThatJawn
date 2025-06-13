@@ -10,9 +10,8 @@ namespace Web.Pages.Tips;
 public class DetailsModel : BasePageModel
 {
     private readonly IContentService _contentService;
-    private readonly ILogger<DetailsModel> _logger;
-      // Override cache duration for individual tips - cache for 24 hours since tips are relatively static content
-    protected override int CacheDurationSeconds => 86400; // 24 hours
+    private readonly ILogger<DetailsModel> _logger;      // Override cache duration for individual tips - cache for 3 days since tips are static content
+    protected override int CacheDurationSeconds => 259200; // 3 days
 
     public DetailsModel(IContentService contentService, ILogger<DetailsModel> logger)
     {

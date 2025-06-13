@@ -7,9 +7,8 @@ public class PrivacyModel : BasePageModel
 {
     private readonly ILogger<PrivacyModel> _logger;
     private readonly IConfiguration _configuration;
-    
-    // Override cache duration for static pages - cache for 1 hour
-    protected override int CacheDurationSeconds => 3600;
+      // Override cache duration for static pages - cache for 3 days
+    protected override int CacheDurationSeconds => 259200; // 3 days
 
     public PrivacyModel(ILogger<PrivacyModel> logger, IConfiguration configuration)
     {

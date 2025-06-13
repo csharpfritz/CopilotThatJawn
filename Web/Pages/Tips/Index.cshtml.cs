@@ -8,9 +8,8 @@ namespace Web.Pages.Tips;
 public class IndexModel : BasePageModel
 {
     private readonly IContentService _contentService;
-    private readonly ILogger<IndexModel> _logger;
-      // Override cache duration for tips list - cache for 1 hour since new tips are added infrequently
-    protected override int CacheDurationSeconds => 3600; // 1 hour
+    private readonly ILogger<IndexModel> _logger;      // Use default cache duration for tips list (6 hours) since new tips are added infrequently
+    // protected override int CacheDurationSeconds => base.CacheDurationSeconds; // 6 hours default
 
     public IndexModel(IContentService contentService, ILogger<IndexModel> logger)
     {
