@@ -12,6 +12,7 @@ on:
     paths-ignore:
       - 'Content/**'
       - '.github/**'
+      - 'docs/*'
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -41,7 +42,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: | 
-            8.x.x
             9.x.x
 
       - name: Log in with Azure (Federated Credentials)
