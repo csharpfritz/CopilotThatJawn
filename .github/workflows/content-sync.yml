@@ -51,8 +51,7 @@ jobs:
           echo "added=$added" >> $GITHUB_OUTPUT
           echo "updated=$updated" >> $GITHUB_OUTPUT
           echo "unchanged=$unchanged" >> $GITHUB_OUTPUT
-          echo "failed=$failed" >> $GITHUB_OUTPUT
-          echo "total=$total" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT          echo "total=$total" >> $GITHUB_OUTPUT
           
           # Check if upload failed
           if [ "$failed" != "0" ]; then
@@ -63,23 +62,45 @@ jobs:
       - name: Create Content Sync Summary
         if: always()
         run: |
+          # Get the values from the previous step
+          added="${{ steps.upload-content.outputs.added }}"
+          updated="${{ steps.upload-content.outputs.updated }}"
+          unchanged="${{ steps.upload-content.outputs.unchanged }}"
+          failed="${{ steps.upload-content.outputs.failed }}"
+          total="${{ steps.upload-content.outputs.total }}"
+          article_count="${{ steps.count-articles.outputs.article-count }}"
+          
+          # Calculate success rate
+          if [ "$total" -gt 0 ]; then
+            success_rate=$(( (total - failed) * 100 / total ))
+          else
+            success_rate=0
+          fi
+          
+          # Determine sync status
+          if [ "$failed" = "0" ]; then
+            sync_status="🟢 All Good!"
+          else
+            sync_status="🔴 Some Issues"
+          fi
+          
           # Create a beautiful summary with emojis and markdown formatting
-          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          cat >> $GITHUB_STEP_SUMMARY << EOF
           ## 📝 Content Sync Report
           
           | Status | Count | Description |
           |--------|-------|-------------|
-          | ✅ Added | ${{ steps.upload-content.outputs.added }} | New content files uploaded |
-          | 🔄 Updated | ${{ steps.upload-content.outputs.updated }} | Existing content updated |
-          | ⚪ Unchanged | ${{ steps.upload-content.outputs.unchanged }} | Files with no changes |
-          | ❌ Failed | ${{ steps.upload-content.outputs.failed }} | Upload failures |
-          | 📊 **Total** | **${{ steps.upload-content.outputs.total }}** | **Total files processed** |
+          | ✅ Added | ${added} | New content files uploaded |
+          | 🔄 Updated | ${updated} | Existing content updated |
+          | ⚪ Unchanged | ${unchanged} | Files with no changes |
+          | ❌ Failed | ${failed} | Upload failures |
+          | 📊 **Total** | **${total}** | **Total files processed** |
           
           ### 🎯 Summary
           
-          - **Success Rate**: $(( (${{ steps.upload-content.outputs.total }} - ${{ steps.upload-content.outputs.failed }}) * 100 / ${{ steps.upload-content.outputs.total }} ))%
-          - **Content Articles**: ${{ steps.count-articles.outputs.article-count }} total files in repository
-          - **Sync Status**: ${{ steps.upload-content.outputs.failed == '0' && '🟢 All Good!' || '🔴 Some Issues' }}
+          - **Success Rate**: ${success_rate}%
+          - **Content Articles**: ${article_count} total files in repository
+          - **Sync Status**: ${sync_status}
           
           > 🚀 **Copilot That Jawn** content is now synced and ready to help developers level up their AI game!
           EOF
