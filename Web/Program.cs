@@ -144,15 +144,14 @@ if (!app.Environment.IsDevelopment())
 	// Enable compression and caching only in production
 	app.UseResponseCompression();
 	app.UseResponseCaching();
-	app.UseOutputCache();
 }
 else
 {
 	app.UseDeveloperExceptionPage();
 }
 
-// Enable output cache in all environments to test Redis
-// app.UseOutputCache();
+// Enable output cache in all environments to test caching functionality
+app.UseOutputCache();
 
 // Enable compression and caching early in the pipeline
 app.UseHttpsRedirection();

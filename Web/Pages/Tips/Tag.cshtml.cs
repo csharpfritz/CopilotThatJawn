@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.OutputCaching;
 using Shared;
 using Web.Services;
 
 namespace Web.Pages.Tips;
 
+[OutputCache(Duration = 21600, Tags = new[] { "tips", "content", "tag" })]
 public class TagModel : BasePageModel
 {
     private readonly IContentService _contentService;

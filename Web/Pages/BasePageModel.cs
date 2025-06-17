@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace Web.Pages;
 
-[OutputCache]
 public abstract class BasePageModel : PageModel
 {    /// <summary>
     /// The default output cache duration for dynamic pages - extended to 6 hours
@@ -16,6 +15,14 @@ public abstract class BasePageModel : PageModel
     /// Whether the page allows caching by default
     /// </summary>
     protected virtual bool AllowCaching => true;
+    
+    /// <summary>
+    /// Get the cache tags for this page
+    /// </summary>
+    protected virtual string[] GetCacheTags()
+    {
+        return new[] { GetType().FullName!, "page", "content" };
+    }
 
     /// <summary>
     /// Configure output caching for the page
@@ -33,6 +40,13 @@ public abstract class BasePageModel : PageModel
                 Public = true,
                 MaxAge = TimeSpan.FromSeconds(CacheDurationSeconds)
             };
+            
+            // Set output cache tags for this page
+            var cacheTags = GetCacheTags();
+            if (cacheTags.Length > 0)
+            {
+                HttpContext.Response.Headers.Append("X-Cache-Tags", string.Join(",", cacheTags));
+            }
         }
     }
 

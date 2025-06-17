@@ -188,9 +188,7 @@ public static class EndpointExtensions
             .Expire(TimeSpan.FromHours(2))
             .SetVaryByHost(true)
             .Tag("rss"));
-    }
-
-    public static void MapCacheRefreshEndpoint(this WebApplication app)
+    }    public static void MapCacheRefreshEndpoint(this WebApplication app)
     {
         app.MapPost("/api/cache/refresh", async (HttpContext context, IContentService contentService, IOutputCacheStore outputCacheStore, ILogger<Program> logger, IWebHostEnvironment environment, IConfiguration configuration) =>
         {
@@ -198,53 +196,50 @@ public static class EndpointExtensions
             {
                 logger.LogInformation("Cache refresh requested via API endpoint");
                 
-                // Validate API key for security
-                var expectedApiKey = configuration["CacheRefresh:ApiKey"];
-                if (!string.IsNullOrEmpty(expectedApiKey))
+                // Validate API key for security (skip in development)
+                if (!environment.IsDevelopment())
                 {
-                    var providedApiKey = context.Request.Headers["X-API-Key"].FirstOrDefault();
-                    if (string.IsNullOrEmpty(providedApiKey) || providedApiKey != expectedApiKey)
+                    var expectedApiKey = configuration["CacheRefresh:ApiKey"];
+                    if (!string.IsNullOrEmpty(expectedApiKey))
                     {
-                        logger.LogWarning("Cache refresh request rejected: Invalid or missing API key");
-                        return Results.Unauthorized();
+                        var providedApiKey = context.Request.Headers["X-API-Key"].FirstOrDefault();
+                        if (string.IsNullOrEmpty(providedApiKey) || providedApiKey != expectedApiKey)
+                        {
+                            logger.LogWarning("Cache refresh request rejected: Invalid or missing API key");
+                            return Results.Unauthorized();
+                        }
                     }
-                }
-                else if (!environment.IsDevelopment())
-                {
-                    logger.LogWarning("Cache refresh API key not configured in production environment");
-                    return Results.Problem("API key not configured", statusCode: 500);
-                }
-                
-                // Only perform cache refresh in non-development environments
-                if (environment.IsDevelopment())
-                {
-                    logger.LogInformation("Development environment detected. Skipping cache refresh.");
-                    return Results.Ok(new { 
-                        message = "Cache refresh skipped in development environment", 
-                        timestamp = DateTime.UtcNow,
-                        environment = "Development" 
-                    });
+                    else
+                    {
+                        logger.LogWarning("Cache refresh API key not configured in production environment");
+                        return Results.Problem("API key not configured", statusCode: 500);
+                    }
                 }
                 
                 // Refresh content cache
                 await contentService.RefreshContentAsync();
-                
-                // Evict all output cache entries
+                  // Evict output cache entries using the correct tags
+                await outputCacheStore.EvictByTagAsync("home", default);
+                await outputCacheStore.EvictByTagAsync("content", default);
+                await outputCacheStore.EvictByTagAsync("tips", default);
+                await outputCacheStore.EvictByTagAsync("page", default);
+                await outputCacheStore.EvictByTagAsync("category", default);
+                await outputCacheStore.EvictByTagAsync("tag", default);
                 await outputCacheStore.EvictByTagAsync("sitemap", default);
                 await outputCacheStore.EvictByTagAsync("rss", default);
+                
+                // Evict specific page types
                 await outputCacheStore.EvictByTagAsync("Web.Pages.IndexModel", default);
                 await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.IndexModel", default);
                 await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.CategoryModel", default);
                 await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.TagModel", default);
                 await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.DetailsModel", default);
                 
-                // Also evict by the base policy
-                await outputCacheStore.EvictByTagAsync("", default);
-                
-                logger.LogInformation("Cache refresh completed successfully (content and output cache)");
+                logger.LogInformation("Cache refresh completed successfully (content and output cache) in {Environment} environment", environment.EnvironmentName);
                 return Results.Ok(new { 
                     message = "Content and output cache refreshed successfully", 
-                    timestamp = DateTime.UtcNow 
+                    timestamp = DateTime.UtcNow,
+                    environment = environment.EnvironmentName
                 });
             }
             catch (Exception ex)
@@ -255,6 +250,6 @@ public static class EndpointExtensions
         })
         .WithName("RefreshCache")
         .WithSummary("Refresh the content cache")
-        .WithDescription("Triggers a refresh of the in-memory content cache and output cache for all pages. Requires X-API-Key header for authentication.");
+        .WithDescription("Triggers a refresh of the in-memory content cache and output cache for all pages. Requires X-API-Key header for authentication in production.");
     }
 }
