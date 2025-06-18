@@ -723,3 +723,36 @@ html[data-theme-resolved="dark"] .tip-content table.comparison-table tbody td:la
     border-color: var(--primary-dark);
     box-shadow: 0 0 0 0.25rem rgba(98, 0, 238, 0.25);
 }
+
+/* Code block styling with word wrapping */
+pre {
+    white-space: pre-wrap;       /* CSS3 */
+    word-wrap: break-word;       /* IE */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    overflow-x: hidden !important;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+}
+
+pre code {
+    white-space: pre-wrap !important;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Adjust the code block styling for different screen sizes */
+@media (max-width: 768px) {
+    pre {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Ensure code blocks have proper background in dark mode */
+html[data-theme="dark"] pre,
+html[data-theme-resolved="dark"] pre {
+    background-color: var(--code-bg);
+    border: 1px solid var(--border-color);
+}

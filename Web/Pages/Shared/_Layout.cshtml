@@ -80,6 +80,20 @@
         .navbar .nav-link {
             color: var(--navbar-text) !important;
         }
+        
+        /* Code block styling with word wrapping */
+        pre {
+            white-space: pre-wrap;       /* CSS3 */
+            word-wrap: break-word;       /* IE */
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            overflow-x: hidden !important;
+        }
+        
+        pre code {
+            white-space: pre-wrap !important;
+        }
     </style>
     
     <!-- Feeds and Sitemap -->
