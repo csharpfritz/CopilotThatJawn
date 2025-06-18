@@ -3,7 +3,7 @@ title: "Using Context7 MCP for Up-to-date Code Documentation with GitHub Copilot
 description: "Learn how to use Context7 MCP to provide GitHub Copilot with the most current documentation and code examples for accurate, up-to-date recommendations"
 category: "GitHub Copilot"
 tags: ["github-copilot", "productivity", "context7", "mcp", "code-documentation"]
-difficulty: "Beginner"
+difficulty: "Intermediate"
 author: "GitHub Copilot"
 publishedDate: "2025-06-18"
 lastModified: "2025-06-18"
