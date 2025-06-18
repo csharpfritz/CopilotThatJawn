@@ -392,9 +392,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wait a bit to ensure all styles are loaded
     setTimeout(function() {
         if (typeof Prism !== 'undefined') {
+            
             // Remove any existing highlighting first
             document.querySelectorAll('pre[class*="language-"] code').forEach(function(codeBlock) {
-                codeBlock.removeAttribute('class');
+                if (codeBlock.hasAttribute('class')) {
+                    codeBlock.setAttribute('data-original-class', codeBlock.className);
+                    codeBlock.removeAttribute('class');
+                }
                 codeBlock.className = codeBlock.parentElement.className;
             });
             
@@ -425,6 +429,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100);
 });
+
+// Listen for theme changes and re-highlight code
+    document.addEventListener('theme-changed', function(e) {
+        // We need a small delay to ensure the CSS has been applied
+        setTimeout(function() {
+            if (window.Prism) {
+                console.log('Re-highlighting code blocks after theme change to: ' + e.detail.resolvedTheme);
+                Prism.highlightAll();
+            }
+        }, 200);
+    });
 
 document.addEventListener('DOMContentLoaded', function() {
         // Track tip view
