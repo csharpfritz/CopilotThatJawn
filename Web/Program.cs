@@ -12,6 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add .NET Aspire service defaults
 builder.AddServiceDefaults();
 
+// Register HttpContextAccessor for accessing HttpContext in Razor Pages
+builder.Services.AddHttpContextAccessor();
+
+// Add route configuration to enforce lowercase URLs for better SEO
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+    options.AppendTrailingSlash = false;
+});
+
 builder.AddAzureTableClient("tables");
 
 // Add Redis distributed caching - manual configuration since extension doesn't exist
@@ -131,7 +142,8 @@ builder.Services.AddScoped<IContentService, ContentService>();
 var app = builder.Build();
 
 var options = new RewriteOptions()
-	.AddRedirectToNonWwwPermanent();
+	.AddRedirectToNonWwwPermanent()
+	.AddRedirect("^tips/tag$", "tips", 301); // Redirect /tips/tag to /tips with 301 (permanent) redirect
 	//.AddRedirectToHttpsPermanent();
 app.UseRewriter(options);
 
@@ -144,6 +156,7 @@ if (!app.Environment.IsDevelopment())
 	// Enable compression and caching only in production
 	app.UseResponseCompression();
 	app.UseResponseCaching();
+	app.UseOutputCache();
 }
 else
 {
@@ -151,7 +164,7 @@ else
 }
 
 // Enable output cache in all environments to test caching functionality
-app.UseOutputCache();
+//app.UseOutputCache();
 
 // Enable compression and caching early in the pipeline
 app.UseHttpsRedirection();

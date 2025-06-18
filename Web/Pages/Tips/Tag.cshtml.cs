@@ -33,6 +33,13 @@ public class TagModel : BasePageModel
             return RedirectToPage("/Tips/Index");
         }
 
+        // Always redirect to lowercase version of the tag for SEO consistency
+        var lowercaseTag = Tag.ToLowerInvariant();
+        if (lowercaseTag != Tag)
+        {
+            return RedirectToPage("/Tips/Tag", new { tag = lowercaseTag, page = PageNumber });
+        }
+
         try
         {
             var request = new TipSearchRequest

@@ -9,82 +9,86 @@ namespace Web.Pages.Tips;
 [OutputCache(Duration = 21600, Tags = new[] { "tips", "content", "category" })]
 public class CategoryModel : BasePageModel
 {
-    private readonly IContentService _contentService;
-    private readonly ILogger<CategoryModel> _logger;
-      // Use default cache duration for category pages (6 hours) - categories change infrequently
-    // protected override int CacheDurationSeconds => base.CacheDurationSeconds; // 6 hours default
+	private readonly IContentService _contentService;
+	private readonly ILogger<CategoryModel> _logger;
+	// Use default cache duration for category pages (6 hours) - categories change infrequently
+	// protected override int CacheDurationSeconds => base.CacheDurationSeconds; // 6 hours default
 
-    public CategoryModel(IContentService contentService, ILogger<CategoryModel> logger)
-    {
-        _contentService = contentService;
-        _logger = logger;
-    }
+	public CategoryModel(IContentService contentService, ILogger<CategoryModel> logger)
+	{
+		_contentService = contentService;
+		_logger = logger;
+	}
 
-    public TipListViewModel ViewModel { get; set; } = new();
+	public TipListViewModel ViewModel { get; set; } = new();
 
-    [BindProperty(SupportsGet = true)]
-    public string Category { get; set; } = string.Empty;    [BindProperty(SupportsGet = true)]
-    public int PageNumber { get; set; } = 1;
+	[BindProperty(SupportsGet = true)]
+	public string Category { get; set; } = string.Empty;
 
-    public async Task<IActionResult> OnGetAsync()
-    {
-        if (string.IsNullOrEmpty(Category))
-        {
-            return RedirectToPage("/Tips/Index");
-        }
+	[BindProperty(SupportsGet = true)]
+	public int PageNumber { get; set; } = 1;
 
-        try
-        {
-            // Get filter options first to validate category
-            var categories = await _contentService.GetCategoriesAsync();
-            var tags = await _contentService.GetTagsAsync();
+	public async Task<IActionResult> OnGetAsync()
+	{
+		if (string.IsNullOrEmpty(Category))
+		{
+			return RedirectToPage("/Tips/Index");
+		}
 
-            // Find the matching category with correct casing
-            var matchingCategory = categories.FirstOrDefault(c => 
-                c.Equals(Category, StringComparison.OrdinalIgnoreCase));
+		try
+		{
+			// Get filter options first to validate category
+			var categories = await _contentService.GetCategoriesAsync();
+			var tags = await _contentService.GetTagsAsync();
 
-            // If category doesn't exist, redirect to index
-            if (matchingCategory == null)
-            {
-                return RedirectToPage("/Tips/Index");
-            }
+			// Find the matching category with correct casing
+			var matchingCategory = categories.FirstOrDefault(c =>
+					c.Equals(Category, StringComparison.OrdinalIgnoreCase));
 
-            // If category exists but with different casing, redirect to correct casing
-            if (matchingCategory != Category)
-            {
-                return RedirectToPage("/Tips/Category", new { category = matchingCategory });
-            }
+			// If category doesn't exist, redirect to index
+			if (matchingCategory == null)
+			{
+				return RedirectToPage("/Tips/Index");
+			}
 
-            var request = new TipSearchRequest
-            {
-                Category = Category,
-                Page = Math.Max(1, PageNumber),
-                PageSize = 12
-            };
+			// Always redirect to lowercase version of the category for SEO consistency
+			if (matchingCategory.ToLowerInvariant() != Category.ToLowerInvariant())
+			{
+				return RedirectToPage("/Tips/Category", new { category = matchingCategory.ToLowerInvariant() });
+			}
 
-            var tips = await _contentService.SearchTipsAsync(request);
-            var totalCount = tips.Count;
+			Category = matchingCategory;
 
-            ViewModel = new TipListViewModel
-            {
-                Tips = tips,
-                Categories = categories,
-                Tags = tags,
-                SelectedCategory = Category,
-                Page = PageNumber,
-                PageSize = request.PageSize,
-                TotalCount = totalCount
-            };
+			var request = new TipSearchRequest
+			{
+				Category = Category,
+				Page = Math.Max(1, PageNumber),
+				PageSize = 12
+			};
 
-            ViewData["Title"] = $"{Category} Tips & Tricks";
-            ViewData["Description"] = $"Discover tips and tricks in the {Category} category for Microsoft Copilot, GitHub Copilot, Azure AI, and more AI productivity tools.";
+			var tips = await _contentService.SearchTipsAsync(request);
+			var totalCount = tips.Count;
 
-            return Page();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error loading tips for category: {Category}", Category);
-            return RedirectToPage("/Error");
-        }
-    }
+			ViewModel = new TipListViewModel
+			{
+				Tips = tips,
+				Categories = categories,
+				Tags = tags,
+				SelectedCategory = Category,
+				Page = PageNumber,
+				PageSize = request.PageSize,
+				TotalCount = totalCount
+			};
+
+			ViewData["Title"] = $"{Category} Tips & Tricks";
+			ViewData["Description"] = $"Discover tips and tricks in the {Category} category for Microsoft Copilot, GitHub Copilot, Azure AI, and more AI productivity tools.";
+
+			return Page();
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error loading tips for category: {Category}", Category);
+			return RedirectToPage("/Error");
+		}
+	}
 }

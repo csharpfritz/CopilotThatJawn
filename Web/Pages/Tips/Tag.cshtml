@@ -1,7 +1,38 @@
 @page "/tips/tag/{tag}"
 @model Web.Pages.Tips.TagModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http.Extensions
 @{
     ViewData["Title"] = $"#{Model.Tag} Tips & Tricks";
+    var context = HttpContextAccessor.HttpContext;
+    var canonicalUrl = $"{context?.Request.Scheme}://{context?.Request.Host}/tips/tag/{Model.Tag.ToLowerInvariant()}";
+    var absoluteUrl = Request.GetDisplayUrl();
+    var logoUrl = $"{Request.Scheme}://{Request.Host}/img/icon-with-bg.webp";
+}
+
+@section HeadMetadata {
+    <link rel="canonical" href="@canonicalUrl" />
+    
+    <!-- Social Media and SEO Meta Tags -->
+    <meta property="og:title" content="#@Model.Tag Tips & Tricks - Copilot That Jawn" />
+    <meta property="og:description" content="Explore tips and tricks tagged with #@Model.Tag for Microsoft Copilot, GitHub Copilot, and AI productivity tools." />
+    <meta property="og:url" content="@absoluteUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Copilot That Jawn" />
+    <meta property="og:image" content="@logoUrl" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="#@Model.Tag Tips & Tricks - Copilot That Jawn" />
+    <meta name="twitter:description" content="Explore tips and tricks tagged with #@Model.Tag for Microsoft Copilot, GitHub Copilot, and AI productivity tools." />
+    <meta name="twitter:image" content="@logoUrl" />
+    <meta name="twitter:site" content="@("@CopilotThatJawn")" />
+    
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="@Model.Tag, copilot, ai tools, microsoft copilot, github copilot, productivity" />
 }
 
 <div class="container-fluid">
@@ -49,8 +80,7 @@
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
                         @foreach (var tagOption in Model.ViewModel.Tags)
-                        {
-                            <a asp-page="/Tips/Tag" asp-route-tag="@tagOption" 
+                        {                            <a asp-page="/Tips/Tag" asp-route-tag="@tagOption.ToLowerInvariant()" 
                                class="badge text-decoration-none @(tagOption == Model.Tag ? "bg-primary" : "bg-light text-dark")">
                                 #@tagOption
                             </a>
@@ -167,27 +197,24 @@
                         <ul class="pagination justify-content-center">
                             @if (Model.PageNumber > 1)
                             {
-                                <li class="page-item">
-                                    <a class="page-link" asp-page="/Tips/Tag" 
-                                       asp-route-tag="@Model.Tag"
+                                <li class="page-item">                                    <a class="page-link" asp-page="/Tips/Tag" 
+                                       asp-route-tag="@Model.Tag.ToLowerInvariant()"
                                        asp-route-page="@(Model.PageNumber - 1)">Previous</a>
                                 </li>
                             }
 
                             @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.ViewModel.TotalPages, Model.PageNumber + 2); i++)
                             {
-                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                    <a class="page-link" asp-page="/Tips/Tag" 
-                                       asp-route-tag="@Model.Tag"
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">                                    <a class="page-link" asp-page="/Tips/Tag" 
+                                       asp-route-tag="@Model.Tag.ToLowerInvariant()"
                                        asp-route-page="@i">@i</a>
                                 </li>
                             }
 
                             @if (Model.PageNumber < Model.ViewModel.TotalPages)
                             {
-                                <li class="page-item">
-                                    <a class="page-link" asp-page="/Tips/Tag" 
-                                       asp-route-tag="@Model.Tag"
+                                <li class="page-item">                                    <a class="page-link" asp-page="/Tips/Tag" 
+                                       asp-route-tag="@Model.Tag.ToLowerInvariant()"
                                        asp-route-page="@(Model.PageNumber + 1)">Next</a>
                                 </li>
                             }

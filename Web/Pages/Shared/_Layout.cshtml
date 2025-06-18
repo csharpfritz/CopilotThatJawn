@@ -117,6 +117,9 @@
             gtag('config', '@Configuration["GoogleAnalytics:MeasurementId"]');
         </script>
     </environment>
+
+    <!-- SEO metadata and canonical URLs -->
+    @await RenderSectionAsync("HeadMetadata", required: false)
 </head>
 <body>
     <header>
