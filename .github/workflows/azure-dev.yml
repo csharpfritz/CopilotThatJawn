@@ -36,8 +36,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Install azd
         uses: Azure/setup-azd@v2
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -52,10 +54,30 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-
       - name: Provision Infrastructure
         run: azd provision --no-prompt
 
       - name: Deploy Application
         run: azd deploy --no-prompt
-        
+
+      - name: Refresh Web App Cache
+        if: success()
+        run: |
+          echo "Refreshing web application cache..."
+          # Wait a moment for the deployment to fully complete
+          sleep 5
+          
+          # Call the cache refresh endpoint with API key authentication
+          response=$(curl -s -w "%{http_code}" -X POST "https://copilotthatjawn.com/api/cache/refresh" \
+            -H "X-API-Key: ${{ secrets.CACHE_REFRESH_API_KEY }}" \
+            -o /tmp/cache_response.json)
+          
+          if [ "$response" = "200" ]; then
+            echo "Cache refresh successful"
+            cat /tmp/cache_response.json
+          else
+            echo "Cache refresh failed with HTTP status: $response"
+            cat /tmp/cache_response.json || echo "No response body"
+            # Don't fail the workflow if cache refresh fails - it's not critical
+            echo "Continuing workflow despite cache refresh failure..."
+          fi
