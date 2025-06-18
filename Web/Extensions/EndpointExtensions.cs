@@ -235,6 +235,12 @@ public static class EndpointExtensions
                 await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.TagModel", default);
                 await outputCacheStore.EvictByTagAsync("Web.Pages.Tips.DetailsModel", default);
                 
+                // Add these to evict policy-based cache entries
+                await outputCacheStore.EvictByTagAsync("outputcache", default);
+                await outputCacheStore.EvictByTagAsync("site", default);
+                await outputCacheStore.EvictByTagAsync("static", default);
+                await outputCacheStore.EvictByTagAsync("dynamic", default);
+                
                 logger.LogInformation("Cache refresh completed successfully (content and output cache) in {Environment} environment", environment.EnvironmentName);
                 return Results.Ok(new { 
                     message = "Content and output cache refreshed successfully", 
