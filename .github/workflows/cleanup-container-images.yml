@@ -66,12 +66,14 @@ jobs:
           fi
 
       - name: Cleanup Old Container Images
+        id: cleanup
         run: |
           acr_name="${{ steps.get-acr.outputs.acr_name }}"
           dry_run="${{ github.event.inputs.dry_run || 'false' }}"
           
           if [ -z "$acr_name" ]; then
             echo "No Azure Container Registry found. Skipping cleanup."
+            echo "purged_count=0" >> $GITHUB_OUTPUT
             exit 0
           fi
           
@@ -83,6 +85,7 @@ jobs:
           
           if [ -z "$repositories" ]; then
             echo "No repositories found in ACR. Nothing to clean up."
+            echo "purged_count=0" >> $GITHUB_OUTPUT
             exit 0
           fi
           
@@ -94,7 +97,7 @@ jobs:
             PURGE_FILTERS="$PURGE_FILTERS --filter '$repo:.*'"
           done
           
-          # Construct the purge command
+          # Construct the purge command and capture the output
           PURGE_CMD="acr purge $PURGE_FILTERS --ago 0d --keep 5 --untagged"
           
           if [ "$dry_run" = "true" ]; then
@@ -103,18 +106,42 @@ jobs:
           fi
           
           echo "Running purge command..."
-          # Set longer timeout (1 hour) for large registries
-          az acr run \
+          # Run the purge command and capture output
+          purge_output=$(az acr run \
             --cmd "$PURGE_CMD" \
             --registry "$acr_name" \
             --timeout 3600 \
-            /dev/null
+            /dev/null)
           
           exit_code=$?
           
+          # Count purged images by looking for lines with "Deleted manifest" in the output
+          purged_count=$(echo "$purge_output" | grep -c "Deleted manifest" || echo 0)
+          echo "purged_count=$purged_count" >> $GITHUB_OUTPUT
+          
           if [ $exit_code -eq 0 ]; then
             echo "✅ Cleanup process completed successfully!"
+            echo "🧹 Images purged: $purged_count"
           else
             echo "❌ Cleanup process failed with exit code $exit_code"
             exit $exit_code
           fi
+      
+      - name: Create Summary
+        run: |
+          purged_count="${{ steps.cleanup.outputs.purged_count }}"
+          dry_run="${{ github.event.inputs.dry_run || 'false' }}"
+          
+          echo "## Container Registry Cleanup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Registry: \`${{ steps.get-acr.outputs.acr_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$dry_run" = "true" ]; then
+            echo "- Mode: 🔍 **DRY RUN** (no images were actually deleted)" >> $GITHUB_STEP_SUMMARY
+            echo "- Images that would be purged: **$purged_count**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Mode: ✅ **Production Run**" >> $GITHUB_STEP_SUMMARY
+            echo "- Images purged: **$purged_count**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "- Retention Policy: Keep 5 most recent images per repository" >> $GITHUB_STEP_SUMMARY
