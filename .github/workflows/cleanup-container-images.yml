@@ -114,9 +114,8 @@ jobs:
             /dev/null)
           
           exit_code=$?
-          
-          # Count purged images by looking for lines with "Deleted manifest" in the output
-          purged_count=$(echo "$purge_output" | grep -c "Deleted manifest" || echo 0)
+            # Count purged images by looking for lines with "Deleted manifest" in the output
+          purged_count=$(echo "$purge_output" | grep -c "Deleted manifest" || true)
           echo "purged_count=$purged_count" >> $GITHUB_OUTPUT
           
           if [ $exit_code -eq 0 ]; then
