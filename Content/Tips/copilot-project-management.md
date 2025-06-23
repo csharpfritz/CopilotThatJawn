@@ -210,7 +210,7 @@ Create a system to:
 Include timestamp and user tracking.
 ```
 
-1. **Dashboard Refresh**
+2. **Dashboard Refresh**
 
 ```prompt
 Set up automatic dashboard updates that:
@@ -221,7 +221,7 @@ Set up automatic dashboard updates that:
 Create a 'Refresh All' button with error handling.
 ```
 
-1. **Data Quality Checks**
+3. **Data Quality Checks**
 
 ```prompt
 Implement validation rules that:
