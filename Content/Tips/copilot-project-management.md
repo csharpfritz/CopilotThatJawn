@@ -5,6 +5,7 @@ author: "CopilotThatJawn Team"
 date: "2025-06-19"
 tags: ["project-management", "excel", "copilot", "productivity", "charts"]
 category: "Project Management"
+difficulty: "Beginner"
 ---
 
 Project management can be time-consuming, but Microsoft Copilot can help streamline many common tasks. This guide shows you how to use Copilot to manage project tasks, create burndown charts, and generate Gantt charts in Excel.
