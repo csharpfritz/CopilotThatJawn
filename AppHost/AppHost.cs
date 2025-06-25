@@ -24,9 +24,11 @@ var storage = builder.AddAzureStorage("azure-storage")
     });
 
 var tables = storage.AddTables("tables");
+var blobs = storage.AddBlobs("blobs");
 
 var web = builder.AddProject<Web>("web")
     .WithReference(tables)
+    .WithReference(blobs)
     .WithReference(redis)
     .WaitFor(tables)
     .WaitFor(redis)

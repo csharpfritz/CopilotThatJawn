@@ -129,7 +129,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 // Add Azure Blob Storage
 builder.Services.AddSingleton(x => 
 {
-    var connectionString = builder.Configuration.GetConnectionString("AzureStorage");
+    var connectionString = builder.Configuration.GetConnectionString("blobs");
     return new BlobServiceClient(connectionString);
 });
 
