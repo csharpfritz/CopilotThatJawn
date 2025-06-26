@@ -77,6 +77,10 @@ public static class ImageUploadHelper
         await using var fileStream = File.OpenRead(filePath);
         await blobClient.UploadAsync(fileStream, new BlobUploadOptions
         {
+            HttpHeaders = new BlobHttpHeaders
+            {
+                ContentType = imageInfo.ContentType
+            },
             Metadata = new Dictionary<string, string>
             {
                 ["ImageId"] = imageInfo.ImageId,

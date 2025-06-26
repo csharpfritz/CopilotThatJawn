@@ -24,7 +24,6 @@ public class ContentService : IContentService
     private readonly MarkdownPipeline _markdownPipeline;
     private readonly IDeserializer _yamlDeserializer;
     private readonly TableClient _tableClient;
-    private readonly IImageService _imageService;
     private const string TIPS_CACHE_KEY = "content_tips";
     private static readonly TimeSpan _distributedCacheExpiry = TimeSpan.FromHours(6);
     private static readonly TimeSpan _localCacheExpiry = TimeSpan.FromMinutes(5); // Short local cache for frequently accessed data
@@ -34,15 +33,13 @@ public class ContentService : IContentService
         IMemoryCache cache,
         IDistributedCache distributedCache,
         IOutputCacheStore outputCacheStore,
-        TableServiceClient tableServiceClient,
-        IImageService imageService)
+        TableServiceClient tableServiceClient)
     {
         _logger = logger;
         _environment = environment;
         _cache = cache;
         _distributedCache = distributedCache;
         _outputCacheStore = outputCacheStore;
-        _imageService = imageService;
 
         // Configure Markdig with image processing
         _markdownPipeline = new MarkdownPipelineBuilder()
@@ -64,7 +61,7 @@ public class ContentService : IContentService
             .UseFigures()
             .UseEmojiAndSmiley()
             .UseGenericAttributes()
-            .Use(new ImageUrlRewriterExtension(_imageService)) // Custom extension for image processing
+            .Use(new ImageUrlRewriterExtension()) // Custom extension for image processing
             .Build();
 
         // Configure YAML deserializer
@@ -399,10 +396,8 @@ public class ContentService : IContentService
                 return match.Value; // Keep original if not found
 
             // Build new markdown with processed URL
-            var newUrl = _imageService.GetImageUrl(image.ImageId);
             var captionPart = !string.IsNullOrEmpty(caption) ? $" \"{caption}\"" : "";
-            
-            return $"![{altText}]({newUrl}{captionPart})";
+            return $"![{altText}]({image.PublicUrl}{captionPart})";
         });
     }
 

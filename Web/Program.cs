@@ -133,9 +133,6 @@ builder.Services.AddSingleton(x =>
     return new BlobServiceClient(connectionString);
 });
 
-// Add Image Service
-builder.Services.AddSingleton<IImageService, ImageService>();
-
 // Add Content Service with image handling
 builder.Services.AddSingleton<IContentService, ContentService>();
 
@@ -246,6 +243,9 @@ app.MapControllers();
 // Map sitemap and RSS feed endpoints with caching
 app.MapSitemapEndpoint();
 app.MapRssFeedEndpoint();
+
+// Map article images endpoint for optimized image delivery
+app.MapArticleImagesEndpoint();
 
 // Map cache refresh endpoint
 app.MapCacheRefreshEndpoint();

@@ -105,7 +105,7 @@ try
                     
                     tip.Content = tip.Content.Replace(
                         $"]({localImagePath}",
-                        $"](/images/{image.ImageId}/original"
+                        $"](/article-images/{image.ImageId}/original.{Path.GetExtension(image.FileName).TrimStart('.')}"
                     );
                 }
 
