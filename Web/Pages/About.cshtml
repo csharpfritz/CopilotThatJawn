@@ -1,13 +1,46 @@
 @page
 @model AboutModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http.Extensions
 @{
     ViewData["Title"] = "About - Copilot That Jawn";
     ViewData["Description"] = "Learn about Copilot That Jawn - your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools with a Philly flavor.";
+    var context = HttpContextAccessor.HttpContext;
+    var absoluteUrl = Request.GetDisplayUrl();
+    var canonicalUrl = $"{context?.Request.Scheme}://{context?.Request.Host}/about";
+    var logoUrl = $"{Request.Scheme}://{Request.Host}/img/icon-with-bg.webp";
+}
+
+@section HeadMetadata {
+    <link rel="canonical" href="@canonicalUrl" />
+    
+    <!-- Social Media and SEO Meta Tags -->
+    <meta property="og:title" content="About - Copilot That Jawn" />
+    <meta property="og:description" content="Learn about Copilot That Jawn - your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools with a Philly flavor." />
+    <meta property="og:url" content="@absoluteUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Copilot That Jawn" />
+    <meta property="og:image" content="@logoUrl" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="About - Copilot That Jawn" />
+    <meta name="twitter:description" content="Learn about Copilot That Jawn - your comprehensive hub for Microsoft Copilot, GitHub Copilot, and AI productivity tools with a Philly flavor." />
+    <meta name="twitter:image" content="@logoUrl" />
+    <meta name="twitter:site" content="@("@CopilotThatJawn")" />
+    
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="copilot, ai tools, microsoft copilot, github copilot, productivity, philadelphia tech, about us" />
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-8">            <div class="text-center mb-5">                <img src="~/img/icon.webp" alt="Copilot That Jawn Logo" class="header-icon mb-4" />
+        <div class="col-lg-8">            
+					<div class="text-center mb-5">                
+						<img src="~/img/icon.webp" alt="Copilot That Jawn Logo" class="header-icon mb-4" />
                 <h1 class="display-4 fw-bold mb-4 brand-title">About Copilot That Jawn</h1>
                 <p class="lead text-muted">Where Philly Innovation Meets AI Excellence</p>
             </div>

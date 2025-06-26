@@ -27,9 +27,30 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
+      
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      - name: Cache .NET build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/bin
+            **/obj
+          key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/*.csproj', '**/*.cs', '**/Program.cs') }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-build-
+      
+      - name: Restore dependencies
+        run: dotnet restore ContentLoader/ContentLoader.csproj
         
       - name: Build ContentLoader
-        run: dotnet build ContentLoader/ContentLoader.csproj --configuration Release
+        run: dotnet build ContentLoader/ContentLoader.csproj --configuration Release --no-restore
         
       - name: Upload Content
         id: upload-content
@@ -37,7 +58,7 @@ jobs:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONTENT_STORAGE_CONNECTION_STRING }}
         run: |
           # Capture the output from the ContentLoader
-          output=$(dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release -- Content 2>&1)
+          output=$(dotnet run --project ContentLoader/ContentLoader.csproj --configuration Release --no-build -- Content 2>&1)
           echo "$output"          # Extract sync summary numbers using awk for more reliable parsing
           added=$(echo "$output" | awk '/Added:/ {print $2}')
           updated=$(echo "$output" | awk '/Updated:/ {print $2}')

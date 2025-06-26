@@ -1,7 +1,38 @@
 @page "/tips/category/{category}"
 @model Web.Pages.Tips.CategoryModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http.Extensions
 @{
     ViewData["Title"] = $"{Model.Category} Tips & Tricks";
+    var context = HttpContextAccessor.HttpContext;
+    var canonicalUrl = $"{context?.Request.Scheme}://{context?.Request.Host}/tips/category/{Model.Category.ToLowerInvariant()}";
+    var absoluteUrl = Request.GetDisplayUrl();
+    var logoUrl = $"{Request.Scheme}://{Request.Host}/img/icon-with-bg.webp";
+}
+
+@section HeadMetadata {
+    <link rel="canonical" href="@canonicalUrl" />
+    
+    <!-- Social Media and SEO Meta Tags -->
+    <meta property="og:title" content="@Model.Category Tips & Tricks - Copilot That Jawn" />
+    <meta property="og:description" content="Explore tips and tricks in the @Model.Category category for Microsoft Copilot, GitHub Copilot, and AI productivity tools." />
+    <meta property="og:url" content="@absoluteUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Copilot That Jawn" />
+    <meta property="og:image" content="@logoUrl" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@Model.Category Tips & Tricks - Copilot That Jawn" />
+    <meta name="twitter:description" content="Explore tips and tricks in the @Model.Category category for Microsoft Copilot, GitHub Copilot, and AI productivity tools." />
+    <meta name="twitter:image" content="@logoUrl" />
+    <meta name="twitter:site" content="@("@CopilotThatJawn")" />
+    
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="category" content="@Model.Category" />
 }
 
 <div class="container-fluid">
@@ -45,8 +76,7 @@
                 </div>
                 <div class="card-body category-filter-body">
                     @foreach (var cat in Model.ViewModel.Categories)
-                    {
-                        <a asp-page="/Tips/Category" asp-route-category="@cat" 
+                    {                        <a asp-page="/Tips/Category" asp-route-category="@cat.ToLowerInvariant()" 
                            class="list-group-item list-group-item-action border-0 @(cat == Model.Category ? "active" : "")">
                             @cat                            @if (cat == Model.Category)
                             {
@@ -162,27 +192,24 @@
                         <ul class="pagination justify-content-center">
                             @if (Model.PageNumber > 1)
                             {
-                                <li class="page-item">
-                                    <a class="page-link" asp-page="/Tips/Category" 
-                                       asp-route-category="@Model.Category"
+                                <li class="page-item">                                    <a class="page-link" asp-page="/Tips/Category" 
+                                       asp-route-category="@Model.Category.ToLowerInvariant()"
                                        asp-route-page="@(Model.PageNumber - 1)">Previous</a>
                                 </li>
                             }
 
                             @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.ViewModel.TotalPages, Model.PageNumber + 2); i++)
                             {
-                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                    <a class="page-link" asp-page="/Tips/Category" 
-                                       asp-route-category="@Model.Category"
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">                                    <a class="page-link" asp-page="/Tips/Category" 
+                                       asp-route-category="@Model.Category.ToLowerInvariant()"
                                        asp-route-page="@i">@i</a>
                                 </li>
                             }
 
                             @if (Model.PageNumber < Model.ViewModel.TotalPages)
                             {
-                                <li class="page-item">
-                                    <a class="page-link" asp-page="/Tips/Category" 
-                                       asp-route-category="@Model.Category"
+                                <li class="page-item">                                    <a class="page-link" asp-page="/Tips/Category" 
+                                       asp-route-category="@Model.Category.ToLowerInvariant()"
                                        asp-route-page="@(Model.PageNumber + 1)">Next</a>
                                 </li>
                             }

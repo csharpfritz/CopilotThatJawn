@@ -53,7 +53,7 @@
             @if (!string.IsNullOrEmpty(Model.ViewModel.Tip.Category))
             {
                 <li class="breadcrumb-item">
-                    <a asp-page="/Tips/Category" asp-route-category="@Model.ViewModel.Tip.Category">@Model.ViewModel.Tip.Category</a>
+                    <a asp-page="/Tips/Category" asp-route-category="@Model.ViewModel.Tip.Category.ToLowerInvariant()">@Model.ViewModel.Tip.Category</a>
                 </li>
             }
             <li class="breadcrumb-item active" aria-current="page">@Model.ViewModel.Tip.Title</li>
@@ -104,8 +104,7 @@
                         {
                             <div class="d-flex flex-wrap gap-1">
                                 @foreach (var tag in Model.ViewModel.Tip.Tags)
-                                {
-                                    <a asp-page="/Tips/Tag" asp-route-tag="@tag" 
+                                {                                    <a asp-page="/Tips/Tag" asp-route-tag="@tag.ToLowerInvariant()" 
                                        class="badge bg-light text-dark text-decoration-none">#@tag</a>
                                 }
                             </div>
@@ -393,9 +392,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wait a bit to ensure all styles are loaded
     setTimeout(function() {
         if (typeof Prism !== 'undefined') {
+            
             // Remove any existing highlighting first
             document.querySelectorAll('pre[class*="language-"] code').forEach(function(codeBlock) {
-                codeBlock.removeAttribute('class');
+                if (codeBlock.hasAttribute('class')) {
+                    codeBlock.setAttribute('data-original-class', codeBlock.className);
+                    codeBlock.removeAttribute('class');
+                }
                 codeBlock.className = codeBlock.parentElement.className;
             });
             
@@ -426,6 +429,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100);
 });
+
+// Listen for theme changes and re-highlight code
+    document.addEventListener('theme-changed', function(e) {
+        // We need a small delay to ensure the CSS has been applied
+        setTimeout(function() {
+            if (window.Prism) {
+                console.log('Re-highlighting code blocks after theme change to: ' + e.detail.resolvedTheme);
+                Prism.highlightAll();
+            }
+        }, 200);
+    });
 
 document.addEventListener('DOMContentLoaded', function() {
         // Track tip view

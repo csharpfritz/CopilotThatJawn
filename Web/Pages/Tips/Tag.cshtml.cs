@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.OutputCaching;
 using Shared;
 using Web.Services;
 
 namespace Web.Pages.Tips;
 
+[OutputCache(Duration = 21600, Tags = new[] { "tips", "content", "tag" })]
 public class TagModel : BasePageModel
 {
     private readonly IContentService _contentService;
@@ -29,6 +31,13 @@ public class TagModel : BasePageModel
         if (string.IsNullOrEmpty(Tag))
         {
             return RedirectToPage("/Tips/Index");
+        }
+
+        // Always redirect to lowercase version of the tag for SEO consistency
+        var lowercaseTag = Tag.ToLowerInvariant();
+        if (lowercaseTag != Tag)
+        {
+            return RedirectToPage("/Tips/Tag", new { tag = lowercaseTag, page = PageNumber });
         }
 
         try

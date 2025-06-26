@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.OutputCaching;
 using Shared;
 using Web.Services;
 
 namespace Web.Pages;
 
+[OutputCache(Duration = 21600, Tags = new[] { "home", "content", "tips" })]
 public class IndexModel : BasePageModel
 {
     private readonly ILogger<IndexModel> _logger;
