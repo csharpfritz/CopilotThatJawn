@@ -46,6 +46,10 @@ jobs:
           dotnet-version: | 
             9.x.x
 
+      - name: Run Unit Tests
+        run: dotnet test --no-build --verbosity normal
+        if: always()
+
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
