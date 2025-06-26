@@ -7,6 +7,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Azure.Data.Tables;
 using Shared;
+using Web.Extensions;
 using System.Text.Json;
 
 namespace Web.Services;
@@ -26,21 +27,21 @@ public class ContentService : IContentService
     private const string TIPS_CACHE_KEY = "content_tips";
     private static readonly TimeSpan _distributedCacheExpiry = TimeSpan.FromHours(6);
     private static readonly TimeSpan _localCacheExpiry = TimeSpan.FromMinutes(5); // Short local cache for frequently accessed data
-    
-    public ContentService(
+      public ContentService(
         ILogger<ContentService> logger, 
         IWebHostEnvironment environment,
         IMemoryCache cache,
         IDistributedCache distributedCache,
         IOutputCacheStore outputCacheStore,
-        TableServiceClient tableServiceClient)    {
+        TableServiceClient tableServiceClient)
+    {
         _logger = logger;
         _environment = environment;
         _cache = cache;
         _distributedCache = distributedCache;
         _outputCacheStore = outputCacheStore;
 
-        // Configure Markdig without syntax highlighting (using Prism.js client-side instead)
+        // Configure Markdig with image processing
         _markdownPipeline = new MarkdownPipelineBuilder()
             .UseAutoLinks()
             .UseEmphasisExtras()
@@ -59,7 +60,8 @@ public class ContentService : IContentService
             .UseCustomContainers()
             .UseFigures()
             .UseEmojiAndSmiley()
-            .UseGenericAttributes() // Enables CSS class attributes on code blocks
+            .UseGenericAttributes()
+            .Use(new ImageUrlRewriterExtension()) // Custom extension for image processing
             .Build();
 
         // Configure YAML deserializer
@@ -367,13 +369,39 @@ public class ContentService : IContentService
 	{
 		// Ensure proper CSS classes for Prism.js syntax highlighting
 		// Handle fenced code blocks with language specification
-
 		// Pattern 1: <pre><code class="language-xxx"> -> <pre class="language-xxx"><code class="language-xxx">
 		var pattern1 = @"<pre><code class=""language-(\w+)"">";
 		var replacement1 = @"<pre class=""language-$1""><code class=""language-$1"">";
 		htmlContent = Regex.Replace(htmlContent, pattern1, replacement1);
 		return htmlContent;
-	}    /// <summary>
+	}
+
+    private string ProcessImagesInContent(string content, List<ImageInfo> images)
+    {
+        // Process markdown image syntax: ![alt](url "caption")
+        var imagePattern = new Regex(@"!\[([^\]]*)\]\(([^)\s]+)(?:\s+""([^""]*)"")?\)");
+        return imagePattern.Replace(content, match =>
+        {
+            var altText = match.Groups[1].Value;
+            var url = match.Groups[2].Value;
+            var caption = match.Groups[3].Success ? match.Groups[3].Value : null;
+
+            // If it's already a full URL, leave it as is
+            if (Uri.TryCreate(url, UriKind.Absolute, out _))
+                return match.Value;
+
+            // Find matching image in our processed list
+            var image = images.FirstOrDefault(i => i.FileName == url);
+            if (image == null)
+                return match.Value; // Keep original if not found
+
+            // Build new markdown with processed URL
+            var captionPart = !string.IsNullOrEmpty(caption) ? $" \"{caption}\"" : "";
+            return $"![{altText}]({image.PublicUrl}{captionPart})";
+        });
+    }
+
+    /// <summary>
     /// Invalidate all tips-related cache entries
     /// </summary>
     public async Task InvalidateTipsCacheAsync()
@@ -391,8 +419,7 @@ public class ContentService : IContentService
             await _outputCacheStore.EvictByTagAsync("content", default);
             
             _logger.LogInformation("Tips cache invalidated successfully");
-        }
-        catch (Exception ex)
+        }        catch (Exception ex)
         {
             _logger.LogError(ex, "Error invalidating tips cache");
         }

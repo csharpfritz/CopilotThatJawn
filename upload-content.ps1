@@ -18,7 +18,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Set Azure Storage Emulator connection string (using ports from AppHost.cs)
-$storageEmulatorConnectionString = 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;TableEndpoint=http://127.0.0.1:27002/devstoreaccount1;'
+$storageEmulatorConnectionString = 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;TableEndpoint=http://127.0.0.1:27002/devstoreaccount1;BlobEndpoint=http://127.0.0.1:27001/devstoreaccount1;'
 
 # Export connection string for ContentLoader (if it reads from env)
 $env:AZURE_STORAGE_CONNECTION_STRING = $storageEmulatorConnectionString

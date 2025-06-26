@@ -40,7 +40,7 @@ namespace Shared
                 Content = markdownContent,
                 FileName = Path.GetFileName(filePath)
             };
-            if (frontMatterData.TryGetValue("publishedDate", out object publishedDateObj) && publishedDateObj != null)
+            if (frontMatterData.TryGetValue("publishedDate", out object? publishedDateObj) && publishedDateObj != null)
             {
                 if (DateTime.TryParse(publishedDateObj.ToString(), out DateTime publishedDate))
                 {
@@ -152,8 +152,8 @@ namespace Shared
                     PublishedDate = DateTime.SpecifyKind(tip.PublishedDate, DateTimeKind.Utc),
                     Description = tip.Description,
                     Content = tip.Content,
-                    FileName = tip.FileName,
-                    ContentHash = contentHash
+                    FileName = tip.FileName,                ContentHash = contentHash,
+                Images = tip.Images
                 };
                 
                 await tableClient.UpsertEntityAsync(entity);

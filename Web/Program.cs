@@ -6,6 +6,7 @@ using Shared;
 using Web.Extensions;
 using Web.Services;
 using Microsoft.AspNetCore.Rewrite;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -136,8 +137,15 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     options.Level = CompressionLevel.Optimal;
 });
 
-// Register content service
-builder.Services.AddScoped<IContentService, ContentService>();
+// Add Azure Blob Storage
+builder.Services.AddSingleton(x => 
+{
+    var connectionString = builder.Configuration.GetConnectionString("blobs");
+    return new BlobServiceClient(connectionString);
+});
+
+// Add Content Service with image handling
+builder.Services.AddSingleton<IContentService, ContentService>();
 
 var app = builder.Build();
 
@@ -247,6 +255,9 @@ app.MapControllers();
 // Map sitemap and RSS feed endpoints with caching
 app.MapSitemapEndpoint();
 app.MapRssFeedEndpoint();
+
+// Map article images endpoint for optimized image delivery
+app.MapArticleImagesEndpoint();
 
 // Map cache refresh endpoint
 app.MapCacheRefreshEndpoint();
