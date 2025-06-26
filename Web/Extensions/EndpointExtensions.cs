@@ -278,51 +278,51 @@ public static class EndpointExtensions
 
 			// Sanitize the path to prevent any potential issues
 			imagePath = imagePath.Replace("..", "").TrimStart('/');
-			
+
 			try
 			{
 				// Get the container client (using "images" as the default container name)
 				var containerClient = blobServiceClient.GetBlobContainerClient("content-images");
-				
+
 				// Check if the container exists
 				if (!await containerClient.ExistsAsync())
 				{
 					logger.LogError("Images container not found in blob storage");
 					return Results.Problem("Image container not available", statusCode: 500);
 				}
-				
+
 				// Get the blob client for the requested image
 				var blobClient = containerClient.GetBlobClient(imagePath);
-				
+
 				// Check if the blob exists
 				if (!await blobClient.ExistsAsync())
 				{
 					logger.LogWarning("Article image not found in blob storage: {ImagePath}", imagePath);
 					return Results.NotFound();
 				}
-				
+
 				// Get the blob properties to determine content type
 				var properties = await blobClient.GetPropertiesAsync();
 				var contentType = properties.Value.ContentType;
-				
+
 				// If content type is not set in blob properties, determine it from file extension
 				if (string.IsNullOrEmpty(contentType))
 				{
 					contentType = GetContentType(Path.GetExtension(imagePath));
 				}
-				
+
 				// Set cache control headers for better performance
 				context.Response.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
 				{
 					Public = true,
 					MaxAge = TimeSpan.FromDays(30)
 				};
-				
+
 				// Download the blob content
 				var memoryStream = new MemoryStream();
 				await blobClient.DownloadToAsync(memoryStream);
 				memoryStream.Position = 0;
-				
+
 				// Return the file content with the appropriate content type
 				return Results.File(memoryStream.ToArray(), contentType);
 			}

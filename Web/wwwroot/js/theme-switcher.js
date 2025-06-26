@@ -135,21 +135,34 @@ class ThemeSwitcher {
         }));
     }    // Load the appropriate Prism theme based on current theme
     updatePrismTheme(resolvedTheme) {
-        const prismThemeLink = document.getElementById('prism-theme');
-        if (prismThemeLink) {
-            const themeUrl = resolvedTheme === 'dark' 
-                ? 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'
-                : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
-            
-            // Update theme URL and trigger rehighlight
+        // Look for the existing Prism theme link
+        let prismThemeLink = document.getElementById('prism-theme');
+        
+        // If it doesn't exist, create it
+        if (!prismThemeLink) {
+            prismThemeLink = document.createElement('link');
+            prismThemeLink.id = 'prism-theme';
+            prismThemeLink.rel = 'stylesheet';
+            document.head.appendChild(prismThemeLink);
+        }
+        
+        const themeUrl = resolvedTheme === 'dark' 
+            ? '/css/prism-atom-dark.css'
+            : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
+        
+        // Only update if the theme URL has changed
+        if (prismThemeLink.href !== themeUrl) {
+            // Update theme URL
             prismThemeLink.href = themeUrl;
             
             // Re-highlight code if Prism is available
             if (window.Prism) {
                 setTimeout(() => {
                     Prism.highlightAll();
-                }, 100); // Small delay to ensure theme is loaded
+                }, 200); // Slightly longer delay to ensure theme is loaded
             }
+            
+            console.log(`Prism theme updated to: ${resolvedTheme === 'dark' ? 'dark' : 'light'}`);
         }
     }
       updateNavbarStyling() {
