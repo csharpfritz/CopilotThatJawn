@@ -13,8 +13,6 @@ lastModified: "2025-06-27"
 
 Microsoft Teams meetings can generate hours of discussion, countless decisions, and multiple action items. Instead of spending valuable time manually reviewing recordings and transcripts, let Microsoft Copilot transform your meeting content into actionable insights. This guide shows you how to leverage Copilot in Teams to boost collaboration and streamline meeting management.
 
-*Note: Screenshots showing Copilot in action within Teams will be added to illustrate these examples.*
-
 ## Getting Started with Copilot in Teams
 
 Before diving into advanced prompts, ensure:
