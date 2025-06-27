@@ -28,6 +28,8 @@ properties:
       - server: {{ .Env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
         identity: {{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
     secrets:
+      - name: connectionstrings--blobs
+        value: '{{ .Env.AZURE_STORAGE_BLOBENDPOINT }}'
       - name: connectionstrings--redis
         value: '{{ securedParameter "redis" }}'
       - name: connectionstrings--tables
@@ -51,6 +53,8 @@ properties:
             value: "true"
           - name: OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY
             value: in_memory
+          - name: ConnectionStrings__blobs
+            secretRef: connectionstrings--blobs
           - name: ConnectionStrings__redis
             secretRef: connectionstrings--redis
           - name: ConnectionStrings__tables
