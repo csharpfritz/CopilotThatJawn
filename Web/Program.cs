@@ -7,6 +7,7 @@ using Web.Extensions;
 using Web.Services;
 using Microsoft.AspNetCore.Rewrite;
 using Azure.Storage.Blobs;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -144,7 +145,7 @@ builder.Services.AddSingleton(x =>
 	if (Uri.IsWellFormedUriString(connectionString, UriKind.Absolute))
 	{
 		// If the connection string is a URI, use it directly
-		return new BlobServiceClient(new Uri(connectionString));
+		return new BlobServiceClient(new Uri(connectionString), new DefaultAzureCredential());
 	}
 	else
 	{
