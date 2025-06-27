@@ -145,7 +145,14 @@ builder.Services.AddSingleton(x =>
 	if (Uri.IsWellFormedUriString(connectionString, UriKind.Absolute))
 	{
 		// If the connection string is a URI, use it directly
-		return new BlobServiceClient(new Uri(connectionString), new DefaultAzureCredential());
+		var options = new DefaultAzureCredentialOptions
+		{
+			ManagedIdentityClientId = builder.Configuration["AZURE_CLIENT_ID"]
+		};
+
+		var credential = new DefaultAzureCredential(options);
+		return new BlobServiceClient(new Uri(connectionString), credential);
+		
 	}
 	else
 	{
@@ -204,10 +211,10 @@ if (!app.Environment.IsDevelopment())
 			// Set headers to ensure proper cache behavior for bundled files
 			context.Response.OnStarting(() =>
 				{
-						context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
-						context.Response.Headers.Vary = "Accept-Encoding";
-						return Task.CompletedTask;
-					});
+					context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+					context.Response.Headers.Vary = "Accept-Encoding";
+					return Task.CompletedTask;
+				});
 		}
 		await next();
 	});
