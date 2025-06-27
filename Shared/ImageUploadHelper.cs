@@ -16,7 +16,7 @@ public static class ImageUploadHelper
         
         // Get or create container
         var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-        await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+        await containerClient.CreateIfNotExistsAsync();
 
         // Process image and get metadata
         using var image = await Image.LoadAsync(imagePath);
