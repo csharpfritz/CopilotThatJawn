@@ -8,6 +8,7 @@ using Web.Services;
 using Microsoft.AspNetCore.Rewrite;
 using Azure.Storage.Blobs;
 using Azure.Identity;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.Configure<RouteOptions>(options =>
 });
 
 builder.AddAzureTableClient("tables");
+builder.AddAzureBlobClient("blobs");
 
 // Add Redis distributed caching - manual configuration since extension doesn't exist
 
@@ -136,33 +138,6 @@ builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
 	options.Level = CompressionLevel.Optimal;
-});
-
-// Add Azure Blob Storage
-builder.Services.AddSingleton(x =>
-{
-	var connectionString = builder.Configuration.GetConnectionString("blobs");
-	if (Uri.IsWellFormedUriString(connectionString, UriKind.Absolute))
-	{
-		// If the connection string is a URI, use it directly
-		var options = new DefaultAzureCredentialOptions
-		{
-			ManagedIdentityClientId = builder.Configuration["AZURE_CLIENT_ID"]
-		};
-
-		var credential = new DefaultAzureCredential(options);
-		return new BlobServiceClient(new Uri(connectionString), credential);
-		
-	}
-	else
-	{
-		// Otherwise, treat it as a standard connection string
-		if (string.IsNullOrWhiteSpace(connectionString))
-		{
-			throw new ArgumentException("Invalid Azure Blob Storage connection string.", nameof(connectionString));
-		}
-		return new BlobServiceClient(connectionString);
-	}
 });
 
 // Add Content Service with image handling
