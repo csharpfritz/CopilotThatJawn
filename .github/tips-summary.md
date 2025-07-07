@@ -22,12 +22,15 @@ This document provides a summary of the topics covered by the tips in the `Conte
 - **copilot-excel-attendance.md**: Building and managing attendance sheets in Excel with Copilot.
 - **enhance-presentations-with-copilot.md**: Using Copilot to improve and enhance PowerPoint presentations.
 - **turn-teams-meetings-into-action-items.md**: Using Copilot in Teams to summarize meetings and generate action items.
+- **summarizing-documents-with-copilot.md**: Extracting key insights from lengthy documents and PDFs using Copilot's summarization features across Word, Teams, and Copilot Chat.
 
 ## Azure & Cloud AI
 - **get-started-azure-copilot.md**: Getting started with Azure Copilot for cloud management, troubleshooting, and resource optimization.
 
 ## Project Management & Productivity
 - **copilot-project-management.md**: Using Copilot to streamline project management, create task lists, burndown charts, and Gantt charts in Excel.
+- **generate-user-manuals-with-copilot-playwright.md**: Creating comprehensive user manuals using Copilot prompts and Playwright MCP for automated screenshot generation.
+- **advanced-user-manual-automation.md**: Advanced techniques for automating user manual generation, updates, and multi-format publishing using Copilot and Playwright MCP.
 
 ## Marketing & Communications
 - **ultimate-copilot-marketing-playbook.md**: Using Copilot to generate marketing materials, social media content, and campaign strategies.
