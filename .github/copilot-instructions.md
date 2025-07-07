@@ -332,3 +332,45 @@ Content/
 - Plan for scalability as content grows
 
 Remember: This is a showcase of AI tools and productivity, so the site itself should demonstrate best practices in modern web development and user experience design.
+
+## Tips Article Frontmatter Format
+
+All Tips articles in `Content/Tips/` must begin with a YAML frontmatter block. This block provides metadata for categorization, search, and display. Use the following format:
+
+```markdown
+---
+title: "<Descriptive Title>"
+description: "<Short summary of the tip>"
+category: "<Main category>"
+tags: ["tag1", "tag2", ...]
+difficulty: "Beginner"|"Intermediate"|"Advanced"
+author: "<Author or Team Name>"
+publishedDate: "YYYY-MM-DD"
+lastModified: "YYYY-MM-DD"
+series: "<Series Name>"   # Optional
+part: <Number>            # Optional
+featured: true|false      # Optional
+---
+```
+
+- All fields except `series`, `part`, and `featured` are required unless otherwise noted.
+- Use ISO date format for dates.
+- Use descriptive, unique titles and tags.
+- Update `lastModified` whenever the tip is edited.
+
+### Current Tip Categories
+
+The following categories are currently covered by tips in `Content/Tips/`:
+
+- GitHub Copilot
+- Microsoft 365 Copilot
+- Azure AI
+- Database Development
+- Project Management
+- Marketing & Communications
+
+Refer to `.github/tips-summary.md` for the most up-to-date list of tips and their topics.
+
+**Reference:**
+- For a list of existing tips and their topics, see `.github/tips-summary.md`.
+- After writing a new tip, update `.github/tips-summary.md` to keep the summary current.
