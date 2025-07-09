@@ -4,7 +4,7 @@ description: "Connect GitHub Copilot to Google Analytics 4 using MCP server inte
 category: "Marketing & Communications"
 tags: ["Google Analytics", "MCP", "Marketing Analytics", "Website Performance", "Data Analysis", "Automation"]
 difficulty: "Intermediate"
-author: "Copilot That Jawn Team"
+author: "Jeffrey T. Fritz"
 publishedDate: "2025-07-09"
 lastModified: "2025-07-09"
 featured: true
@@ -13,6 +13,8 @@ featured: true
 # Supercharge Your Marketing Analytics with Copilot and Google Analytics MCP Server
 
 Transform your marketing workflow by connecting GitHub Copilot directly to Google Analytics 4 through a Model Context Protocol (MCP) server. This integration allows you to analyze website performance, understand user behavior, and generate actionable marketing insights using natural language queries.
+
+This article summarizes and shares how to use the [Google Analytics MCP Server](https://github.com/surendranb/google-analytics-mcp).
 
 ## What You'll Achieve
 
