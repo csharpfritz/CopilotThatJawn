@@ -1,6 +1,6 @@
 ---
 title: "Supercharge Your Marketing Analytics with Copilot and Google Analytics MCP Server"
-description: "Connect Microsoft Copilot to Google Analytics 4 using MCP server integration for automated website performance analysis and data-driven marketing insights"
+description: "Connect GitHub Copilot to Google Analytics 4 using MCP server integration for automated website performance analysis and data-driven marketing insights"
 category: "Marketing & Communications"
 tags: ["Google Analytics", "MCP", "Marketing Analytics", "Website Performance", "Data Analysis", "Automation"]
 difficulty: "Intermediate"
@@ -12,7 +12,7 @@ featured: true
 
 # Supercharge Your Marketing Analytics with Copilot and Google Analytics MCP Server
 
-Transform your marketing workflow by connecting Microsoft Copilot directly to Google Analytics 4 through a Model Context Protocol (MCP) server. This integration allows you to analyze website performance, understand user behavior, and generate actionable marketing insights using natural language queries.
+Transform your marketing workflow by connecting GitHub Copilot directly to Google Analytics 4 through a Model Context Protocol (MCP) server. This integration allows you to analyze website performance, understand user behavior, and generate actionable marketing insights using natural language queries.
 
 ## What You'll Achieve
 
@@ -26,7 +26,8 @@ Transform your marketing workflow by connecting Microsoft Copilot directly to Go
 Before you begin, ensure you have:
 - Google Analytics 4 property set up for your website
 - Google Cloud account with Analytics Data API enabled
-- Microsoft Copilot (GitHub Copilot, Claude Desktop, or similar MCP-compatible client)
+- GitHub Copilot
+- Python 3.10 or greater
 - Basic familiarity with command line operations
 
 ## Step 1: Set Up Google Cloud Authentication
@@ -39,23 +40,51 @@ First, configure Google Cloud authentication to allow secure access to your GA4 
    - Note your project ID for later use
 
 2. **Enable the Analytics Data API**:
-   - Navigate to [APIs & Services](https://console.cloud.google.com/flows/enableapi?apiid=analyticsdata.googleapis.com)
-   - Enable the Google Analytics Data API for your project
+   - Navigate to [APIs & Services](https://console.cloud.google.com/apis/dashboard)
+	 - At the top, choose 'Enable APIs and Services'
+	 - Search for and enable the Google Analytics API
+   - Or.. click this link to [Enable the Google Analytics Data API](https://console.cloud.google.com/flows/enableapi?apiid=analyticsdata.googleapis.com) for your project
 
-3. **Set up Authentication**:
-   ```bash
-   # Install Google Cloud CLI if not already installed
-   # Then authenticate your account
-   gcloud auth application-default login
-   ```
+3. **Create Service Account**:
 
-## Step 2: Install the GA4 MCP Server
+    - Go to "APIs & Services" → "Credentials"
+    - Click "Create Credentials" → "Service Account"
+    - Enter name (e.g., "ga4-mcp-server")
+    - Click "Create and Continue"
+    - Skip role assignment → Click "Done"
+
+4. **Download JSON Key**:
+
+    - Click your service account
+    - Go to "Keys" tab → "Add Key" → "Create New Key"
+    - Select "JSON" → Click "Create"
+    - Save the JSON file - you'll need its path
+
+## Step 2: Add your service account to Google Analytics
+
+
+1. **Get service account email**:
+  	- Open the JSON file
+    - Find the client_email field
+    - Copy the email (format: ga4-mcp-server@your-project.iam.gserviceaccount.com)
+2. **Add to GA4 property**:
+  - Go to Google Analytics
+  - Select your GA4 property
+  - Click "Admin" (gear icon at bottom left)
+  - Under "Property" → Click "Property access management"
+  - Click "+" → "Add users"
+  - Paste the service account email
+  - Select "Viewer" role
+  - Uncheck "Notify new users by email"
+  - Click "Add"
+
+## Step 3: Install the GA4 MCP Server
 
 Install the MCP server that will bridge Copilot and Google Analytics:
 
 ```bash
 # Install the GA4 MCP server
-pip install mcp-server-ga4
+pip install google-analytics-mcp
 ```
 
 ## Step 3: Find Your GA4 Property ID
@@ -68,32 +97,24 @@ Locate your Google Analytics 4 property ID:
 
 ## Step 4: Configure Copilot Integration
 
-### For Claude Desktop Users
-
-Edit your Claude Desktop configuration file:
-
-```json
-{
-  "mcpServers": {
-    "ga4": {
-      "command": "mcp-server-ga4",
-      "args": ["--property-id", "YOUR_GA4_PROPERTY_ID"]
-    }
-  }
-}
-```
-
 ### For GitHub Copilot Users
 
-Set up the server and connect it to your GitHub Copilot environment:
+Add an entry to your user settings in Visual Studio Code for this MCP server.  Open the user settings in JSON mode and add the following:
 
 1. **Start the MCP Server**:
-   ```bash
-   # Set your GA4 property ID
-   export GA4_PROPERTY_ID=YOUR_GA4_PROPERTY_ID
-
-   # Start the MCP server
-   mcp-server-ga4 --property-id $GA4_PROPERTY_ID
+   ```json
+	{
+		"mcpServers": {
+			"ga4-analytics": {
+				"command": "python",
+				"args": ["-m", "ga4_mcp_server"],
+				"env": {
+					"GOOGLE_APPLICATION_CREDENTIALS": "/path/to/your/service-account-key.json",
+					"GA4_PROPERTY_ID": "123456789"
+				}
+			}
+		}
+	}
    ```
 
 2. **Connect to GitHub Copilot**:
@@ -113,7 +134,7 @@ Set up the server and connect it to your GitHub Copilot environment:
 
    If successful, Copilot will query your GA4 data through the MCP server and provide analytics insights.
 
-**Note**: GitHub Copilot's MCP integration may vary depending on your specific setup. For the most reliable experience with MCP servers, consider using Claude Desktop or other MCP-native clients until GitHub Copilot's MCP support is fully standardized.
+**Note**: GitHub Copilot's MCP integration may vary depending on your specific setup.
 
 ## Powerful Marketing Queries You Can Now Ask
 
@@ -187,12 +208,19 @@ While the MCP server focuses on your data, combine insights with market research
 
 ## Troubleshooting Common Issues
 
+## Python Setup Issues
+
+1. Make sure you're using a version of Python that is at least v3.10
+2. Verify that you have the package `setuptools` installed.  Use this command to ensure you have the latest version:
+	```bash
+	pip install --upgrade setuptools
+	```
+
 ### Authentication Problems
 
 If you encounter authentication errors:
 1. Verify your Google Cloud project has the Analytics Data API enabled
-2. Ensure you've run `gcloud auth application-default login`
-3. Check that your GA4 property ID is correct
+2. Check that your GA4 property ID is correct
 
 ### Data Access Issues
 
@@ -205,7 +233,7 @@ If you can't access certain metrics:
 
 If Copilot can't connect to the server:
 1. Restart your Copilot client after configuration changes
-2. Verify the MCP server is properly installed with `pip list | grep mcp-server-ga4`
+2. Verify the MCP server is properly installed with `pip list | grep ga4-analytics`
 3. Check that the property ID format is correct (numbers only)
 
 ## Security Best Practices
@@ -235,7 +263,7 @@ Once you're comfortable with basic queries, explore advanced capabilities:
 
 ## Conclusion
 
-Integrating Microsoft Copilot with Google Analytics 4 through the MCP server transforms how marketing teams interact with their data. Instead of logging into multiple dashboards and manually creating reports, you can now have intelligent conversations about your website performance, get instant insights, and make data-driven decisions faster than ever.
+Integrating GitHub Copilot with Google Analytics 4 through the MCP server transforms how marketing teams interact with their data. Instead of logging into multiple dashboards and manually creating reports, you can now have intelligent conversations about your website performance, get instant insights, and make data-driven decisions faster than ever.
 
 This integration represents the future of marketing analytics – where artificial intelligence handles the complex data queries, allowing marketers to focus on strategy, creativity, and customer experience optimization.
 
