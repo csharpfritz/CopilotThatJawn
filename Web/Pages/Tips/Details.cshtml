@@ -6,7 +6,7 @@
     ViewData["Description"] = Model.ViewModel.Tip.Description;
     
     var absoluteUrl = Request.GetDisplayUrl();
-    var logoUrl = $"{Request.Scheme}://{Request.Host}/img/icon-with-bg.webp";
+
 }
 
 @section Styles {
@@ -16,7 +16,7 @@
     <meta property="og:url" content="@absoluteUrl" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Copilot That Jawn" />
-    <meta property="og:image" content="@logoUrl" />
+    <meta property="og:image" content="@(Url.Content("~/img/social-preview.webp"))" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="article:published_time" content="@Model.ViewModel.Tip.PublishedDate.ToString("yyyy-MM-ddTHH:mm:ssZ")" />
@@ -31,7 +31,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@Model.ViewModel.Tip.Title" />
     <meta name="twitter:description" content="@Model.ViewModel.Tip.Description" />
-    <meta name="twitter:image" content="@logoUrl" />
+    <meta name="twitter:image" content="@(Url.Content("~/img/social-preview.webp"))" />
     <meta name="twitter:site" content="@("@CopilotThatJawn")" />
     
     <!-- Additional SEO -->
