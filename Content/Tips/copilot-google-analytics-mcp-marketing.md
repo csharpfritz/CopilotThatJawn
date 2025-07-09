@@ -68,15 +68,15 @@ First, configure Google Cloud authentication to allow secure access to your GA4 
     - Find the client_email field
     - Copy the email (format: ga4-mcp-server@your-project.iam.gserviceaccount.com)
 2. **Add to GA4 property**:
-  - Go to Google Analytics
-  - Select your GA4 property
-  - Click "Admin" (gear icon at bottom left)
-  - Under "Property" → Click "Property access management"
-  - Click "+" → "Add users"
-  - Paste the service account email
-  - Select "Viewer" role
-  - Uncheck "Notify new users by email"
-  - Click "Add"
+	- Go to Google Analytics
+	- Select your GA4 property
+	- Click "Admin" (gear icon at bottom left)
+	- Under "Property" → Click "Property access management"
+	- Click "+" → "Add users"
+	- Paste the service account email
+	- Select "Viewer" role
+	- Uncheck "Notify new users by email"
+	- Click "Add"
 
 ## Step 3: Install the GA4 MCP Server
 
