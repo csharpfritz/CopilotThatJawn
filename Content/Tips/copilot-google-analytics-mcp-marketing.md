@@ -5,8 +5,8 @@ category: "Marketing & Communications"
 tags: ["Google Analytics", "MCP", "Marketing Analytics", "Website Performance", "Data Analysis", "Automation"]
 difficulty: "Intermediate"
 author: "Copilot That Jawn Team"
-publishedDate: "2025-01-07"
-lastModified: "2025-01-07"
+publishedDate: "2025-07-09"
+lastModified: "2025-07-09"
 featured: true
 ---
 
