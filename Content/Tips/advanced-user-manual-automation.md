@@ -5,8 +5,8 @@ category: "Project Management"
 tags: ["documentation", "automation", "playwright-mcp", "advanced-techniques", "workflow-automation"]
 difficulty: "Advanced"
 author: "Copilot That Jawn"
-publishedDate: "2025-07-07"
-lastModified: "2025-07-07"
+publishedDate: "2025-07-11"
+lastModified: "2025-07-11"
 series: "User Manual Generation"
 part: 2
 ---

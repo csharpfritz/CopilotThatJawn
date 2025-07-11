@@ -5,8 +5,8 @@ category: "Project Management"
 tags: ["documentation", "user-manuals", "playwright-mcp", "copilot-prompts", "automation"]
 difficulty: "Intermediate"
 author: "Copilot That Jawn"
-publishedDate: "2025-07-07"
-lastModified: "2025-07-07"
+publishedDate: "2025-07-11"
+lastModified: "2025-07-11"
 ---
 
 # Generate User Manuals with Copilot and Playwright MCP
