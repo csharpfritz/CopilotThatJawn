@@ -71,6 +71,18 @@ public class TipSearchRequest
 }
 
 /// <summary>
+/// Result model for tip search operations containing both results and total count
+/// </summary>
+public class TipSearchResult
+{
+    public List<TipModel> Tips { get; set; } = new();
+    public int TotalCount { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+}
+
+/// <summary>
 /// DTO for API responses
 /// </summary>
 public class TipDto

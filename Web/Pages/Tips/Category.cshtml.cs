@@ -66,18 +66,17 @@ public class CategoryModel : BasePageModel
 				PageSize = 12
 			};
 
-			var tips = await _contentService.SearchTipsAsync(request);
-			var totalCount = tips.Count;
+			var searchResult = await _contentService.SearchTipsAsync(request);
 
 			ViewModel = new TipListViewModel
 			{
-				Tips = tips,
+				Tips = searchResult.Tips,
 				Categories = categories,
 				Tags = tags,
 				SelectedCategory = Category,
 				Page = PageNumber,
-				PageSize = request.PageSize,
-				TotalCount = totalCount
+				PageSize = searchResult.PageSize,
+				TotalCount = searchResult.TotalCount
 			};
 
 			ViewData["Title"] = $"{Category} Tips & Tricks";

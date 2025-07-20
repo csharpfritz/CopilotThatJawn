@@ -44,7 +44,14 @@
                                 <option value="">All Categories</option>
                                 @foreach (var cat in Model.ViewModel.Categories)
                                 {
-                                    <option value="@cat" selected="@(cat == Model.Category)">@cat</option>
+                                    if (cat == Model.Category)
+                                    {
+                                        <option value="@cat" selected>@cat</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@cat">@cat</option>
+                                    }
                                 }
                             </select>
                         </div>
@@ -56,7 +63,14 @@
                                 <option value="">All Tags</option>
                                 @foreach (var tagOption in Model.ViewModel.Tags)
                                 {
-                                    <option value="@tagOption" selected="@(tagOption == Model.Tag)">@tagOption</option>
+                                    if (tagOption == Model.Tag)
+                                    {
+                                        <option value="@tagOption" selected>@tagOption</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@tagOption">@tagOption</option>
+                                    }
                                 }
                             </select>
                         </div>
@@ -66,9 +80,30 @@
                             <label for="difficulty" class="form-label">Difficulty</label>
                             <select class="form-select" id="difficulty" name="difficulty">
                                 <option value="">All Levels</option>
-                                <option value="Beginner" selected="@(Model.Difficulty == "Beginner")">Beginner</option>
-                                <option value="Intermediate" selected="@(Model.Difficulty == "Intermediate")">Intermediate</option>
-                                <option value="Advanced" selected="@(Model.Difficulty == "Advanced")">Advanced</option>
+                                @if (Model.Difficulty == "Beginner")
+                                {
+                                    <option value="Beginner" selected>Beginner</option>
+                                }
+                                else
+                                {
+                                    <option value="Beginner">Beginner</option>
+                                }
+                                @if (Model.Difficulty == "Intermediate")
+                                {
+                                    <option value="Intermediate" selected>Intermediate</option>
+                                }
+                                else
+                                {
+                                    <option value="Intermediate">Intermediate</option>
+                                }
+                                @if (Model.Difficulty == "Advanced")
+                                {
+                                    <option value="Advanced" selected>Advanced</option>
+                                }
+                                else
+                                {
+                                    <option value="Advanced">Advanced</option>
+                                }
                             </select>
                         </div>
 
