@@ -9,7 +9,7 @@ public interface IContentService
 {
     Task<List<TipModel>> GetAllTipsAsync();
     Task<TipModel?> GetTipBySlugAsync(string slug);
-    Task<List<TipModel>> SearchTipsAsync(TipSearchRequest request);
+    Task<TipSearchResult> SearchTipsAsync(TipSearchRequest request);
     Task<List<string>> GetCategoriesAsync();
     Task<List<string>> GetTagsAsync();
     Task<List<TipModel>> GetRelatedTipsAsync(TipModel tip, int count = 3);

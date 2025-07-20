@@ -49,8 +49,7 @@ public class TagModel : BasePageModel
                 PageSize = 12
             };
 
-            var tips = await _contentService.SearchTipsAsync(request);
-            var totalCount = tips.Count;
+            var searchResult = await _contentService.SearchTipsAsync(request);
 
             // Get filter options
             var categories = await _contentService.GetCategoriesAsync();
@@ -58,13 +57,13 @@ public class TagModel : BasePageModel
 
             ViewModel = new TipListViewModel
             {
-                Tips = tips,
+                Tips = searchResult.Tips,
                 Categories = categories,
                 Tags = tags,
                 SelectedTag = Tag,
                 Page = PageNumber,
-                PageSize = request.PageSize,
-                TotalCount = totalCount
+                PageSize = searchResult.PageSize,
+                TotalCount = searchResult.TotalCount
             };
 
             ViewData["Title"] = $"#{Tag} Tips & Tricks";

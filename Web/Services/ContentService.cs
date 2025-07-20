@@ -87,7 +87,7 @@ public class ContentService : IContentService
             t.UrlSlug.Equals(slug, StringComparison.OrdinalIgnoreCase));
     }
 
-    public async Task<List<TipModel>> SearchTipsAsync(TipSearchRequest request)
+    public async Task<TipSearchResult> SearchTipsAsync(TipSearchRequest request)
     {
         var tips = await GetTipsFromCacheAsync();
         var query = tips.AsQueryable();
@@ -124,14 +124,22 @@ public class ContentService : IContentService
         // Order by published date (newest first)
         query = query.OrderByDescending(t => t.PublishedDate);
 
-        // Apply pagination
+        // Get total count before pagination
         var totalCount = query.Count();
+        
+        // Apply pagination
         var results = query
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToList();
 
-        return results;
+        return new TipSearchResult
+        {
+            Tips = results,
+            TotalCount = totalCount,
+            Page = request.Page,
+            PageSize = request.PageSize
+        };
     }
 
     public async Task<List<string>> GetCategoriesAsync()
