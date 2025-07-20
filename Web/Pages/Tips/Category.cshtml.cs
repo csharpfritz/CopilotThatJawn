@@ -6,7 +6,7 @@ using Web.Services;
 
 namespace Web.Pages.Tips;
 
-[OutputCache(Duration = 21600, Tags = new[] { "tips", "content", "category" })]
+[OutputCache(Duration = 21600, Tags = new[] { "tips", "content", "category" }, VaryByQueryKeys = new[] { "category", "page" })]
 public class CategoryModel : BasePageModel
 {
 	private readonly IContentService _contentService;
