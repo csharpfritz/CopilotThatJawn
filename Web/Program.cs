@@ -92,7 +92,7 @@ builder.Services.Configure<Microsoft.AspNetCore.OutputCaching.OutputCacheOptions
 			builder.Cache()
 						 .SetVaryByHost(true)
 						 .SetVaryByQuery("*")
-						 .SetVaryByHeader("Accept-Language")  // Vary by language
+						 // .SetVaryByHeader("Accept-Language")  // Vary by language
 						 .Expire(TimeSpan.FromHours(6))       // Cache for 6 hours by default
 						 .Tag("outputcache", "site")); // Add tags for better organization
 
