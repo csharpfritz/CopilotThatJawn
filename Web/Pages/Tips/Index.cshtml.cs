@@ -6,7 +6,7 @@ using Web.Services;
 
 namespace Web.Pages.Tips;
 
-[OutputCache(Duration = 21600, Tags = new[] { "tips", "content" }, VaryByQueryKeys = new[] { "category", "tag", "search", "difficulty", "page" })]
+[OutputCache(PolicyName = "SearchResults")]
 public class IndexModel : BasePageModel
 {
     private readonly IContentService _contentService;
@@ -36,6 +36,14 @@ public class IndexModel : BasePageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
+        // For search results, prevent aggressive browser caching
+        if (!string.IsNullOrEmpty(Search) || !string.IsNullOrEmpty(Category) || 
+            !string.IsNullOrEmpty(Tag) || !string.IsNullOrEmpty(Difficulty) || PageNumber > 1)
+        {
+            Response.Headers.CacheControl = "no-cache, must-revalidate";
+            Response.Headers.Pragma = "no-cache";
+        }
+
         try
         {
             var request = new TipSearchRequest

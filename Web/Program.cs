@@ -111,6 +111,14 @@ builder.Services.Configure<Microsoft.AspNetCore.OutputCaching.OutputCacheOptions
 						 .Expire(TimeSpan.FromDays(3))        // Cache tips for 3 days
 						 .Tag("outputcache", "tips", "content")); // Add tags for better organization
 
+	// Policy for search results - shorter cache for dynamic filtering
+	options.AddPolicy("SearchResults", builder =>
+			builder.Cache()
+						 .SetVaryByHost(true)
+						 .SetVaryByQuery("category", "tag", "search", "difficulty", "pageNumber")
+						 .Expire(TimeSpan.FromMinutes(5))     // Cache search results for 5 minutes
+						 .Tag("outputcache", "search", "tips")); // Add tags for better organization
+
 	// Policy for frequently updated content - extended to 6 hours minimum
 	options.AddPolicy("DynamicContent", builder =>
 			builder.Cache()
