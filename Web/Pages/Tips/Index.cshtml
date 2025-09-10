@@ -179,7 +179,8 @@
                     }
                 </div>
 
-                <!-- Pagination -->                @if (Model.ViewModel.TotalPages > 1)
+                <!-- Pagination -->                
+								@if (Model.ViewModel.TotalPages > 1)
                 {
                     <nav aria-label="Tips pagination" class="mt-5">
                         <ul class="pagination justify-content-center">
@@ -187,7 +188,7 @@
                             {
                                 <li class="page-item">
                                     <a class="page-link" asp-page="/Tips/Index" 
-                                       asp-route-page="@(Model.PageNumber - 1)"
+                                       asp-route-pageNumber="@(Model.PageNumber - 1)"
                                        asp-route-category="@Model.Category"
                                        asp-route-tag="@Model.Tag"
                                        asp-route-search="@Model.Search"
@@ -199,7 +200,7 @@
                             {
                                 <li class="page-item @(i == Model.PageNumber ? "active" : "")">
                                     <a class="page-link" asp-page="/Tips/Index" 
-                                       asp-route-page="@i"
+                                       asp-route-pageNumber="@i"
                                        asp-route-category="@Model.Category"
                                        asp-route-tag="@Model.Tag"
                                        asp-route-search="@Model.Search"
@@ -211,7 +212,7 @@
                             {
                                 <li class="page-item">
                                     <a class="page-link" asp-page="/Tips/Index" 
-                                       asp-route-page="@(Model.PageNumber + 1)"
+                                       asp-route-pageNumber="@(Model.PageNumber + 1)"
                                        asp-route-category="@Model.Category"
                                        asp-route-tag="@Model.Tag"
                                        asp-route-search="@Model.Search"
