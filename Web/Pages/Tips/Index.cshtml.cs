@@ -6,12 +6,15 @@ using Web.Services;
 
 namespace Web.Pages.Tips;
 
-[OutputCache(PolicyName = "SearchResults")]
+// Disable output caching for this page to prevent form state caching issues
+// We'll implement data-level caching in the service layer instead
 public class IndexModel : BasePageModel
 {
     private readonly IContentService _contentService;
-    private readonly ILogger<IndexModel> _logger;      // Use default cache duration for tips list (6 hours) since new tips are added infrequently
-    // protected override int CacheDurationSeconds => base.CacheDurationSeconds; // 6 hours default
+    private readonly ILogger<IndexModel> _logger;
+    
+    // Disable page-level caching to prevent form state issues
+    protected override bool AllowCaching => false;
 
     public IndexModel(IContentService contentService, ILogger<IndexModel> logger)
     {
@@ -36,13 +39,9 @@ public class IndexModel : BasePageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        // For search results, prevent aggressive browser caching
-        if (!string.IsNullOrEmpty(Search) || !string.IsNullOrEmpty(Category) || 
-            !string.IsNullOrEmpty(Tag) || !string.IsNullOrEmpty(Difficulty) || PageNumber > 1)
-        {
-            Response.Headers.CacheControl = "no-cache, must-revalidate";
-            Response.Headers.Pragma = "no-cache";
-        }
+        // Set cache headers to prevent browser caching of the HTML form state
+        Response.Headers.CacheControl = "no-cache, must-revalidate";
+        Response.Headers.Pragma = "no-cache";
 
         try
         {
@@ -55,6 +54,8 @@ public class IndexModel : BasePageModel
                 Page = Math.Max(1, PageNumber),
                 PageSize = 12
             };
+
+						Console.WriteLine($"Searching tips with: Category={Category}, Tag={Tag}, Search={Search}, Difficulty={Difficulty}, Page={PageNumber}");
 
             var searchResult = await _contentService.SearchTipsAsync(request);
 
