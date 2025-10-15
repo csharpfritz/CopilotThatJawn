@@ -221,17 +221,17 @@ public static class EndpointExtensions
 					return Results.Problem("API key not configured", statusCode: 500);
 				}
 
-				// Only perform cache refresh in non-development environments
-				if (environment.IsDevelopment())
-				{
-					logger.LogInformation("Development environment detected. Skipping cache refresh.");
-					return Results.Ok(new
-					{
-						message = "Cache refresh skipped in development environment",
-						timestamp = DateTime.UtcNow,
-						environment = "Development"
-					});
-				}
+				// Allow cache refresh in all environments
+				// if (environment.IsDevelopment())
+				// {
+				// 	logger.LogInformation("Development environment detected. Skipping cache refresh.");
+				// 	return Results.Ok(new
+				// 	{
+				// 		message = "Cache refresh skipped in development environment",
+				// 		timestamp = DateTime.UtcNow,
+				// 		environment = "Development"
+				// 	});
+				// }
 
 				// Refresh content cache
 				await contentService.RefreshContentAsync();
