@@ -12,7 +12,7 @@ featured: true
 
 # Microsoft Copilot in Outlook: Streamline Your Email Workflow with AI
 
-If you've ever felt buried under a mountain of emails, you know the struggle is real. Outlook Copilot is here to change that. With AI-powered assistance built right into your email client, you can summarize long threads, draft professional replies in seconds, and reclaim hours of your week. Here's how to unlock this game-changer and make email work for you instead of against you.
+If you've ever felt buried under a mountain of emails, you know the struggle is real. [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook) Copilot is here to change that. With AI-powered assistance built right into your email client, you can summarize long threads, draft professional replies in seconds, and reclaim hours of your week. Here's how to unlock this game-changer and make email work for you instead of against you.
 
 ## What Copilot Can Do in Outlook
 
@@ -33,8 +33,8 @@ Getting Copilot up and running is straightforward:
 ### 1. Check Your Subscription and License
 
 You'll need:
-- An eligible **Microsoft 365 subscription** (Business Standard, Business Premium, or Enterprise E3/E5)
-- A **Microsoft 365 Copilot add-on license** (purchased separately from your base subscription)
+- An eligible [Microsoft 365](https://www.microsoft.com/en-us/microsoft-365) subscription (Business Standard, Business Premium, or Enterprise E3/E5)
+- A [Microsoft 365 Copilot](https://www.microsoft.com/en-us/microsoft-365/copilot) add-on license (purchased separately from your base subscription)
 
 If you're unsure about your license, check with your IT admin or review your subscription settings in Microsoft 365.
 
@@ -42,7 +42,7 @@ If you're unsure about your license, check with your IT admin or review your sub
 
 Keep your Outlook client current to access the latest Copilot features:
 - **On Windows or Mac**: Go to `File > Account > Update Options > Update Now`
-- **On the Web**: Copilot features roll out automatically to the latest "New Outlook" experience
+- **On the Web**: Copilot features roll out automatically to the latest [New Outlook](https://support.microsoft.com/en-us/office/getting-started-with-the-new-outlook-for-windows-656bb8d9-5a60-49b2-a98b-ba7822bc7627) experience
 
 ### 3. Sign In and Look for the Copilot Icon
 
