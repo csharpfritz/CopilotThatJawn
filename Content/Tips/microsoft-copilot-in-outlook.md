@@ -33,7 +33,7 @@ Getting Copilot up and running is straightforward:
 ### 1. Check Your Subscription and License
 
 You'll need:
-- An eligible **Microsoft 365 subscription** (Business Standard, Business Premium, Business Basic, or Apps for business/enterprise)
+- An eligible **Microsoft 365 subscription** (Business Standard, Business Premium, or Enterprise E3/E5)
 - A **Microsoft 365 Copilot add-on license** (purchased separately from your base subscription)
 
 If you're unsure about your license, check with your IT admin or review your subscription settings in Microsoft 365.
