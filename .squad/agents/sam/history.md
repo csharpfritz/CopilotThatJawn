@@ -162,3 +162,47 @@
 - **Content service**: `Web/Services/ContentService.cs` (parsing, caching, filtering)
 - **Upload helper**: `Shared/ContentUploadHelper.cs` (YAML parsing, image processing)
 - **ContentLoader**: `ContentLoader/Program.cs` (batch markdown → storage sync)
+
+## Calendar Revision — Week 1 & Series Architecture Update (Task from Jeffrey)
+
+**Added**: "Create Your First Custom Copilot Agent: Authoring .agent.md Files for Specialized AI Assistants"
+- **Placement**: Week 1 Wednesday, March 4, 2026 (Beginner, GitHub Copilot)
+- **Rationale**: Foundational article addressing gap in .github/agents/*.agent.md content. Pairs naturally with existing copilot-instructions.md and SKILL.md articles. Beginner-level intro helps readers understand agent customization before intermediate/advanced topics.
+- **Strategic positioning**: Front-loaded in Week 1 to establish credibility in agent/customization space early; removes friction for readers discovering custom agent workflows.
+
+**Displaced**: "GitHub Copilot Vision: From Wireframes to Code" shifted from Week 1 Wed to Week 7 Fri (April 17)
+- Vision is Intermediate (less foundational); .agent.md is Beginner and more strategic to lead customization series.
+
+**New Series**: "Copilot Customization" (3 parts)
+- Part 1: Create Your First Custom Copilot Agent (.agent.md) — Week 1 Wed
+- Part 2: Copilot Instructions (existing content, reference) — existing archive
+- Part 3: GitHub Copilot Skills (existing content, reference) — existing archive
+- Provides readers a cohesive learning path for understanding how to build tailored Copilot workflows.
+
+**Calendar impact**: 
+- Beginner articles: 13 → 14 (39% of 36 total)
+- GitHub Copilot articles: 17 → 18 (50% of 36 total)
+- All balance metrics remain healthy; no consecutive advanced articles; category rotation preserved.
+
+### Session 3: Calendar Revision Finalization & Decision Approval (Feb 23, 2026)
+
+**Scribe Integration** — Formalized calendar revision as team decision:
+- Orchestration logs created for both Sam and Carla (2026-02-23T1622)
+- Session log written documenting changes and team coordination
+- Decision merged into `.squad/decisions.md` (canonical record)
+- Inbox files archived (sam-content-calendar-UPDATED.md, carla-publishing-schedule.md)
+
+**Cross-Agent Coordination**:
+- Sam's calendar revision now integrated with Carla's publishing schedule (filenames, tags, metadata)
+- Both agents' history.md updated with session context
+- Team-wide handoff documented (Diane, Cliff, Norm, Scribe)
+
+**Validation Complete**:
+- All 36 articles verified as MWF dates
+- No violations of sequencing principles (beginner → intermediate → advanced, category rotation, series clustering)
+- High-priority gaps: 12/11 (100% + 1 foundational) by Week 4
+- Medium-priority gaps: 14/14 (100%) by Week 10
+- Lower-priority gaps: 7/7 (100%) by Week 12
+- 1 flex slot remaining (Week 11 Wed, May 13, 2026) for breaking news/community requests
+
+**Readiness**: Calendar now production-ready for team handoff to writers, researchers, and publishers
