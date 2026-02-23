@@ -148,4 +148,4 @@ Start small: pick one feature (summarization, drafting, or prioritization) and u
 
 Once you're comfortable with the basics, explore more advanced use cases—like extracting action items from multi-day email threads or preparing meeting agendas from email context. The more you experiment, the more powerful your email workflow becomes.
 
-Your inbox doesn't have to be a jawn that drains your day. With Copilot in Outlook, you're not just reading email—you're working smarter.
+Email overload doesn't have to drain your day. With Copilot in Outlook, you're not just reading email—you're working smarter.
