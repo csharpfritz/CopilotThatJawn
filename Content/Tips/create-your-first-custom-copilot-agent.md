@@ -14,9 +14,9 @@ featured: true
 
 # Create Your First Custom Copilot Agent: Authoring .agent.md Files for Specialized AI Assistants
 
-Custom Copilot agents let you create specialized AI assistants that appear in the `@` menu within Copilot Chat. Instead of one general-purpose assistant, you can build agents with specific roles—like a "code reviewer," "documentation writer," or "database expert"—each with its own expertise, boundaries, and tools.
+Custom Copilot agents let you create specialized AI assistants that appear in the `@` menu within [Copilot Chat](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-questions-in-your-ide). Instead of one general-purpose assistant, you can build agents with specific roles—like a "code reviewer," "documentation writer," or "database expert"—each with its own expertise, boundaries, and tools.
 
-If you've already explored `copilot-instructions.md` (global rules for your whole project) or SKILL.md files (reusable playbooks), agents are the next step: they're **named personas that Copilot activates when you call them by name**.
+If you've already explored [`copilot-instructions.md`](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot) (global rules for your whole project) or [`SKILL.md`](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot#creating-a-skill-file) files (reusable playbooks), agents are the next step: they're **named personas that Copilot activates when you call them by name**.
 
 ## What's a Custom Copilot Agent?
 
@@ -119,85 +119,83 @@ mkdir -p .github/agents
 touch .github/agents/code-reviewer.agent.md
 ```
 
-### Step 2: Add the frontmatter
+### Step 2: Start with frontmatter
 
-Open the file and start with metadata:
-
-```markdown
+```yaml
 ---
 name: code-reviewer
-description: "Specialized code review agent. Reviews PRs for bugs, performance, security, and style alignment."
+description: "Reviews pull requests for code quality, bugs, and best practices."
 target: github-copilot
 tools:
   - git
   - npm
 disable-model-invocation: false
+metadata:
+  owner: dev-team
+  version: "1.0"
 ---
 ```
+
+This tells Copilot:
+- The agent is called `@code-reviewer`
+- It reviews code for quality and bugs
+- It can use `git` and `npm` commands
+- It's enabled for auto-invocation (e.g., when someone asks for a review)
 
 ### Step 3: Write the persona
 
 ```markdown
 # Persona
 
-You are an expert code reviewer. Your role is to:
-- Spot bugs, performance bottlenecks, and security issues
-- Check that new code follows our project's coding standards
-- Suggest cleaner or more idiomatic solutions
-- Verify tests exist and cover the changes
+You are an experienced senior engineer with 10+ years of code review experience. Your job is to:
 
-You are thorough, constructive, and kind. You explain *why* changes are needed, not just pointing out issues.
+1. **Find bugs** before they reach production
+2. **Suggest improvements** using best practices from our codebase
+3. **Mentor** junior engineers through constructive feedback
+4. **Enforce standards** without being pedantic
 
+Your tone is friendly, specific, and actionable—never vague or dismissive.
 ```
 
-### Step 4: Define boundaries
+### Step 4: Set boundaries
 
 ```markdown
 # Boundaries
 
-You may:
-- Review code in `/src`, `/components`, `/pages`, `/services`
-- Suggest test additions in `/tests`
-- Reference files in `/docs` as style guides
+- **Only review code changes**, not documentation (unless asked)
+- **Don't suggest refactors** unless they fix a real issue or block understanding
+- **Don't approve PRs** with failing tests or unresolved TODOs
+- **Never** modify code directly—only suggest patterns and explain the "why"
+- **Focus on logic, security, and maintainability**—not whitespace or minor style
 
-You must NOT:
-- Modify production code directly (only suggest changes)
-- Touch config files (`.env*`, `secrets`, deployment configs)
-- Change package.json or dependencies without explicit approval
+## Files you CAN review
+- `src/**/*.ts` and `src/**/*.js` — application code
+- `lib/**/*.ts` — shared libraries
+- Tests in `__tests__/`
+
+## Files you should NOT touch
+- Configuration files (`webpack.config.js`, `.eslintrc`, etc.)
+- Generated code in `dist/` or `build/`
+- Third-party dependencies in `node_modules/`
 ```
 
-### Step 5: Add useful commands and patterns
+### Step 5: Add a checklist
 
 ```markdown
-# Commands to use
-
-- `git diff` — See what changed in the current branch
-- `npm test` — Run tests (make sure they still pass)
-- `npm run lint` — Check formatting and style
-
 # Code review checklist
 
-When reviewing, ask these questions:
+When reviewing, use this checklist:
 
-1. **Does it work?**
-   - Does the code solve the stated problem?
-   - Are there obvious bugs or edge cases missed?
+1. **Correctness?**
+   - Does the code do what the PR description says?
+   - Are there edge cases not handled?
 
-2. **Is it maintainable?**
-   - Is the code clear and easy to understand?
-   - Are variable/function names descriptive?
-   - Is there unnecessary complexity?
-
-3. **Does it follow our standards?**
-   - Check `/docs/coding-standards.md` for naming conventions
-   - Verify TypeScript strict mode is used (see `copilot-instructions.md`)
-   - Look for consistent error handling
-
-4. **Is it tested?**
-   - Are there new tests for new code?
+2. **Tests?**
+   - Are there tests for the new code?
+   - Do they cover happy path AND error cases?
    - Do all tests pass locally?
 
-5. **Performance & security?**
+3. **Performance & security?**
    - Any obvious performance issues?
    - Are external inputs validated?
    - No hardcoded secrets or sensitive data?
@@ -291,7 +289,7 @@ Now that you understand agents, you can:
 
 1. **Create 2–3 agents** for your team's most common workflows.
 2. **Combine with skills** — Have an agent that orchestrates a skill (e.g., "security-auditor" calls your "security-scan" skill).
-3. **Integrate with MCP** — If you have the GitHub MCP server, agents can fetch live PR data, workflow logs, and more.
+3. **Integrate with MCP** — If you have the [GitHub MCP server](https://github.com/github/github-mcp-server), agents can fetch live PR data, workflow logs, and more.
 4. **Share organization-wide** — Move agents to `.github-private/agents/` so all your org's repos can use them.
 
 ## Learn more
