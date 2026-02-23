@@ -15,7 +15,8 @@
 | Diane | Writer | Drafts tips, tutorials, and guides in markdown | ✍️ |
 | Cliff | Researcher / Fact-Checker | Digs into tools, verifies claims, finds sources | 📊 |
 | Carla | Scheduler / Ops | Publishing workflow, scheduling, metadata & SEO | 📅 |
-| Norm | Reviewer / QA | Reviews content for accuracy, tone, and completeness | 🧪 |
+| Norm | Reviewer / QA | Reviews content for quality, tone, and completeness | 🧪 |
+| Frasier | Proofreader / Fact-Checker | Proofreads grammar, verifies technical accuracy on every article | 🔍 |
 | Scribe | Session Logger | Memory, decisions, session logs | 📋 |
 | Ralph | Work Monitor | Work queue, backlog, keep-alive | 🔄 |
 

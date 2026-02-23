@@ -22,9 +22,17 @@
 ## Review & Quality
 - Content review, tone check, completeness → **Norm**
 - "Review this tip" / "Is this ready?" → **Norm**
-- Final approval before publishing → **Norm**
+- Quality approval before publishing → **Norm**
+
+## Proofreading & Accuracy
+- Grammar, spelling, punctuation checks → **Frasier**
+- Technical accuracy, fact verification → **Frasier**
+- Code example validation, link checking → **Frasier**
+- "Is this accurate?" / "Fact-check this" → **Frasier**
+- Accuracy approval before publishing → **Frasier**
 
 ## Multi-Agent Patterns
-- "Write a new tip about X" → **Cliff** (research) + **Diane** (draft) → **Norm** (review)
-- "Plan and write a tutorial" → **Sam** (plan) → **Diane** (write) → **Norm** (review) → **Carla** (schedule)
+- "Write a new tip about X" → **Cliff** (research) + **Diane** (draft) → **Norm** (quality) + **Frasier** (accuracy) → **Carla** (schedule)
+- "Plan and write a tutorial" → **Sam** (plan) → **Diane** (write) → **Norm** (quality) + **Frasier** (accuracy) → **Carla** (schedule)
 - "Team, create content for X" → Fan out to all relevant agents
+- "Review this article" → **Norm** (quality) + **Frasier** (accuracy) in parallel
