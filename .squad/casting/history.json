@@ -1,0 +1,14 @@
+[
+  {
+    "assignment_id": "cheers-2026-02-23",
+    "universe": "cheers",
+    "date": "2026-02-23T15:44:00Z",
+    "agents": [
+      { "name": "Sam", "character": "Sam Malone", "role": "Lead / Content Strategist" },
+      { "name": "Diane", "character": "Diane Chambers", "role": "Writer" },
+      { "name": "Cliff", "character": "Cliff Clavin", "role": "Researcher / Fact-Checker" },
+      { "name": "Carla", "character": "Carla Tortelli", "role": "Scheduler / Ops" },
+      { "name": "Norm", "character": "Norm Peterson", "role": "Reviewer / QA" }
+    ]
+  }
+]

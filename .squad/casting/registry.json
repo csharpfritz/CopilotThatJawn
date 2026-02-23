@@ -1,0 +1,47 @@
+[
+  {
+    "persistent_name": "Sam",
+    "universe": "cheers",
+    "character": "Sam Malone",
+    "role": "Lead / Content Strategist",
+    "created_at": "2026-02-23T15:44:00Z",
+    "legacy_named": false,
+    "status": "active"
+  },
+  {
+    "persistent_name": "Diane",
+    "universe": "cheers",
+    "character": "Diane Chambers",
+    "role": "Writer",
+    "created_at": "2026-02-23T15:44:00Z",
+    "legacy_named": false,
+    "status": "active"
+  },
+  {
+    "persistent_name": "Cliff",
+    "universe": "cheers",
+    "character": "Cliff Clavin",
+    "role": "Researcher / Fact-Checker",
+    "created_at": "2026-02-23T15:44:00Z",
+    "legacy_named": false,
+    "status": "active"
+  },
+  {
+    "persistent_name": "Carla",
+    "universe": "cheers",
+    "character": "Carla Tortelli",
+    "role": "Scheduler / Ops",
+    "created_at": "2026-02-23T15:44:00Z",
+    "legacy_named": false,
+    "status": "active"
+  },
+  {
+    "persistent_name": "Norm",
+    "universe": "cheers",
+    "character": "Norm Peterson",
+    "role": "Reviewer / QA",
+    "created_at": "2026-02-23T15:44:00Z",
+    "legacy_named": false,
+    "status": "active"
+  }
+]

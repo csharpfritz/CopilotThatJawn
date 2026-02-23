@@ -1,0 +1,5 @@
+{
+  "universes": ["cheers"],
+  "max_per_universe": 12,
+  "overflow_strategy": "diegetic_expansion"
+}
