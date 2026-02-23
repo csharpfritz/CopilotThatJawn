@@ -11,6 +11,7 @@ This document provides a summary of the topics covered by the tips in the `Conte
 - **using-context7-with-copilot.md**: Integrating Context7 MCP for up-to-date code documentation and context-aware suggestions.
 - **copilot-mcp-integration.md**: Introduction to Model Context Protocol (MCP) servers and extending Copilot with external data/services.
 - **microsoft-docs-mcp-integration.md**: Using Microsoft Docs MCP to bring official documentation into Copilot for real-time, accurate answers.
+- **create-your-first-github-copilot-skill.md**: A beginner walkthrough of Agent Skills, plus a simple sample skill and how to pair skills with MCP.
 
 ## Microsoft 365 Copilot
 - **get-started-copilot-word.md**: Enabling and using Copilot in Microsoft Word.
