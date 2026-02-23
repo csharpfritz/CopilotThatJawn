@@ -182,10 +182,140 @@
 
 ---
 
+## Week 1 Article Production & Quality Gate (March 2–7, 2026)
+
+### Decision: Content Branch & PR Publishing Workflow
+
+**Context:** User directive captured February 23, 2026: Articles should be queued in separate feature branches with separate PRs, with each PR declaring its publish schedule for scheduled releases.
+
+**Decision:** Adopt feature-branch + draft-PR model for all article submissions. Each article gets a dedicated branch, draft PR with publish date in frontmatter (publishedDate field + featured flag), and quality gate before merge.
+
+**Implementation:**
+- Article 1 (JetBrains): Branch `content/2026-03-02-jetbrains-ide-copilot` → PR #29 (draft) → Publish Monday March 2
+- Article 2 (Custom Agent): Branch `content/2026-03-04-custom-copilot-agent` → PR #30 (draft) → Publish Wednesday March 4
+- Article 3 (Outlook): Branch `content/2026-03-06-outlook-copilot` → PR #28 (draft) → Publish Friday March 6
+
+**Rationale:**
+- Separate branches allow parallel writing & research
+- Draft PRs enable pre-publish quality review (Norm's gate)
+- Frontmatter dates + featured flag declare schedule clearly
+- Enables scheduled merges aligned with MWF publishing calendar
+- Reduces merge conflicts and release coordination overhead
+
+**Outcome:** All 3 Week 1 articles submitted as draft PRs with publish schedule declared. Ready for Norm's quality gate and Carla's publication.
+
+---
+
+### Decision: Microsoft 365 "Getting Started" Article Template
+
+**Context:** Diane authored "Microsoft Copilot in Outlook" (Week 1 article) and identified successful pattern for M365 feature guides.
+
+**Decision:** Establish reusable template for Microsoft 365 Copilot features (Outlook, Teams, Word, Excel, PowerPoint):
+1. **Problem opener** (e.g., "buried under emails") establishes relatable pain point
+2. **"What Copilot Can Do"** feature overview (beginner focus, highest ROI features first)
+3. **Setup/Prerequisites** including licensing clarity upfront (base subscription vs. add-on)
+4. **Three practical, end-to-end examples** demonstrating key features
+5. **Pro Tips** for maximizing productivity
+6. **Tone**: "Executive assistant" framing, business outcomes focus, time-saving language
+
+**Rationale:**
+- M365 audience skews business professionals, not software developers
+- Licensing transparency prevents roadblocks (IT admins, budget holders read these)
+- Practical examples build reader investment
+- Template mirrors successful Excel/Word pattern; reduces writing time for future M365 articles
+- "Executive assistant" framing resonates with productivity messaging
+
+**Outcome:** Template established and validated with Outlook article (1,350 words, draft PR #28). Applies to Teams, Word, Excel, PowerPoint, and other M365 Copilot features.
+
+---
+
+### Decision: Copilot Across IDEs Series Launch (JetBrains as Part 1)
+
+**Context:** Diane authored "GitHub Copilot in JetBrains IDEs" (Week 1 article) and established series positioning for IDE ecosystem coverage.
+
+**Decision:** Launch "Copilot Across IDEs" series with JetBrains as Part 1/4. Follow with VS Code, Visual Studio 2026, and Neovim in subsequent weeks.
+
+**Series Strategy:**
+- **Part 1 (Week 1, March 2):** JetBrains IDEs (IntelliJ, PyCharm, Rider, WebStorm, PhpStorm)
+- **Part 2 (Week 3):** Xcode (Swift/iOS development)
+- **Part 3 (Week 3):** Neovim (terminal-driven development)
+- **Part 4 (Week 4):** Visual Studio 2026 (cloud agents, native integration)
+
+**Key Findings:**
+- JetBrains IDEs support full Copilot feature set: inline suggestions, Chat, Edit Mode, Agent Mode, code review, MCP integration
+- Free plan availability (2,000 completions/50 chat requests/month) removes adoption barrier for individual developers
+- IDE compatibility: version 2021.3+ across all major products
+- Effective guides include prerequisites, step-by-step installation, feature explanations, language/IDE-specific tips, best practices, troubleshooting
+
+**Rationale:**
+- Starting with JetBrains (enterprise/mid-market presence) establishes credibility in professional environments
+- Free tier emphasis drives early adoption across all IDE articles
+- Series positioning enables 20%+ internal cross-linking CTR (per editorial calendar decision)
+- Each part will include language/IDE-specific examples (Java/Kotlin, Python, C#/.NET, JavaScript/TypeScript, Swift, Lua/Vimscript)
+
+**Outcome:** Part 1 complete (draft PR #29, 1,430 words). Parts 2–4 scheduled for Weeks 3–4 per editorial calendar.
+
+---
+
+### Decision: Copilot Customization Series & .agent.md Article Template
+
+**Context:** Diane authored "Create Your First Custom Copilot Agent: Authoring .agent.md Files" (Week 1 article) and established content patterns for agent customization trilogy.
+
+**Decision:** Launch "Copilot Customization" series (3 parts) with .agent.md article as Part 1. Establish template for agent/custom instruction guides.
+
+**Series Architecture:**
+- **Part 1 (Week 1, March 4):** .agent.md file authoring (personas, boundaries, commands, examples)
+- **Part 2 (TBD):** Advanced agent patterns (MCP integration, error recovery, iterative execution)
+- **Part 3 (TBD):** Team & organizational agent strategies
+
+**Article Content & Structure:**
+- YAML frontmatter reference (6 fields: name, description, target, tools, disable-model-invocation, metadata)
+- Clear differentiation: global instructions (always-on) vs. SKILL.md (workflows) vs. .agent.md (named personas)
+- 7-step hands-on walkthrough building a "code-reviewer" agent from scratch
+- Real-world example: Squad agent (.github/agents/squad.agent.md) from this repo
+- Comparison table: instructions vs. skills vs. agents across scope, invocation methods, use cases
+- Table of 7 common agent ideas (code-reviewer, docs-writer, test-writer, prompt-optimizer, error-debugger, code-explorer, style-guide-enforcer)
+- Cross-linking to copilot-instructions.md and skills article (trilogy framing)
+
+**Key Learnings:**
+- Comparison tables are essential for addressing "when do I use X vs. Y?" confusion upfront
+- Real repo examples ground theory in practice and lower imposter syndrome
+- Step-by-step walkthroughs mirror actual development workflow (file → config → content → test → commit)
+- Emoji callouts (✨, 🎯, 🔧, 📦, ✅, 🔍, 💡) improve scannability without sacrificing professionalism
+- Series metadata (series: "Copilot Customization", part: 1, featured: true) enables automatic cross-linking for 20%+ CTR goal
+
+**Rationale:**
+- Agents are natural next step after instructions/skills in customization journey
+- Real-world example (Squad) proves feature is actively used
+- Templates and ideas table provide immediate actionable direction for readers
+- Trilogy narrative builds authority across instruction, skill, and agent topics
+
+**Outcome:** Part 1 complete (draft PR #30, 2,100 words). Parts 2–3 scheduled per content strategy refinement.
+
+---
+
+## Cross-Agent Learnings
+
+**From Diane (Writer) — Week 1:**
+- **Free plan emphasis drives adoption:** Highlighting 2,000 completions/50 chat requests/month free tier removes barrier for individual developers across all IDE and tool guides
+- **Real repo examples ground theory:** Referencing Squad agent in .agent.md article demonstrates feature is production-ready and lowers "can I do this?" anxiety
+- **Tone shifts by audience:** GitHub Copilot articles emphasize code quality & developer productivity; Microsoft 365 articles emphasize business outcomes & time-saving
+- **"Jawn" integration requires context:** Works naturally in closing statements ("Your inbox doesn't have to be a jawn that drains your day") but doesn't fit everywhere; don't force it
+- **Series metadata is critical:** frontmatter (series: "Name", part: N) enables Carla's cross-linking strategy; omitting breaks discoverability goal of 20%+ CTR
+- **Comparison tables solve confusion:** Side-by-side (instructions vs. skills vs. agents) answers "when do I use X?" upfront and reduces reader friction
+- **Beginner articles need visual landmarks:** Emoji callouts, step-by-step breakdown, and "Pro Tips" sections keep non-expert readers engaged
+
+**From Norm (Reviewer) — Pending:**
+- Quality gate feedback on accuracy, tone consistency, frontmatter compliance (to be logged upon review completion)
+
+---
+
 ## References & Source Documents
 
-- `.squad/decisions/inbox/cliff-content-gap-analysis.md` — Full feature research and gap analysis
-- `.squad/decisions/inbox/sam-site-review.md` — Website architecture and content pipeline validation
-- `.squad/decisions/inbox/sam-content-calendar.md` — Complete 12-week editorial calendar with implementation notes
-- `.squad/agents/cliff/history.md` — Researcher context and learnings
-- `.squad/agents/sam/history.md` — Content strategist context, architecture notes, and learnings
+- `.squad/orchestration-log/2026-03-02T0800Z-diane-jetbrains-article.md` — JetBrains IDE article spawn details
+- `.squad/orchestration-log/2026-03-04T0900Z-diane-agent-md-article.md` — Custom agent article spawn details
+- `.squad/orchestration-log/2026-03-06T0730Z-diane-outlook-article.md` — Outlook article spawn details
+- `.squad/orchestration-log/2026-03-07T1000Z-norm-quality-review.md` — Quality review initiation
+- `.squad/log/2026-03-07T1130Z-week1-articles.md` — Complete session log with production details, learnings, and handoff to publishing
+- `.squad/agents/diane/history.md` — Writer context and learnings
+- `.squad/agents/norm/history.md` — Reviewer context and learnings
