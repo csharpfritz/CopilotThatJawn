@@ -14,11 +14,11 @@ featured: true
 
 # GitHub Copilot in JetBrains IDEs: Complete Setup and Feature Guide
 
-If you're developing in a JetBrains IDE—whether IntelliJ IDEA, PyCharm, Rider, WebStorm, or PhpStorm—you're in for a treat. GitHub Copilot brings powerful AI-assisted coding directly into your favorite JetBrains environment. From inline code suggestions to conversational chat assistance, Copilot integrates seamlessly with your existing workflow. This guide walks you through installation, setup, and mastering Copilot's features in JetBrains IDEs.
+If you're developing in a JetBrains IDE—whether [IntelliJ IDEA](https://www.jetbrains.com/idea/), [PyCharm](https://www.jetbrains.com/pycharm/), [Rider](https://www.jetbrains.com/rider/), [WebStorm](https://www.jetbrains.com/webstorm/), or [PhpStorm](https://www.jetbrains.com/phpstorm/)—you're in for a treat. [GitHub Copilot](https://github.com/features/copilot) brings powerful AI-assisted coding directly into your favorite JetBrains environment. From inline code suggestions to conversational chat assistance, Copilot integrates seamlessly with your existing workflow. This guide walks you through installation, setup, and mastering Copilot's features in JetBrains IDEs.
 
 ## Why GitHub Copilot in JetBrains?
 
-JetBrains IDEs are beloved by developers worldwide for their intelligence, speed, and feature-richness. Adding GitHub Copilot amplifies these strengths:
+[JetBrains](https://www.jetbrains.com/) IDEs are beloved by developers worldwide for their intelligence, speed, and feature-richness. Adding GitHub Copilot amplifies these strengths:
 
 - **Intelligent Suggestions**: Copilot learns from your codebase and provides context-aware completions.
 - **Multi-Language Support**: Works seamlessly with Python, Java, C#, Go, TypeScript, JavaScript, and dozens more.
@@ -30,9 +30,9 @@ JetBrains IDEs are beloved by developers worldwide for their intelligence, speed
 ### Prerequisites
 
 Before you start, make sure you have:
-- A **supported JetBrains IDE** (IntelliJ IDEA, PyCharm, WebStorm, Rider, PhpStorm, Android Studio, or others)
+- A **supported JetBrains IDE** (IntelliJ IDEA, PyCharm, WebStorm, Rider, PhpStorm, [Android Studio](https://developer.android.com/studio), or others)
 - **JetBrains IDE version 2021.3 or later** (newer versions are recommended for best compatibility)
-- A **GitHub account** (free or paid)
+- A **[GitHub account](https://github.com/signup)** (free or paid)
 - **Internet access**
 
 ### Installation Process
@@ -118,117 +118,44 @@ Copilot: [Provides a clear explanation of the algorithm and suggests improvement
 
 **Reference Code in Chat:**
 - Highlight a code block and ask a question about it
-- Mention file paths in your message (e.g., "In src/utils/auth.ts, how can I...")
-- Copilot understands your codebase context and responds accordingly
+- Use context-aware questions: "Write tests for this function"
+- Copilot will use the selected code to provide relevant, targeted responses
 
-### 3. Edit Mode
+### 3. Slash Commands
 
-With Edit Mode, you can ask Copilot to make intelligent changes across one or multiple files. This is powerful for refactoring or updating code consistently.
+Copilot Chat supports slash commands for quick, focused tasks:
 
-**How to Use:**
-1. Open Copilot Chat
-2. Ask for a code change (e.g., "Rename all instances of `userId` to `userID` in this file")
-3. Copilot shows you the proposed changes
-4. Review the edits and accept or reject them
+- `/explain`: Ask Copilot to explain the selected code
+- `/tests`: Generate unit tests for the selected code
+- `/fix`: Ask Copilot to fix a bug or issue
+- `/doc`: Generate documentation or docstrings
+- `/new`: Create a new code file or component
 
-### 4. Agent Mode
+Simply type a slash command followed by your request in the Copilot Chat panel.
 
-Agent Mode enables semi-autonomous assistance. Copilot can:
-- Detect and suggest fixes for errors
-- Recommend terminal commands
-- Help navigate large codebases
-- Perform multi-step operations
+## Real-World Use Cases
 
-This mode works best when you give Copilot clear, high-level tasks.
+### Use Case 1: Building a Function from Scratch
 
-### 5. Code Review Assistance
+You're starting a new function to parse CSV files. Instead of typing everything manually:
 
-Copilot can review your code and identify potential issues before you open a pull request.
+1. Write a descriptive comment:
+   ```python
+   # Function to parse a CSV file and return a list of dictionaries
+   def parse_csv(file_path):
+   ```
 
-**How to Use:**
-1. Open Copilot Chat
-2. Select your code and ask: "Review this code for bugs and performance issues"
-3. Copilot provides feedback on logic, security, and efficiency
+2. Copilot suggests the implementation
+3. Review the suggestion, accept it with `Tab`, and move forward
 
-### 6. Model Context Protocol (MCP)
+### Use Case 2: Refactoring Legacy Code
 
-MCP allows Copilot to integrate with external tools and services. For example, Copilot can:
-- Query cloud deployment APIs
-- Run specialized linters
-- Fetch documentation from custom sources
+You have a messy function that needs improvement:
 
-This feature is especially useful in enterprise environments with custom tooling.
-
-## JetBrains-Specific Tips and Tricks
-
-### Leverage JetBrains' Intelligence Alongside Copilot
-
-JetBrains IDEs have built-in static analysis and refactoring tools. Combine them with Copilot for maximum productivity:
-
-1. Use **JetBrains' code inspections** to identify issues
-2. Ask **Copilot Chat** to explain or fix them
-3. Use **JetBrains' refactoring tools** to implement large-scale changes consistently
-
-### Language-Specific Features
-
-- **IntelliJ IDEA (Java/Kotlin)**: Copilot works great with both languages. Try asking Copilot to generate getter/setter methods or implement interfaces.
-- **PyCharm (Python)**: Copilot excels at generating Python code. Use it for NumPy, pandas, and Django suggestions.
-- **Rider (C#/.NET)**: Copilot understands C# idioms and LINQ patterns. Ask for async/await implementations.
-- **WebStorm (JavaScript/TypeScript)**: Copilot provides excellent React, Vue, and Angular suggestions.
-
-### Keyboard Shortcuts
-
-Make Copilot workflows faster:
-
-| Action | Windows/Linux | macOS |
-|--------|------------------|-------|
-| Accept Suggestion | `Tab` | `Tab` |
-| Dismiss Suggestion | `Escape` | `Escape` |
-| Request Suggestion | `Alt + \` | `⌥ \` |
-| Open Copilot Chat | Click icon or `Ctrl + Alt + I` | `⌘ ⌥ I` |
-
-### Writing Better Comments for Copilot
-
-Copilot's suggestions improve with clear context. Here's how:
-
-**❌ Vague:**
-```javascript
-// process data
-function process(data) {
-```
-
-**✅ Clear:**
-```javascript
-// Filter array to include only items with quantity > 0, then sort by price ascending
-function filterAndSortByPrice(products) {
-```
-
-With the second approach, Copilot generates more accurate code.
-
-## Common Use Cases
-
-### Use Case 1: Boilerplate Code
-
-Instead of typing repetitive code, let Copilot do the heavy lifting:
-
-```java
-// Create a POJO with getters and setters
-public class User {
-    private String name;
-    private String email;
-    // Copilot will suggest getter/setter methods
-}
-```
-
-### Use Case 2: Algorithm Implementation
-
-Ask Copilot to implement algorithms:
-
-```python
-# Implement bubble sort algorithm
-def bubble_sort(arr):
-    # Copilot suggests the complete implementation
-```
+1. Highlight the function
+2. Open Copilot Chat and ask: "Refactor this function to be more readable and efficient"
+3. Copilot suggests improvements
+4. Apply the changes
 
 ### Use Case 3: Testing
 
@@ -350,4 +277,4 @@ Start with small tasks, explore the features, and you'll quickly find yourself w
 
 ---
 
-**Series Note**: This is Part 1 of the "Copilot Across IDEs" series. In upcoming articles, we'll explore GitHub Copilot in VS Code, Visual Studio, and Vim/Neovim. Each IDE has unique strengths—stay tuned to master Copilot in your preferred environment.
+**Series Note**: This is Part 1 of the "Copilot Across IDEs" series. In upcoming articles, we'll explore GitHub Copilot in [VS Code](https://code.visualstudio.com/), [Visual Studio](https://visualstudio.microsoft.com/), and Vim/Neovim. Each IDE has unique strengths—stay tuned to master Copilot in your preferred environment.
